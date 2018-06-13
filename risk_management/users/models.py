@@ -4,6 +4,7 @@ from django.db.models import Q
 from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
 from django.core.validators import RegexValidator
+from django.utils.functional import cached_property
 
 
 phone_regex = RegexValidator(regex=r'^(\(\+\d{0,3}\))? ?\d{9}$',
@@ -25,21 +26,33 @@ class BusinessUnit(models.Model):
     telephone = models.CharField(max_length=18, default='(+237) 000000000', validators=[phone_regex],
                                  help_text=_("L'indicatif est optionnel. exemple: (+237) 694484246"),
                                  verbose_name=_('Numero de Téléphone'))
+    projet = models.BooleanField(default=False, help_text=_('Le Business Unit est-il un Projet?'))
 
     def __str__(self):
         return self.denomination
 
     @property
     def bu_manager(self):
-        try:
-            bu_manager = self.employes.get(Q(fonction__iexact='directeur général') |
-                                           Q(fonction__iexact='general manager'))
-        except User.DoesNotExist:
-            return _("Non defini")
-        return bu_manager
+        if self.projet:
+            try:
+                bu_manager = self.employes.get(fonction__iexact='Chef de projet')
+            except User.DoesNotExist:
+                return _("Non defini")
+            return bu_manager
+        else:
+            try:
+                bu_manager = self.employes.get(fonction__iexact='Directeur général')
+            except User.DoesNotExist:
+                return _("Non defini")
+            return bu_manager
+
+    @cached_property
+    def risques_identifies(self):
+        pass
 
     class Meta:
         verbose_name_plural = "Business Units"
+        ordering = ('denomination', )
 
 
 class User(AbstractUser):
@@ -59,7 +72,7 @@ class User(AbstractUser):
     first_name = models.CharField(_('first name'), max_length=30)
     last_name = models.CharField(_('last name'), max_length=150)
     business_unit = models.ForeignKey('BusinessUnit', on_delete=models.CASCADE, related_name='employes',
-                                      verbose_name=_("Business Unit"), null=True, blank=True)
+                                      verbose_name=_("Business Unit"))
     fonction = models.CharField(max_length=100, verbose_name=_('poste'), help_text=_('exemple: Directeur général'))
     email = models.EmailField(max_length=255, unique=True)
     telephone = models.CharField(max_length=18, validators=[phone_regex],
@@ -73,3 +86,9 @@ class User(AbstractUser):
 
     def get_absolute_url(self):
         return reverse("users:detail", kwargs={"username": self.username})
+
+    def make_manager(self):
+        if self.business_unit.projet:
+            self.fonction = 'Chef de projet'
+        else:
+            self.fonction = 'Directeur Général'

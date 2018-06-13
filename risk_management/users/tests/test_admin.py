@@ -18,8 +18,8 @@ class TestMyUserCreationForm(TestCase):
                 'first_name': 'Patrice',
                 'last_name': 'Fotue Kamga',
                 'fonction': 'Assistant Manager de Projet',
-                'telephone': '(+234) 674 228 621',
-                'business_unit': BusinessFactory('Cameroon Tobacco Company', 'Yaoundé'),
+                'telephone': '(+234) 674228621',
+                'business_unit': BusinessFactory(denomination='Cameroon Tobacco Company', ville_siege='Yaoundé'),
                 'password1': 'JsRocks2018',
                 'password2': 'JsRocks2018'
             }
@@ -29,16 +29,22 @@ class TestMyUserCreationForm(TestCase):
         self.assertTrue(valid)
 
         # Run the actual clean_username method
-        username = form.clean_username()
-        self.assertEqual("patricefotue", username[:-36])
+        username = self.user.username
+        self.assertEqual("albanbrice", username[:-36])
 
     def test_clean_username_false(self):
         # Instantiate the form with the same username as self.user
         form = MyUserCreationForm(
             {
-                "username": self.user.username,
-                "password1": "notalamodespassword",
-                "password2": "notalamodespassword",
+                'email': self.user.email,
+                'civilite': 'M.',
+                'first_name': 'Patrice',
+                'last_name': 'Fotue Kamga',
+                'fonction': 'Assistant Manager de Projet',
+                'telephone': '(+234) 674228621',
+                'business_unit': BusinessFactory(denomination='Cameroon Tobacco Company', ville_siege='Yaoundé'),
+                'password1': 'JavaRocks2018',
+                'password2': 'JavaRocks2018'
             }
         )
         # Run is_valid() to trigger the validation, which is going to fail
@@ -48,4 +54,4 @@ class TestMyUserCreationForm(TestCase):
 
         # The form.errors dict should contain a single error called 'username'
         self.assertTrue(len(form.errors) == 1)
-        self.assertTrue("username" in form.errors)
+        self.assertTrue("email" in form.errors)

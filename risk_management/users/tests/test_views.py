@@ -3,12 +3,13 @@ from django.test import RequestFactory
 from test_plus.test import TestCase
 
 from ..views import UserRedirectView, UserUpdateView
+from ..tests.factories import UserFactory
 
 
 class BaseUserTestCase(TestCase):
 
     def setUp(self):
-        self.user = self.make_user()
+        self.user = UserFactory()
         self.factory = RequestFactory()
 
 
@@ -23,9 +24,8 @@ class TestUserRedirectView(BaseUserTestCase):
         request.user = self.user
         # Attach the request to the view
         view.request = request
-        # Expect: '/users/testuser/', as that is the default username for
-        #   self.make_user()
-        self.assertEqual(view.get_redirect_url(), "/users/testuser/")
+        # Expect: '/users/self.user.username/'
+        self.assertEqual(view.get_redirect_url(), f"/users/{self.user.username}")
 
 
 class TestUserUpdateView(BaseUserTestCase):
@@ -45,7 +45,7 @@ class TestUserUpdateView(BaseUserTestCase):
     def test_get_success_url(self):
         # Expect: '/users/testuser/', as that is the default username for
         #   self.make_user()
-        self.assertEqual(self.view.get_success_url(), "/users/testuser/")
+        self.assertEqual(self.view.get_success_url(), f"/users/{self.user.username}")
 
     def test_get_object(self):
         # Expect: self.user, as that is the request's user object

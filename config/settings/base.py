@@ -40,14 +40,6 @@ USE_TZ = True
 
 DATABASES = {
     'default': env.db('DATABASE_URL', default='postgres://localhost/risk_management'),
-    'test': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'test_risk_management',
-        'USER': 'tester',
-        'PASSWORD': 'tester',
-        'HOST': 'localhost',
-        'PORT': 5432
-    }
 }
 DATABASES['default']['ATOMIC_REQUESTS'] = True
 

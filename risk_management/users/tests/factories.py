@@ -19,6 +19,7 @@ class BusinessFactory(factory.django.DjangoModelFactory):
     ville_siege = factory.Faker('city', locale='fr_FR')
     adresse_physique = factory.LazyAttribute(lambda _: faker.street_address())
     telephone = factory.LazyFunction(generate_phone_number)
+    projet = factory.Faker('pybool')
 
     class Meta:
         model = BusinessUnit
