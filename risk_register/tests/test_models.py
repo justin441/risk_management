@@ -42,11 +42,16 @@ class TestProcessData(TestCase):
 
     def test_clean(self):
         dp = DonneesProcessus(nom='Achat', processus1=None, processus2=None)
+        dp1 = DonneesProcessus(nom='Achat', processus1=self.p1, processus2=self.p1)
 
         try:
             dp.full_clean()
         except ValidationError as e:
-            self.assertTrue('Process' in e.message_dict)
+            self.assertTrue('processus1' in e.message_dict)
+        try:
+            dp1.full_clean()
+        except ValidationError as e:
+            self.assertTrue('processus2' in e.message_dict)
 
 
 

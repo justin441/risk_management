@@ -23,7 +23,8 @@ class Processus(models.Model):
     business_unit = models.ForeignKey(BusinessUnit, on_delete=models.CASCADE, verbose_name=_('Propriétaire'))
     nom = models.CharField(max_length=50, db_index=True, verbose_name=_('Nom'))
     description = models.CharField(max_length=300)
-    proc_manager = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, verbose_name=_('manager du processus'),
+    proc_manager = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True,
+                                     verbose_name=_('manager du processus'),
                                      related_name='processus_manages')
 
     def __str__(self):
@@ -69,7 +70,11 @@ class DonneesProcessus(models.Model):
     def clean(self):
         if (not self.processus1) and (not self.processus2):
             raise ValidationError(
-                {'Process': _('Au moins un des champs Origine et Destination doit comporter une valeur')}
+                {'processus1': _('Au moins un des champs Origine et Destination doit comporter une valeur')}
+            )
+        if self.processus1 == self.processus2:
+            raise ValidationError(
+                {'processus1': _('Le même processus ne peut pas être fournisseur et destinataire d\'une donnée')}
             )
 
     def __str__(self):
