@@ -38,6 +38,9 @@ class Processus(models.Model):
     proc_manager = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True,
                                      verbose_name=_('manager du processus'),
                                      related_name='processus_manages')
+    input_data = models.ManyToManyField('ProcessData', verbose_name=_('Données d\'entrée'),
+                                        related_name='clients',
+                                        help_text=_('Laisser vide si destination externe à l\'entreprise'))
 
     def __str__(self):
         return "%s: %s" % (self.business_unit.denomination, self.nom)
@@ -57,48 +60,21 @@ class Processus(models.Model):
 class ProcessData(models.Model):
 
     nom = models.CharField(max_length=255)
-    processus1 = models.ForeignKey(Processus, on_delete=models.SET_NULL,
-                                   null=True, blank=True, verbose_name=_('Origine'),
-                                   related_name='ouput_data',
-                                   help_text=_('Laisser vide si origine externe à l\'entreprise'))
-    processus2 = models.ForeignKey(Processus, on_delete=models.SET_NULL, null=True, blank=True,
-                                   verbose_name=_('Destination'), related_name='input_data',
-                                   help_text=_('Laisser vide si destination externe à l\'entreprise'))
+    origine = models.ForeignKey(Processus, on_delete=models.SET_NULL,
+                                null=True, blank=True, verbose_name=_('Origine'),
+                                related_name='ouput_data',
+                                help_text=_('Laisser vide si origine externe à l\'entreprise'))
 
     commentaire = models.CharField(max_length=255, blank=True,
                                    help_text=_('Veuillez indiquer le nom du partenaire externe\
                                                 si origine ou destination externe'), verbose_name=_('commentaires'))
-
-    @property
-    def provider(self):
-        if self.processus1:
-            return self.processus1
-        else:
-            return 'Fournisseur externe: %s' % self.commentaire
-
-    @property
-    def client(self):
-        if self.processus2:
-            return self.processus2
-        else:
-            return 'Client externe'
-
-    def clean(self):
-        if (not self.processus1) and (not self.processus2):
-            raise ValidationError(
-                {'processus1': _('Au moins un entre les champs Origine et Destination doit comporter une valeur')}
-            )
-        if self.processus1 == self.processus2:
-            raise ValidationError(
-                {'processus1': _('Le même processus ne peut pas être fournisseur et destinataire d\'une donnée')}
-            )
 
     def __str__(self):
         return self.nom
 
     class Meta:
         ordering = ['nom']
-        unique_together = (('nom', 'processus1',), ('nom', 'processus2'),)
+        unique_together = (("nom", "origine"),)
         verbose_name = 'données du processus'
         verbose_name_plural = 'données des processus'
 
@@ -436,3 +412,5 @@ class Controle(TimeFramedModel, TimeStampedModel, RiskMixin):
         #     ('assigner_traitement', 'peut assigner le traitement à un utilisateur'),
         #     ('achever_traitement', 'peut marquer le traitement comme terminé'),
         # )
+
+

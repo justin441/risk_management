@@ -7,24 +7,21 @@ from .models import (Processus, ProcessData, Activite, Risque, ClasseDeRisques, 
                      Controle, ProcessusRisque, CritereDuRisque)
 
 
-class DonneesEntreeProcessusInline(admin.StackedInline):
-    extra = 1
-    model = ProcessData
-    fk_name = 'processus2'
-    verbose_name = _('donnée d\'entrée')
-    verbose_name_plural = _('données d\'entrée')
-    autocomplete_fields = ['processus1']
-    classes = ['collapse']
-
-
 class DonneesSortieProcessusInline(admin.StackedInline):
     extra = 1
     model = ProcessData
-    fk_name = 'processus1'
     verbose_name = _('donnée de sortie')
     verbose_name_plural = _('données de sortie')
-    autocomplete_fields = ['processus2']
     classes = ['collapse']
+
+
+class DonneesEntreeProcessusInline(admin.StackedInline):
+    extra = 1
+    model = Processus.input_data.through
+    verbose_name = 'Donnée d\'entrée'
+    verbose_name_plural = "Données d'entrée"
+    classes = ['collapse']
+    autocomplete_fields = ['processdata_id']
 
 
 @admin.register(Processus)
@@ -37,9 +34,7 @@ class ProcessAdmin(admin.ModelAdmin):
         DonneesEntreeProcessusInline,
         DonneesSortieProcessusInline
     ]
-    search_fields = [
-        'nom'
-    ]
+    autocomplete_fields = ['proc_manager']
 
 
 @admin.register(Activite)
@@ -103,3 +98,9 @@ class ActiviteRisqueAdmin(IdentificationRisque):
 class ProcessusRisqueAdmin(IdentificationRisque):
     fields = ['processus', 'type_de_risque', 'risque', 'criterisation', 'verifie']
     autocomplete_fields = ['processus', 'risque']
+
+
+@admin.register(ProcessData)
+class ProcessDataAdmin(admin.ModelAdmin):
+    autocomplete_fields = ['origine']
+    search_fields = ['nom']
