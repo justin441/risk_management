@@ -92,3 +92,5 @@ class User(AbstractUser):
             self.fonction = 'Chef de projet'
         else:
             self.fonction = 'Directeur Général'
+
+

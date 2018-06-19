@@ -2,7 +2,7 @@ import factory
 import random
 from faker import Faker
 from ..models import BusinessUnit, User
-from django.conf import settings
+
 
 CIVILITE_CHOICES = ('M.', 'Mme', 'Dr', 'Pr')
 faker = Faker('fr_FR')
