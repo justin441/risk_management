@@ -61,3 +61,4 @@ class MyUserAdmin(AuthUserAdmin):
 class BuAdmin(admin.ModelAdmin):
     list_display = ('denomination', 'sigle', 'marche', 'ville_siege',
                     'adresse_physique', 'telephone', 'bu_manager')
+    search_fields = ['denomination']

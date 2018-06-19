@@ -47,8 +47,7 @@ class ProcessDataFactory(factory.django.DjangoModelFactory):
         django_get_or_create = ('nom', )
 
     nom = factory.Faker('sentence', nb_words=3)
-    processus1 = factory.SubFactory(Processfactory, nom="Vente")
-    processus2 = factory.SubFactory(Processfactory, nom="Facturation")
+    origine = factory.SubFactory(Processfactory)
 
 
 class ActiviteFactory(factory.django.DjangoModelFactory):
@@ -140,7 +139,7 @@ class EstimationFactory(factory.django.DjangoModelFactory):
 
     content_object = factory.SubFactory(ActiviteRisquefactory)
     criterisation = factory.SubFactory(CritereDuRisqueFactory)
-    proprietaire = factory.SubFactory(UserFactory)
+    proprietaire = factory.SubFactory(UserFactory, first_name='Justin', last_name='Fotue')
     date_revue = factory.Faker('date_time_this_year', after_now=True, before_now=False, tzinfo=utc)
 
 

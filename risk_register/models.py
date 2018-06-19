@@ -39,8 +39,8 @@ class Processus(models.Model):
                                      verbose_name=_('manager du processus'),
                                      related_name='processus_manages')
     input_data = models.ManyToManyField('ProcessData', verbose_name=_('Données d\'entrée'),
-                                        related_name='clients',
-                                        help_text=_('Laisser vide si destination externe à l\'entreprise'))
+                                        related_name='clients'
+                                        )
 
     def __str__(self):
         return "%s: %s" % (self.business_unit.denomination, self.nom)
@@ -238,7 +238,8 @@ class IdentificationRisque(TimeStampedModel):
             return self.criterisation.valeur()
 
     def facteur_risque(self):
-        return self.estimation_set.latest().facteur_risque()
+        if self.estimations.all():
+            return self.estimations.latest().facteur_risque()
 
     def status(self):
         if self.seuil_de_risque() and self.facteur_risque():
@@ -249,16 +250,16 @@ class IdentificationRisque(TimeStampedModel):
 
     # le risque est-il assigné
     def est_assigne(self):
-        if self.estimation_set.all() and self.estimation_set.latest().proprietaire:
+        if self.estimations.all() and self.estimations.latest().proprietaire:
             return True
         return False
 
     def get_proprietaire(self):
         if self.est_assigne():
-            return self.estimation_set.latest().proprietaire
+            return self.estimations.latest().proprietaire
 
     @property
-    def est_obsolte(self):
+    def est_obsolete(self):
         return now() > self.date_revue
 
     class Meta:
@@ -346,7 +347,7 @@ class Estimation(TimeStampedModel, RiskMixin):
     def save(self, *args, **kwargs):
         """s'assurer que les données du risque sont à jour et
         que la date de debut de l'activité précède la date de fin"""
-        if self.content_object.est_obsolte:
+        if self.content_object.est_obsolete:
             raise DonneesDeRisqueObsolete(
                 'Les donneés du risque ont besoins d\'une mise à jour')
         super().save(*args, **kwargs)
@@ -393,7 +394,7 @@ class Controle(TimeFramedModel, TimeStampedModel, RiskMixin):
 
     def save(self, *args, **kwargs):
         # todo inclure les exceptions présent ici dans les vues
-        if self.content_object.est_obsolte or (
+        if self.content_object.est_obsolete or (
             self.content_object.estimations.all() and self.content_object.estimations.latest().est_obsolete
         ):
             raise DonneesDeRisqueObsolete(

@@ -29,38 +29,10 @@ class TestProcess(TestCase):
 
 class TestProcessData(TestCase):
     def setUp(self):
-        self.p1 = Processfactory(nom='Vente')
-        self.p2 = Processfactory(nom='Facturation')
-        self.p3 = Processfactory(nom='livraison')
-        self.pd1 = ProcessDataFactory(nom='Bon de commande', processus1=self.p1, processus2=self.p2)
-        self.pd2 = ProcessDataFactory(nom='commande', processus1=None, processus2=self.p1)
-        self.pd3 = ProcessDataFactory(nom='Bon de livraison', processus1=self.p3, processus2=None)
+        self.pd2 = ProcessDataFactory(nom='Bon de commande')
 
-    def test_client(self):
-        client1 = self.pd1.client
-        client2 = self.pd3.client
-
-        self.assertEqual(client1.nom, 'Facturation')
-        self.assertEqual(client2, 'Client externe')
-
-    def test_fournisseur(self):
-        frs1 = self.pd1.provider
-        frs2 = self.pd2.provider
-        self.assertEqual(frs1.nom, 'Vente')
-        self.assertEqual(frs2, 'Fournisseur externe: ')
-
-    def test_clean(self):
-        dp = ProcessData(nom='Achat', processus1=None, processus2=None)
-        dp1 = ProcessData(nom='Achat', processus1=self.p1, processus2=self.p1)
-
-        try:
-            dp.full_clean()
-        except ValidationError as e:
-            self.assertTrue('processus1' in e.message_dict)
-        try:
-            dp1.full_clean()
-        except ValidationError as e:
-            self.assertTrue('processus1' in e.message_dict)
+    def test_str(self):
+        self.assertEqual(self.pd2.__str__(), 'Bon de commande')
 
 
 class TestActivite(TestCase):
@@ -123,23 +95,116 @@ class TestCritereDuRisque(TestCase):
 
 class TestActiviteRisque(TestCase):
     def setUp(self):
-        self.act_risque1 = ActiviteRisquefactory()
+        self.activite1 = ActiviteFactory(
+            nom='Prospection téléphonique',
+            description='Prospecter les clients par téléphone'
+        )
+
+        self.act_risque1 = ActiviteRisquefactory(
+            activite=self.activite1,
+            risque=factory.SubFactory(RisqueFactory, nom='Risque Pays')
+        )
         self.act_risque2 = ActiviteRisquefactory(
+            criterisation=None
+        )
+
+        self.act_risque3 = ActiviteRisquefactory(
             date_revue=fake.past_datetime(start_date="-60d", tzinfo=utc)
         )
 
+        EstimationFactory(
+            content_object=self.act_risque1,
+            criterisation=factory.SubFactory(
+                CritereDuRisqueFactory, detectabilite=4, severite=5, occurence=4
+            ),
+            proprietaire=None
+        )
+
     def test_str(self):
-        self.assertEqual(self.act_risque1.__str__(), 'activite-8/Risques Stratégiques-Risque-4')
-        self.assertEqual(self.act_risque2.__str__(), 'activite-9/Risques Stratégiques-Risque-5')
+        self.assertEqual(self.act_risque1.__str__(), 'Prospection téléphonique/Risque Pays')
 
     def test_seuil_de_risque(self):
         self.assertEqual(self.act_risque1.seuil_de_risque(), 27)
+        self.assertEqual(self.act_risque2.seuil_de_risque(), None)
 
     def test_clean(self):
         try:
-            self.act_risque2.full_clean()
+            self.act_risque3.full_clean()
         except ValidationError as e:
             self.assertTrue('date_revue' in e.message_dict)
+
+    def test_facteur_risque(self):
+        self.assertEqual(self.act_risque1.facteur_risque(), 80)
+        self.assertEqual(self.act_risque2.facteur_risque(), None)
+
+    def test_status_accept(self):
+        EstimationFactory(
+            content_object=self.act_risque1,
+            criterisation=factory.SubFactory(
+                CritereDuRisqueFactory, detectabilite=2, severite=3, occurence=4
+            )
+        )
+        self.assertEqual(self.act_risque1.status(), 'acceptable')
+        self.assertEqual(self.act_risque2.status(), None)
+        self.assertTrue(self.act_risque1.seuil_de_risque() >= self.act_risque1.facteur_risque())
+
+    def test_status_inaccept(self):
+        EstimationFactory(
+            content_object=self.act_risque1,
+            criterisation=factory.SubFactory(
+                CritereDuRisqueFactory, detectabilite=4, severite=5, occurence=4
+            )
+        )
+
+        EstimationFactory(
+            content_object=self.act_risque2,
+            criterisation=factory.SubFactory(
+                CritereDuRisqueFactory, detectabilite=4, severite=5, occurence=4
+            )
+        )
+        self.assertEqual(self.act_risque1.status(), 'inacceptable')
+        self.assertEqual(self.act_risque2.status(), None)
+        self.assertTrue(self.act_risque1.seuil_de_risque() < self.act_risque1.facteur_risque())
+
+    def test_est_assigne(self):
+        EstimationFactory(
+            content_object=self.act_risque1,
+            criterisation=factory.SubFactory(
+                CritereDuRisqueFactory, detectabilite=4, severite=5, occurence=4
+            ),
+            proprietaire=None
+        )
+        EstimationFactory(
+            content_object=self.act_risque2,
+            criterisation=factory.SubFactory(
+                CritereDuRisqueFactory, detectabilite=4, severite=5, occurence=4
+            )
+        )
+        self.assertFalse(self.act_risque1.est_assigne())
+        self.assertTrue(self.act_risque2.est_assigne())
+
+    def test_get_proprietaire(self):
+
+        EstimationFactory(
+            content_object=self.act_risque1,
+            criterisation=factory.SubFactory(
+                CritereDuRisqueFactory, detectabilite=4, severite=5, occurence=4
+            ),
+            proprietaire=None
+        )
+
+        EstimationFactory(
+            content_object=self.act_risque2,
+            criterisation=factory.SubFactory(
+                CritereDuRisqueFactory, detectabilite=4, severite=5, occurence=4
+            )
+        )
+
+        self.assertEqual(self.act_risque1.get_proprietaire(), None)
+        self.assertNotEqual(self.act_risque2.get_proprietaire(), None)
+
+    def test_est_obsolete(self):
+        self.assertTrue(self.act_risque3.est_obsolete)
 
 
 class TestProcessusRisque(TestCase):
@@ -152,15 +217,25 @@ class TestProcessusRisque(TestCase):
 
 class TestEstimation(TestCase):
     def setUp(self):
-        self.estimation = EstimationFactory()
-        self.estimation2 = EstimationFactory(
-            content_object=ProcessusRisqueFactory(
-                processus=factory.SubFactory(Processfactory, nom='Vente')
+        self.activite1 = ActiviteFactory(
+            nom='Prospection téléphonique',
+            description='Prospecter les clients par téléphone'
+        )
+
+        self.act_risque1 = ActiviteRisquefactory(
+            activite=self.activite1,
+            risque=factory.SubFactory(RisqueFactory, nom='Risque Pays')
+        )
+
+        self.estimation = EstimationFactory(
+            content_object=self.act_risque1,
+            criterisation=factory.SubFactory(
+                CritereDuRisqueFactory, detectabilite=4, severite=5, occurence=4
             )
         )
 
     def test_str(self):
-        self.assertEqual(self.estimation.__str__(), 'Estimation pour: activite-12/Risques Stratégiques-Risque-8')
+        self.assertEqual(self.estimation.__str__(), 'Estimation pour: Prospection téléphonique/Risque Pays')
 
 
 class TestControle(TestCase):

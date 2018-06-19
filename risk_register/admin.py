@@ -15,26 +15,17 @@ class DonneesSortieProcessusInline(admin.StackedInline):
     classes = ['collapse']
 
 
-class DonneesEntreeProcessusInline(admin.StackedInline):
-    extra = 1
-    model = Processus.input_data.through
-    verbose_name = 'Donnée d\'entrée'
-    verbose_name_plural = "Données d'entrée"
-    classes = ['collapse']
-    autocomplete_fields = ['processdata_id']
-
-
 @admin.register(Processus)
 class ProcessAdmin(admin.ModelAdmin):
     fieldsets = [
-        (None, {'fields': ['type_processus', 'business_unit', 'nom', 'description', 'proc_manager']})
+        (None, {'fields': ['type_processus', 'business_unit', 'nom', 'description', 'proc_manager', 'input_data']})
     ]
     search_fields = ['nom']
     inlines = [
-        DonneesEntreeProcessusInline,
         DonneesSortieProcessusInline
     ]
-    autocomplete_fields = ['proc_manager']
+    autocomplete_fields = ['proc_manager', 'business_unit']
+    filter_horizontal = ['input_data']
 
 
 @admin.register(Activite)
