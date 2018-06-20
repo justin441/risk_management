@@ -7,6 +7,7 @@ from django.core.exceptions import ValidationError
 from django.utils.timezone import now
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
+from django.utils.html import format_html
 
 from model_utils.fields import StatusField, MonitorField
 from model_utils import Choices
@@ -20,6 +21,7 @@ class DonneesDeRisqueObsolete(Exception):
 
 
 class Processus(models.Model):
+
     PROCESSUS_MANAGEMENT = 'PM'
     PROCESSUS_OPERATIONNEL = 'PO'
     PROCESSUS_SOUTIEN = 'PS'
@@ -66,8 +68,8 @@ class ProcessData(models.Model):
                                 help_text=_('Laisser vide si origine externe à l\'entreprise'))
 
     commentaire = models.CharField(max_length=255, blank=True,
-                                   help_text=_('Veuillez indiquer le nom du partenaire externe\
-                                                si origine ou destination externe'), verbose_name=_('commentaires'))
+                                   help_text=_('Veuillez indiquer le nom de l\'origine  externe'),
+                                   verbose_name=_('commentaires'))
 
     def __str__(self):
         return self.nom
@@ -113,6 +115,7 @@ class Activite(TimeFramedModel):
         verbose_name = _('Activité')
         verbose_name_plural = _('activités')
         unique_together = (('nom', 'processus'),)
+        ordering = ('nom',)
 
 
 class ClasseDeRisques(models.Model):
@@ -211,7 +214,7 @@ class IdentificationRisque(TimeStampedModel):
     date_revue = models.DateTimeField(
         'revue prévue pour le: ', default=now() + timedelta(days=365))
     criterisation = models.OneToOneField('CritereDuRisque', on_delete=models.SET_NULL, blank=True, null=True,
-                                         verbose_name=_('objectif scoring'))
+                                         verbose_name=_('Seuil de risque'))
     criterisation_change = MonitorField(monitor='criterisation')
     date_revue_change = MonitorField(monitor='date_revue')
     verifie = StatusField(verbose_name=_('vérification'))
@@ -240,6 +243,57 @@ class IdentificationRisque(TimeStampedModel):
     def facteur_risque(self):
         if self.estimations.all():
             return self.estimations.latest().facteur_risque()
+
+    def seuil_diplay(self):
+        """Affichage html du seuil de risque"""
+        seuil = self.seuil_de_risque()
+        if seuil:
+            return format_html(
+                '<span style="color:#007bff" class="seuil-defini">{}</span>',
+                seuil
+            )
+        else:
+            return format_html(
+                '<span style="color:#dc143c" class="seuil-indefini">{}</span>',
+                seuil
+            )
+
+    def facteur_risque_display(self):
+        """Affichage html du facteur risque"""
+        facteur_risque = self.facteur_risque()
+        if facteur_risque:
+            if self.seuil_de_risque():
+                ratio = (self.facteur_risque() - self.seuil_de_risque()) / self.seuil_de_risque()
+                if ratio <= 0.1:
+                    return format_html(
+                        '<span style="color: #003300" class="facteur-defini">{}</span>',
+                        facteur_risque
+                    )
+                elif 0.1 < ratio <= 0.3:
+                    return format_html(
+                        '<span style="color: #483e19" class="facteur-defini">{}</span>',
+                        facteur_risque
+                    )
+                elif 0.3 < ratio <= 0.5:
+                    return format_html(
+                        '<span style="color: #bb3b12" class="facteur-defini">{}</span>',
+                        facteur_risque
+                    )
+                elif ratio > 0.5:
+                    return format_html(
+                        '<span style="color: #dc2434" class="facteur-defini">{}</span>',
+                        facteur_risque
+                    )
+            else:
+                return format_html(
+                    '<span style="color: #dc143c" class="facteur-defini">{}</span>',
+                    facteur_risque
+                )
+        else:
+            return format_html(
+                '<span style="color: #dc143c" class="facteur-indefini">{}</span>',
+                'Le risque n\'est pas encore estimé.'
+            )
 
     def status(self):
         if self.seuil_de_risque() and self.facteur_risque():
@@ -282,7 +336,7 @@ class ActiviteRisque(IdentificationRisque):
     modifie_par = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True,
                                     related_name='activiterisques_modifies', verbose_name=_('modifié par'))
     estimations = GenericRelation('Estimation', related_query_name='activiterisque')
-    controles = GenericRelation('Controle', related_query_name='activite_risque')
+    controles = GenericRelation('Controle', related_query_name='activiterisque')
 
     def __str__(self):
         return "%s/%s" % (self.activite.nom, self.risque.nom)

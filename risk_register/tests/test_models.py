@@ -2,11 +2,8 @@ import factory
 from test_plus.test import TestCase
 from faker import Faker
 
-
 from django.core.exceptions import ValidationError
 from django.utils.timezone import now
-
-from ..models import ProcessData
 
 from .factories import (Processfactory, ProcessDataFactory, ActiviteFactory, ClasseDeRisqueFactory,
                         RisqueFactory, CritereDuRisqueFactory, ActiviteRisquefactory, ProcessusRisqueFactory,
