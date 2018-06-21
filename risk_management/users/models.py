@@ -46,10 +46,6 @@ class BusinessUnit(models.Model):
                 return _("Non defini")
             return bu_manager
 
-    @cached_property
-    def risques_identifies(self):
-        pass
-
     class Meta:
         verbose_name_plural = "Business Units"
         ordering = ('denomination', )

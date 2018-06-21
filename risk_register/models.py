@@ -8,12 +8,13 @@ from django.utils.timezone import now
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from django.utils.html import format_html
+from django.conf import settings
 
 from model_utils.fields import StatusField, MonitorField
 from model_utils import Choices
 from model_utils.models import TimeFramedModel, TimeStampedModel
 
-from risk_management.users.models import User, BusinessUnit
+from risk_management.users.models import BusinessUnit
 
 
 class DonneesDeRisqueObsolete(Exception):
@@ -37,7 +38,7 @@ class Processus(models.Model):
     business_unit = models.ForeignKey(BusinessUnit, on_delete=models.CASCADE, verbose_name=_('Propriétaire'))
     nom = models.CharField(max_length=50, db_index=True, verbose_name=_('Nom'))
     description = models.CharField(max_length=300)
-    proc_manager = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True,
+    proc_manager = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True,
                                      verbose_name=_('manager du processus'),
                                      related_name='processus_manages')
     input_data = models.ManyToManyField('ProcessData', verbose_name=_('Données d\'entrée'),
@@ -82,7 +83,7 @@ class ProcessData(models.Model):
 
 
 class Activite(TimeFramedModel):
-    STATUS = Choices('en cours', 'achevé')
+    STATUS = Choices(('pendind', _('en cours')), ('completed', _('achevé')))
     code_activite = models.UUIDField(
         primary_key=True, default=uuid.uuid4, editable=False)
     nom = models.CharField(max_length=50, db_index=True,
@@ -90,7 +91,8 @@ class Activite(TimeFramedModel):
     description = models.CharField(max_length=500, blank=True, verbose_name=_('Description'))
     processus = models.ForeignKey(Processus, on_delete=models.CASCADE,
                                   verbose_name=_('Processus'), related_name='activites')
-    responsable = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name=_('employé en charge'),
+    responsable = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE,
+                                    verbose_name=_('employé en charge'),
                                     related_name='activites')
 
     risques = models.ManyToManyField('Risque', through='ActiviteRisque')
@@ -146,7 +148,8 @@ class Risque(models.Model):
     pilotage = models.TextField(_("Pilotage / suivi"), max_length=500, blank=True)
     note = models.TextField(_("Réflexion à considérer à la lecture du risque"), max_length=255, blank=True)
     aide = models.TextField(_('Sommes-nous concernés'), max_length=255, blank=True)
-    cree_par = models.ForeignKey(User, blank=True, null=True, on_delete=models.SET_NULL, verbose_name=_('Crée par'))
+    cree_par = models.ForeignKey(settings.AUTH_USER_MODEL, blank=True, null=True,
+                                 on_delete=models.SET_NULL, verbose_name=_('Crée par'))
 
     def __str__(self):
         return self.description
@@ -187,7 +190,7 @@ class CritereDuRisque(models.Model):
         choices=OCCURENCE_CHOIX, default=2, verbose_name=_('ocurrence'))
     severite = models.SmallIntegerField(
         choices=SEVERITE_CHOIX, default=1, verbose_name=_('sévérité'))
-    evalue_par = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True,
+    evalue_par = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, blank=True, null=True,
                                    verbose_name=_('évalué par'))
 
     def __str__(self):
@@ -219,7 +222,7 @@ class IdentificationRisque(TimeStampedModel):
     date_revue_change = MonitorField(monitor='date_revue')
     verifie = StatusField(verbose_name=_('vérification'))
     verifie_le = MonitorField(monitor='verifie')
-    verifie_par = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+    verifie_par = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True)
 
     def clean(self):
         if self.date_revue < self.created:
@@ -331,9 +334,10 @@ class IdentificationRisque(TimeStampedModel):
 
 class ActiviteRisque(IdentificationRisque):
     activite = models.ForeignKey(Activite, on_delete=models.CASCADE, verbose_name=_('activité'))
-    soumis_par = models.ForeignKey(User, on_delete=models.SET_NULL, related_name='activiterisques_soumis', null=True,
+    soumis_par = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL,
+                                   related_name='activiterisques_soumis', null=True,
                                    verbose_name=_('soumis par'))
-    modifie_par = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True,
+    modifie_par = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True,
                                     related_name='activiterisques_modifies', verbose_name=_('modifié par'))
     estimations = GenericRelation('Estimation', related_query_name='activiterisque')
     controles = GenericRelation('Controle', related_query_name='activiterisque')
@@ -349,9 +353,10 @@ class ActiviteRisque(IdentificationRisque):
 
 class ProcessusRisque(IdentificationRisque):
     processus = models.ForeignKey(Processus, on_delete=models.CASCADE, verbose_name=_('processus'))
-    soumis_par = models.ForeignKey(User, on_delete=models.SET_NULL, related_name='processusrisques_soumis', null=True,
+    soumis_par = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL,
+                                   related_name='processusrisques_soumis', null=True,
                                    verbose_name=_('soumis par'))
-    modifie_par = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True,
+    modifie_par = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True,
                                     related_name='processusrisques_modifies', verbose_name=_('modifié par'))
     estimations = GenericRelation('Estimation', related_query_name='processusrisque')
     controles = GenericRelation('Controle', related_query_name='processusrisque')
@@ -383,7 +388,7 @@ class Estimation(TimeStampedModel, RiskMixin):
     date_revue = models.DateTimeField(_('revue prevue pour le'), default=now()+timedelta(days=60))
     criterisation = models.OneToOneField(CritereDuRisque, on_delete=models.SET_NULL, blank=True, null=True,
                                          verbose_name=_('Scoring'))
-    proprietaire = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True,
+    proprietaire = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True,
                                      related_name='risques_manages', verbose_name=_('propriétaire du risque'))
     date_revue_change = MonitorField(monitor='date_revue')
     criterisation_change = MonitorField(monitor='criterisation')
@@ -433,9 +438,11 @@ class Controle(TimeFramedModel, TimeStampedModel, RiskMixin):
                                          ('D', _('Détectabilité')), ('S', _('Sévérité')), ('O', _('Occurence'))},
                                      verbose_name=_('critère cible'), default='O')
     nom = models.CharField(max_length=300, verbose_name=_('nom'))
-    cree_par = models.ForeignKey(User, on_delete=models.SET_NULL, verbose_name=_('créé par'), null=True,
+    cree_par = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL,
+                                 verbose_name=_('créé par'), null=True,
                                  related_name='traitements_crees')
-    modifie_par = models.ForeignKey(User, on_delete=models.SET_NULL, related_name='traitements_modifies',
+    modifie_par = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL,
+                                    related_name='traitements_modifies',
                                     null=True, blank=True, verbose_name=_('modifié par'))
     status = StatusField()
     acheve_le = MonitorField(monitor='status', when=['achevé'])
@@ -467,5 +474,3 @@ class Controle(TimeFramedModel, TimeStampedModel, RiskMixin):
         #     ('assigner_traitement', 'peut assigner le traitement à un utilisateur'),
         #     ('achever_traitement', 'peut marquer le traitement comme terminé'),
         # )
-
-

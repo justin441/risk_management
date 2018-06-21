@@ -2,6 +2,8 @@ from django.contrib import admin
 from django.contrib.contenttypes.admin import GenericStackedInline
 from django.utils.translation import ugettext_lazy as _
 
+from risk_management.users.admin import risk_management_admin_site
+
 # Register your models here.
 from .models import (Processus, ProcessData, Activite, Risque, ClasseDeRisques, ActiviteRisque, Estimation,
                      Controle, ProcessusRisque, CritereDuRisque)
@@ -15,7 +17,7 @@ class DonneesSortieProcessusInline(admin.StackedInline):
     classes = ['collapse']
 
 
-@admin.register(Processus)
+@admin.register(Processus, site=risk_management_admin_site)
 class ProcessAdmin(admin.ModelAdmin):
     fieldsets = [
         (None, {'fields': ['type_processus', 'business_unit', 'nom', 'description', 'proc_manager', 'input_data']})
@@ -30,7 +32,7 @@ class ProcessAdmin(admin.ModelAdmin):
     list_filter = ('type_processus', 'business_unit', 'business_unit__projet')
 
 
-@admin.register(Activite)
+@admin.register(Activite, site=risk_management_admin_site)
 class ActiviteAdmin(admin.ModelAdmin):
     exclude = ['acheve_le']
     search_fields = ['nom']
@@ -38,17 +40,24 @@ class ActiviteAdmin(admin.ModelAdmin):
         'responsable',
         'processus'
     ]
-    list_display = ['nom', 'description', 'processus', 'responsable', 'status']
+    list_display = ['nom', 'description', 'processus', 'responsable', 'start', 'end', 'status']
     list_filter = ('processus__business_unit', 'status', 'processus__business_unit__projet')
     date_hierarchy = 'start'
+    list_editable = ['start', 'end']
+    actions = ['mark_completed']
+
+    def mark_completed(self, request, queryset):
+        queryset.update(status='completed')
+
+    mark_completed.short_description = _('marquer comme achevé')
 
 
-@admin.register(ClasseDeRisques)
+@admin.register(ClasseDeRisques, site=risk_management_admin_site)
 class ClasseAdmin(admin.ModelAdmin):
     pass
 
 
-@admin.register(Risque)
+@admin.register(Risque, site=risk_management_admin_site)
 class RisqueAdmin(admin.ModelAdmin):
     exclude = ['cree_par']
     search_fields = ['description']
@@ -81,6 +90,13 @@ class ControleInline(GenericStackedInline):
     classes = ['collapse']
     exclude = ['acheve_le', 'cree_par', 'modifie_par']
 
+    def save_model(self, request, obj, form, change):
+        if change:
+            obj.modifie_par = request.user
+        else:
+            obj.cree_par = request.user
+        super().save_model(request, obj, form, change)
+
 
 class IdentificationRisque(admin.ModelAdmin):
     exclude = ['criterisation_change', 'date_revue_change', 'verifie_le', 'verifie_par']
@@ -89,7 +105,15 @@ class IdentificationRisque(admin.ModelAdmin):
         ControleInline,
     ]
     date_hierarchy = 'created'
-    list_editable = ['verifie']
+    list_editable = ['verifie', 'date_revue']
+    actions = ['mark_verified']
+
+    def mark_verified(self, request, queryset):
+        queryset = queryset.filter(verifie=0)
+        queryset.update(verifie=1)
+        queryset.update(verifie_par=request.user)
+
+    mark_verified.short_description = _('marquer comme verifier')
 
     def save_model(self, request, obj, form, change):
         if change:
@@ -105,7 +129,7 @@ class IdentificationRisque(admin.ModelAdmin):
         super().save_model(request, obj, form, change)
 
 
-@admin.register(CritereDuRisque)
+@admin.register(CritereDuRisque, site=risk_management_admin_site)
 class CriterdurisqueAdmin(admin.ModelAdmin):
     exclude = ['evalue_par']
     list_display = ['detectabilite', 'severite', 'occurence', 'valeur']
@@ -116,7 +140,7 @@ class CriterdurisqueAdmin(admin.ModelAdmin):
         super().save_model(request, obj, form, change)
 
 
-@admin.register(ActiviteRisque)
+@admin.register(ActiviteRisque, site=risk_management_admin_site)
 class ActiviteRisqueAdmin(IdentificationRisque):
     fields = ['activite', 'type_de_risque', 'risque', 'criterisation', 'verifie']
     autocomplete_fields = ['activite', 'risque']
@@ -126,7 +150,7 @@ class ActiviteRisqueAdmin(IdentificationRisque):
                     'status', 'seuil_diplay', 'facteur_risque_display', 'get_proprietaire']
 
 
-@admin.register(ProcessusRisque)
+@admin.register(ProcessusRisque, site=risk_management_admin_site)
 class ProcessusRisqueAdmin(IdentificationRisque):
     fields = ['processus', 'type_de_risque', 'risque', 'criterisation', 'verifie']
     autocomplete_fields = ['processus', 'risque']
@@ -135,7 +159,7 @@ class ProcessusRisqueAdmin(IdentificationRisque):
                     'status',  'seuil_diplay', 'facteur_risque_display', 'get_proprietaire']
 
 
-@admin.register(ProcessData)
+@admin.register(ProcessData, site=risk_management_admin_site)
 class ProcessDataAdmin(admin.ModelAdmin):
     autocomplete_fields = ['origine']
     search_fields = ['nom']
