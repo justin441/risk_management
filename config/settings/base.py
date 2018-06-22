@@ -68,6 +68,7 @@ THIRD_PARTY_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'rest_framework',
+    'guardian',
 ]
 LOCAL_APPS = [
     'risk_management.users.apps.UsersConfig',
@@ -90,6 +91,7 @@ MIGRATION_MODULES = {
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
     'allauth.account.auth_backends.AuthenticationBackend',
+    'guardian.backends.ObjectPermissionBackend',
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#auth-user-model
 AUTH_USER_MODEL = 'users.User'
@@ -258,4 +260,11 @@ SOCIALACCOUNT_ADAPTER = 'risk_management.users.adapters.SocialAccountAdapter'
 # }
 ACCOUNT_SIGNUP_FORM_CLASS = 'risk_management.users.forms.UserForm'
 # Your stuff...
+# ------------------------------------------------------------------------------
+
+# django-guardian
+# ------------------------------------------------------------------------------
+GUARDIAN_GET_INIT_ANONYMOUS_USER = 'users.guardian_anonymous.get_anonymous_user_instance'
+GUARDIAN_RENDER_403 = True
+GUARDIAN_TEMPLATE_403 = '403_permission_denied.html'
 # ------------------------------------------------------------------------------
