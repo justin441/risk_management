@@ -1,6 +1,7 @@
 import unicodedata
 import uuid
 
+
 from django.db.models.signals import pre_save
 from django.dispatch import receiver
 
@@ -18,3 +19,4 @@ def make_username(sender, **kwargs):
             name = name_list[0] + str(uuid.uuid4())
         user.username = str(unicodedata.normalize(
             'NFD', name).encode('ascii', 'ignore'), 'utf8')
+

@@ -55,9 +55,6 @@ class Processus(models.Model):
     class Meta:
         verbose_name_plural = 'processus'
         unique_together = (('business_unit', 'nom'), )
-        # permissions = (
-        #     ('ajouter_activite', 'peut_ajouter des activités du processus'),
-        #     ('supprimer_activite', 'peut supprimer des activités du processus'))
 
 
 class ProcessData(models.Model):
@@ -161,35 +158,35 @@ class Risque(models.Model):
 
 class CritereDuRisque(models.Model):
     DETECTABILITE_CHOIX = (
-        (6, 'Incapacité de détection'),
-        (5, 'Capacité minime'),
-        (4, 'Très basse'),
-        (3, 'Moyenne'),
-        (2, 'Détection élevée'),
-        (1, 'Détection permanente'),
+        (1, '1-Détection permanente'),
+        (2, '2-Détection élevée'),
+        (3, '3-Moyenne'),
+        (4, '4-Très basse'),
+        (5, '5-Capacité minime'),
+        (6, '6-Incapacité de détection'),
     )
     OCCURENCE_CHOIX = (
-        (1, 'Quasi impossible'),
-        (2, 'Très improbable'),
-        (3, 'Improbable'),
-        (4, 'Probable'),
-        (5, 'Très probable'),
-        (6, 'Quasi certain'),
+        (1, '1-Quasi impossible'),
+        (2, '2-Très improbable'),
+        (3, '3-Improbable'),
+        (4, '4-Probable'),
+        (5, '5-Très probable'),
+        (6, '6-Quasi certain'),
     )
     SEVERITE_CHOIX = (
-        (1, 'Faible'),
-        (2, 'Moyenne'),
-        (3, 'Sérieux'),
-        (4, 'Grave'),
-        (5, 'Très Grave'),
-        (6, 'Catastrophique'),
+        (1, '1-Faible'),
+        (2, '2-Moyenne'),
+        (3, '3-Sérieux'),
+        (4, '4-Grave'),
+        (5, '5-Très Grave'),
+        (6, '6-Catastrophique'),
     )
     detectabilite = models.SmallIntegerField(
-        choices=DETECTABILITE_CHOIX, verbose_name=_('détectabilité'))
+        choices=DETECTABILITE_CHOIX, verbose_name=_('détectabilité'), default=3)
     occurence = models.SmallIntegerField(
-        choices=OCCURENCE_CHOIX, default=2, verbose_name=_('ocurrence'))
+        choices=OCCURENCE_CHOIX, default=3, verbose_name=_('ocurrence'))
     severite = models.SmallIntegerField(
-        choices=SEVERITE_CHOIX, default=1, verbose_name=_('sévérité'))
+        choices=SEVERITE_CHOIX, default=3, verbose_name=_('sévérité'))
     evalue_par = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, blank=True, null=True,
                                    verbose_name=_('évalué par'))
 
@@ -323,13 +320,6 @@ class IdentificationRisque(TimeStampedModel):
 
         get_latest_by = 'created'
         abstract = True
-        # permissions = (
-        #     ('definir_seuil', 'peut définir le seuil de risque'),
-        #     ('definir_revue', 'peut changer la date de revue'),
-        #     ('ajouter_traitement', 'peut ajouter une mesure de controle du risque'),
-        #     ('assigner_risque', 'peut changer le propriétaire du risque'),
-        #     ('estimer_risque', 'peut_estimer le risque')
-        # )
 
 
 class ActiviteRisque(IdentificationRisque):
@@ -425,9 +415,6 @@ class Estimation(TimeStampedModel, RiskMixin):
         verbose_name_plural = _('Estimations des risque')
         ordering = ('-created',)
         get_latest_by = "created"
-        # permissions = (
-        #     ('fixer_revue', 'peut fixer la date de revue'),
-        # )
 
 
 class Controle(TimeFramedModel, TimeStampedModel, RiskMixin):
@@ -470,7 +457,3 @@ class Controle(TimeFramedModel, TimeStampedModel, RiskMixin):
         verbose_name_plural = 'Contrôles'
         ordering = ('start',)
         get_latest_by = 'created'
-        # permissions = (
-        #     ('assigner_traitement', 'peut assigner le traitement à un utilisateur'),
-        #     ('achever_traitement', 'peut marquer le traitement comme terminé'),
-        # )
