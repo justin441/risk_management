@@ -1,10 +1,10 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
-from django.db.models import Q
+from django.core.exceptions import ValidationError
 from django.urls import reverse
+from django.db.models import Q
 from django.utils.translation import ugettext_lazy as _
 from django.core.validators import RegexValidator
-from django.utils.functional import cached_property
 
 
 phone_regex = RegexValidator(regex=r'^(\(\+\d{0,3}\))? ?\d{9}$',
@@ -33,18 +33,11 @@ class BusinessUnit(models.Model):
 
     @property
     def bu_manager(self):
-        if self.projet:
-            try:
-                bu_manager = self.employes.get(fonction__iexact='Chef de projet')
-            except User.DoesNotExist:
-                return _("Non defini")
-            return bu_manager
-        else:
-            try:
-                bu_manager = self.employes.get(fonction__iexact='Directeur général')
-            except User.DoesNotExist:
-                return _("Non defini")
-            return bu_manager
+        try:
+            bu_manager = self.employes.get(Q(fonction='project manager') | Q(fonction='general manager'))
+        except User.DoesNotExist:
+            return _("Non défini")
+        return bu_manager
 
     class Meta:
         verbose_name_plural = "Business Units"
@@ -69,7 +62,9 @@ class User(AbstractUser):
     last_name = models.CharField(_('last name'), max_length=150)
     business_unit = models.ForeignKey('BusinessUnit', on_delete=models.CASCADE, related_name='employes',
                                       verbose_name=_("Business Unit"))
-    fonction = models.CharField(max_length=100, verbose_name=_('poste'), help_text=_('exemple: Directeur général'))
+    fonction = models.CharField(max_length=100, verbose_name=_('poste'),
+                                help_text=_('entrez "general manager" si directeur général d\'entité, \
+                                ou "project manager" s\'il s\'agit d\'un chef de projet'))
     email = models.EmailField(max_length=255, unique=True)
     telephone = models.CharField(max_length=18, validators=[phone_regex],
                                  help_text=_("numero de téléphone à 9 chiffres, l'indicatif est optionnel"))
@@ -78,15 +73,46 @@ class User(AbstractUser):
     REQUIRED_FIELDS = ('civilite', 'firs_name', "last_name")
 
     def __str__(self):
-        return self.get_full_name()
+        return '%s %s' % (self.civilite, self.get_full_name())
+
+    def save(self, *args, **kwargs):
+        self.fonction = self.fonction.lower()
+        super().save(*args, **kwargs)
+
+    def clean(self):
+        # un business unit ne doit avoir qu'un manager
+        if (self.fonction.lower() == 'general manager') or (self.fonction.lower() == 'project manager'):
+            try:
+                current_manager = self.business_unit.employes.get(Q(fonction='project manager') |
+                                                Q(fonction='general manager'))
+            except User.DoesNotExist:
+                pass
+            else:
+                if current_manager == self:
+                    pass
+                else:
+                    raise ValidationError(
+                        {'fonction': 'Ce projet / business unit a déjà un manager. Si vous voulez le changer\
+                    veuillez d\'abord changer la fonction de l\'actuel manager'}
+                    )
 
     def get_absolute_url(self):
         return reverse("users:detail", kwargs={"username": self.username})
 
     def make_manager(self):
-        if self.business_unit.projet:
-            self.fonction = 'Chef de projet'
+        # helper function
+        try:
+            self.business_unit.employes.get(Q(fonction='project manager') |
+                                            Q(fonction='general manager'))
+        except User.DoesNotExist:
+            if self.business_unit.projet:
+                self.fonction = 'Project manager'
+            else:
+                self.fonction = 'General manager'
         else:
-            self.fonction = 'Directeur Général'
+            raise ValidationError(
+                {'fonction': 'Ce projet / business unit a déjà un manager. Si vous voulez le changer veuillez d\'abord \
+                             changer la fonction de l\'actuel manager'}
+            )
 
 

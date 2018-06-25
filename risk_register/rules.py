@@ -8,7 +8,6 @@ def is_process_manager(user, processus):
     return processus.proc_manager == user
 
 
-
 @rules.predicate
 def is_process_upper_mgt(user, processus):
     bu = processus.business_unit
@@ -131,7 +130,7 @@ rules.add_rule('add_process_data', is_process_manager | is_process_upper_mgt)
 rules.add_rule('add_process_risk', rules.is_authenticated)
 
 
-# Activités: rules
+# Activités
 rules.add_rule('change_activite', is_activity_supervisor | is_activity_upper_mgt)
 rules.add_rule('delete_activite', is_activity_supervisor | is_activity_upper_mgt)
 rules.add_rule('add_activity_risk', rules.is_authenticated)

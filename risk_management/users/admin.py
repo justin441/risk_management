@@ -65,6 +65,7 @@ class MyUserAdmin(AuthUserAdmin):
     list_display = ("username", 'email', "first_name", "last_name", "fonction",
                     "telephone", "business_unit", "is_superuser")
     search_fields = ["first_name", 'last_name']
+    list_filter = AuthUserAdmin.list_filter + ('business_unit',)
 
 
 @admin.register(BusinessUnit, site=risk_management_admin_site)

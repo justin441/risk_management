@@ -149,6 +149,7 @@ class Controlefactory(factory.django.DjangoModelFactory):
 
     content_object = factory.SubFactory(ActiviteRisquefactory)
     nom = factory.Faker('text', max_nb_chars=200)
+    assigne_a = factory.SubFactory(UserFactory)
     start = factory.Faker('date_time_this_year', after_now=True, before_now=False, tzinfo=utc)
     end = factory.LazyAttribute(
         lambda o: o.start + timedelta(days=60)
