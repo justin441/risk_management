@@ -428,6 +428,8 @@ class Controle(TimeFramedModel, TimeStampedModel, RiskMixin):
     cree_par = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL,
                                  verbose_name=_('créé par'), null=True,
                                  related_name='traitements_crees')
+    assigne_a = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, verbose_name=_('assigné à'),
+                                  null=True, related_name='traitement_assignes')
     modifie_par = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL,
                                     related_name='traitements_modifies',
                                     null=True, blank=True, verbose_name=_('modifié par'))
