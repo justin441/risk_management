@@ -4,6 +4,6 @@ from . import views
 
 app_name = 'risk_register'
 
-url_patterns = [
-
+urlpatterns = [
+    path('<str:denomination>/', views.BusinessUnitDetailView.as_view(), name='detail_business_unit'),
 ]
