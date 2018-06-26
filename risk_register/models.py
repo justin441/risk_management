@@ -249,12 +249,12 @@ class IdentificationRisque(TimeStampedModel):
         seuil = self.seuil_de_risque()
         if seuil:
             return format_html(
-                '<span style="color:#007bff" class="seuil-defini">{}</span>',
+                '<span class="seuil-defini">{}</span>',
                 seuil
             )
         else:
             return format_html(
-                '<span style="color:#dc143c" class="seuil-indefini">{}</span>',
+                '<span class="seuil-indefini">{}</span>',
                 seuil
             )
 
@@ -266,32 +266,32 @@ class IdentificationRisque(TimeStampedModel):
                 ratio = (self.facteur_risque() - self.seuil_de_risque()) / self.seuil_de_risque()
                 if ratio <= 0.1:
                     return format_html(
-                        '<span style="color: #003300" class="facteur-defini">{}</span>',
+                        '<span class="facteur-1">{}</span>',
                         facteur_risque
                     )
                 elif 0.1 < ratio <= 0.3:
                     return format_html(
-                        '<span style="color: #483e19" class="facteur-defini">{}</span>',
+                        '<span class="facteur-1-3">{}</span>',
                         facteur_risque
                     )
                 elif 0.3 < ratio <= 0.5:
                     return format_html(
-                        '<span style="color: #bb3b12" class="facteur-defini">{}</span>',
+                        '<span class="facteur-3-5">{}</span>',
                         facteur_risque
                     )
                 elif ratio > 0.5:
                     return format_html(
-                        '<span style="color: #dc2434" class="facteur-defini">{}</span>',
+                        '<span class="facteur-5">{}</span>',
                         facteur_risque
                     )
             else:
                 return format_html(
-                    '<span style="color: #dc143c" class="facteur-defini">{}</span>',
+                    '<span class="facteur-5">{}</span>',
                     facteur_risque
                 )
         else:
             return format_html(
-                '<span style="color: #dc143c" class="facteur-indefini">{}</span>',
+                '<span class="facteur-5">{}</span>',
                 'Le risque n\'est pas encore estimé.'
             )
 
