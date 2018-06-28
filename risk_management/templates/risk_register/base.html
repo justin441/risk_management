@@ -1,10 +1,143 @@
+{% load static i18n menutags %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+  <title>
+    {% block title %}
+      risk register
+    {% endblock title %}
+  </title>
+  <!-- Required meta tags -->
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="Justin Fotue Kamga">
+
+  <link rel="icon" href="{% static 'images/favicons/favicon.ico' %}">
+
+  <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+  <!--[if lt IE 9]>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <![endif]-->
+
+  <!-- Bootstrap CSS -->
+  {% block css %}
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css"
+          integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
+    <link rel="stylesheet" href="{% static 'css/css/bootstrap.css' %}">
+    <link rel="stylesheet" href="{% static 'css/risk_register.css' %}">
+  {% endblock %}
 </head>
 <body>
+{#navbar#}
+<div class="mb-4">
+  <nav class="navbar navbar-expand-md navbar-dark sticky-top bg-primary flex-md-nowrap p-0 shadow">
+    <a href="#" class="navbar-brand col-sm-3 col-md-2 mr-0">NH-RM</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse"
+            aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div id="navbarCollapse" class="collapse navbar-collapse px-5">
+      <ul class="navbar-nav ml-auto mr-5">
+        {% if user.is_authenticated %}
+          <li class="nav-item dropdown">
+            <a href="" class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" data-toggle="dropdown"
+               aria-haspopup="true" aria-expanded="false">
+              {{ user.get_short_name }}<span data-feather="user"></span>
+            </a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+              <a class="dropdown-item" href="#">Accueil</a>
+              <a class="dropdown-item" href="{% url 'risk_register:logout' %}">Déconnexion</a>
+            </div>
+          </li>
+        {% else %}
+          <li class="nav-item">
+            <a href="{% url 'risk_register:login' %}?next={% url 'risk_register:user_home' %}" class="nav-link">Connexion</a>
+          </li>
+        {% endif %}
+        <li class="nav-item dropdown d-md-none">
+          <a href="#" id="BusinessunitDropdown" class="nav-link dropdown-toggle " data-toggle="dropdown"
+             aria-haspopup="true" aria-expanded="false">
+            Business units
+          </a>
+          <div class="dropdown-menu" aria-labelledby="BusinessunitDropdown">
+            {% bu_menu li=False a_class='dropdown-item' %}
+          </div>
+        </li>
+        <li class="nav-item dropdown d-md-none">
+          <a href="#" id="RiskClassDropdown" class="nav-link dropdown-toggle " data-toggle="dropdown"
+             aria-haspopup="true"
+             aria-expanded="false">
+            {% trans Risques %}
+          </a>
+          <div class="dropdown-menu" aria-labelledby="RiskClassDropdown">
+            {% cl_menu li=False a_class='dropdown-item' %}
+          </div>
+        </li>
+      </ul>
+    </div>
+    <input type="text" class="form-control form-control-dark w-100" placeholder="{% trans Rechercher %}"
+           aria-label="Search">
+
+  </nav>
+</div>
+
+<div class="container-fluid">
+  <div class="row">
+    {# sidebar#}
+    {% block sidemenu %}
+      <nav class="col-md-2 d-none d-md-block bg-light sidebar">
+        <div class="sidebar-sticky"></div>
+        <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+          <span>{% trans Business Units %}</span>
+        </h6>
+        <ul class="flex-column mb-2">
+          {% bu_menu %}
+        </ul>
+        <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+          <span>{% trans Base de données des risques %}</span>
+        </h6>
+        <ul class="flex-column mb-2">
+          {% cl_menu %}
+        </ul>
+      </nav>
+    {% endblock %}
+    {#main#}
+    {% block content %}
+      <main class="col-md-9 ml-sm-auto col-lg-10 px4" role="main">
+        {% if messages %}
+          {% for message in messages %}
+            <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}">{{ message }}</div>
+          {% endfor %}
+        {% endif %}
+        {% block header %}
+        {% endblock %}
+        {% block dashboard %}
+        {% endblock %}
+        {% block data %}
+        {% endblock %}
+      </main>
+    {% endblock %}
+  </div>
+</div>
+{% block javascript %}
+  <!-- Optional JavaScript -->
+  <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+          integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+          crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js
+" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"
+          integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T"
+          crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/feather-icons/dist/feather.min.js"></script>
+  <script !src="">
+    feather.replace()
+  </script>
+{% endblock %}
 
 </body>
 </html>

@@ -1,10 +1,11 @@
 from django.contrib import admin
 from django.contrib.contenttypes.admin import GenericStackedInline
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 from risk_management.users.admin import risk_management_admin_site
 
 # Register your models here.
+from .helpers import get_changes_between_2_objects
 from .models import (Processus, ProcessData, Activite, Risque, ClasseDeRisques, ActiviteRisque, Estimation,
                      Controle, ProcessusRisque, CritereDuRisque)
 
@@ -90,13 +91,6 @@ class ControleInline(GenericStackedInline):
     classes = ['collapse']
     exclude = ['acheve_le', 'cree_par', 'modifie_par']
 
-    def save_model(self, request, obj, form, change):
-        if change:
-            obj.modifie_par = request.user
-        else:
-            obj.cree_par = request.user
-        super().save_model(request, obj, form, change)
-
 
 class IdentificationRisque(admin.ModelAdmin):
     exclude = ['criterisation_change', 'date_revue_change', 'verifie_le', 'verifie_par']
@@ -115,18 +109,33 @@ class IdentificationRisque(admin.ModelAdmin):
 
     mark_verified.short_description = _('marquer comme verifier')
 
+    def save_formset(self, request, form, formset, change):
+        instances = formset.save(commit=False)
+        for obj in instances:
+            if isinstance(obj, Controle):
+                try:
+                    curr = Controle.objects.get(pk=obj.pk)
+                except Controle.DoesNotExist:
+                    obj.cree_par = request.user
+                else:
+                    if get_changes_between_2_objects(obj, curr, exclude=ControleInline.exclude):
+                        obj.modifie_par = request.user
+        formset.save()
+
     def save_model(self, request, obj, form, change):
         if change:
-            if obj.verifie:
-                curr = obj.__class__.objects.get(pk=obj.pk)
-                if curr.verifie:
-                    pass
-                else:
-                    obj.verifie_par = request.user
-            obj.modifie_par = request.user
+            curr = obj.__class__.objects.get(pk=obj.pk)
+            changes = get_changes_between_2_objects(obj, curr, exclude=self.exclude)
+            if changes:
+                obj.modifie_par = request.user
+                if 'verifie' in changes:
+                    if obj.verifie:
+                        obj.verifie_par = request.user
+                    else:
+                        obj.verifie_par = None
         else:
             obj.soumis_par = request.user
-        super().save_model(request, obj, form, change)
+        super().save_model(request, obj, form, changes)
 
 
 @admin.register(CritereDuRisque, site=risk_management_admin_site)

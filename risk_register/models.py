@@ -2,7 +2,7 @@ import uuid
 from datetime import timedelta
 
 from django.db import models
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from django.core.exceptions import ValidationError
 from django.utils.timezone import now
 from django.contrib.contenttypes.models import ContentType
@@ -53,7 +53,8 @@ class Processus(models.Model):
     #         return reverse('risk_register:manager_home', kwargs={'username': self.proc_manager})
 
     class Meta:
-        verbose_name_plural = 'processus'
+        verbose_name = _('processus')
+        verbose_name_plural = _('processus')
         unique_together = (('business_unit', 'nom'), )
 
 
@@ -75,8 +76,8 @@ class ProcessData(models.Model):
     class Meta:
         ordering = ['nom']
         unique_together = (("nom", "origine"),)
-        verbose_name = 'données du processus'
-        verbose_name_plural = 'données des processus'
+        verbose_name = _('données du processus')
+        verbose_name_plural = _('données des processus')
 
 
 class Activite(TimeFramedModel):
@@ -152,6 +153,8 @@ class Risque(models.Model):
         return self.description
 
     class Meta:
+        verbose_name = _('risque')
+        verbose_name_plural = _('risques')
         ordering = ('description',)
         unique_together = (('nom', 'description'),)
 
@@ -198,7 +201,8 @@ class CritereDuRisque(models.Model):
         return self.detectabilite * self.severite * self.occurence
 
     class Meta:
-        verbose_name = _('Critérisation')
+        verbose_name = _('critérisation')
+        verbose_name_plural = _('critérisation')
 
 
 class IdentificationRisque(TimeStampedModel):
@@ -240,9 +244,13 @@ class IdentificationRisque(TimeStampedModel):
         if self.criterisation:
             return self.criterisation.valeur()
 
+    seuil_de_risque.short_description = _('seuil de risque')
+
     def facteur_risque(self):
         if self.estimations.all():
             return self.estimations.latest().facteur_risque()
+
+    facteur_risque.short_description = _('facteur risque')
 
     def seuil_diplay(self):
         """Affichage html du seuil de risque"""
@@ -302,6 +310,8 @@ class IdentificationRisque(TimeStampedModel):
             else:
                 return _('inacceptable')
 
+    status.short_description = _('statut du risque')
+
     # le risque est-il assigné
     def est_assigne(self):
         if self.estimations.all() and self.estimations.latest().proprietaire:
@@ -311,6 +321,8 @@ class IdentificationRisque(TimeStampedModel):
     def get_proprietaire(self):
         if self.est_assigne():
             return self.estimations.latest().proprietaire
+
+    get_proprietaire.short_description = _('propriétaire du risque')
 
     @property
     def est_obsolete(self):
@@ -455,7 +467,7 @@ class Controle(TimeFramedModel, TimeStampedModel, RiskMixin):
         return self.nom
 
     class Meta:
-        verbose_name = 'Contrôle'
-        verbose_name_plural = 'Contrôles'
+        verbose_name = _('contrôle')
+        verbose_name_plural = _('contrôles')
         ordering = ('start',)
         get_latest_by = 'created'

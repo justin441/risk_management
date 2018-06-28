@@ -12,7 +12,7 @@ class TestBuUrls(TestCase):
         )
 
     def test_bu_reverse(self):
-        self.assertEqual(reverse('risk_register:detail_business_unit', kwargs={'denomination': self.bu.denomination}),
+        self.assertEqual(reverse('risk_register:detail_business_unit', kwargs={'pk': self.bu.denomination}),
                          '/risk-register/Cameroon%20Tobacco%20Company/')
 
     def test_bu_resolve(self):
