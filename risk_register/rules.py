@@ -146,6 +146,8 @@ rules.add_rule('estimate_activity_risk', is_activity_risk_supervisor | is_activi
 rules.add_rule('change_activiterisque', is_activity_risk_supervisor |
                is_activity_risk_upper_mgt | is_activity_risk_reporter)
 rules.add_rule('delete_activiterisque', is_activity_risk_supervisor | is_activity_risk_upper_mgt)
+rules.add_rule('verify_activiterisque', is_activity_risk_monitor | is_activity_risk_supervisor |
+               is_activity_risk_upper_mgt)
 
 # Risques des processus
 rules.add_rule('set_seuil_process_risk', is_process_risk_monitor | is_process_risk_upper_mgt)
@@ -157,6 +159,7 @@ rules.add_rule('estimate_process_risk', is_process_risk_upper_mgt | is_process_r
 rules.add_rule('change_processusrisque', is_process_risk_upper_mgt |
                is_process_risk_monitor | is_process_risk_reporter)
 rules.add_rule('delete_processusrisque', is_process_risk_monitor | is_process_risk_upper_mgt)
+rules.add_rule('verify_processusrisque', is_process_risk_monitor | is_process_risk_upper_mgt)
 
 # Estimations
 rules.add_rule('set_estimation_review_date', is_estimation_monitor)

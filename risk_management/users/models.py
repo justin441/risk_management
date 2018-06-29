@@ -26,6 +26,7 @@ class BusinessUnit(models.Model):
     telephone = models.CharField(max_length=18, default='(+237) 000000000', validators=[phone_regex],
                                  help_text=_("L'indicatif est optionnel. exemple: (+237) 694484246"),
                                  verbose_name=_('Numero de Téléphone'))
+    site_web = models.URLField(verbose_name=_('site internet'), null=True )
     projet = models.BooleanField(default=False, help_text=_('Le Business Unit est-il un Projet?'))
 
     def __str__(self):

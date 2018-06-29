@@ -150,7 +150,7 @@ class Risque(models.Model):
                                  on_delete=models.SET_NULL, verbose_name=_('Crée par'))
 
     def __str__(self):
-        return self.description
+        return '%s...' % self.description[:50]
 
     class Meta:
         verbose_name = _('risque')
@@ -206,7 +206,7 @@ class CritereDuRisque(models.Model):
 
 
 class IdentificationRisque(TimeStampedModel):
-    STATUS = Choices((0, 'pending', _('en attente')), (1, 'verified', _('confirmé')))
+    STATUS = Choices(('pending', _('en attente')), ('verified', _('confirmé')))
     TYPE_DE_RISQUE = (
         ('O', _('opportunité')),
         ('M', _('menace')),
@@ -216,7 +216,7 @@ class IdentificationRisque(TimeStampedModel):
     type_de_risque = models.CharField(max_length=1, choices=TYPE_DE_RISQUE, default='M',
                                       verbose_name=_('type de risque'))
     date_revue = models.DateTimeField(
-        'revue prévue pour le: ', default=now() + timedelta(days=365))
+        'revue', default=now() + timedelta(days=365))
     criterisation = models.OneToOneField('CritereDuRisque', on_delete=models.SET_NULL, blank=True, null=True,
                                          verbose_name=_('Seuil de risque'))
     criterisation_change = MonitorField(monitor='criterisation')
@@ -257,14 +257,10 @@ class IdentificationRisque(TimeStampedModel):
         seuil = self.seuil_de_risque()
         if seuil:
             return format_html(
-                '<span class="seuil-defini">{}</span>',
+                '<span style="color: #0b2e13;">{}</span>',
                 seuil
             )
-        else:
-            return format_html(
-                '<span class="seuil-indefini">{}</span>',
-                seuil
-            )
+    seuil_diplay.short_description = _('seuil de risque')
 
     def facteur_risque_display(self):
         """Affichage html du facteur risque"""
@@ -329,9 +325,9 @@ class IdentificationRisque(TimeStampedModel):
         return now() > self.date_revue
 
     class Meta:
-
         get_latest_by = 'created'
         abstract = True
+        ordering = ('-created', 'verifie_le')
 
 
 class ActiviteRisque(IdentificationRisque):

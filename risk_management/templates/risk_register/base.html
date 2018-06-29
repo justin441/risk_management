@@ -34,7 +34,7 @@
 {#navbar#}
 <div class="mb-4">
   <nav class="navbar navbar-expand-md navbar-dark sticky-top bg-primary flex-md-nowrap p-0 shadow">
-    <a href="#" class="navbar-brand col-sm-3 col-md-2 mr-0">NH-RM</a>
+    <a href="#" class="navbar-brand col-sm-3 col-md-2 mr-0" style="background-color: #00a5e3;">NH-RM</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse"
             aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
@@ -123,6 +123,7 @@
   </div>
 </div>
 {% block javascript %}
+
   <!-- Optional JavaScript -->
   <!-- jQuery first, then Popper.js, then Bootstrap JS -->
   <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
@@ -137,6 +138,8 @@
   <script !src="">
     feather.replace()
   </script>
+  <script src="{% static 'js/project.js' %}"></script>
+
 {% endblock %}
 
 </body>

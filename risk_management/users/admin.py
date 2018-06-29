@@ -66,10 +66,11 @@ class MyUserAdmin(AuthUserAdmin):
                     "telephone", "business_unit", "is_superuser")
     search_fields = ["first_name", 'last_name']
     list_filter = AuthUserAdmin.list_filter + ('business_unit',)
+    autocomplete_fields = ['business_unit']
 
 
 @admin.register(BusinessUnit, site=risk_management_admin_site)
 class BuAdmin(admin.ModelAdmin):
     list_display = ('denomination', 'sigle', 'marche', 'ville_siege',
-                    'adresse_physique', 'telephone', 'bu_manager')
+                    'adresse_physique', 'telephone', 'site_web', 'bu_manager')
     search_fields = ['denomination']

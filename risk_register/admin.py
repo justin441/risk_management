@@ -1,6 +1,8 @@
 from django.contrib import admin
+from django.contrib.admin.widgets import AdminDateWidget
 from django.contrib.contenttypes.admin import GenericStackedInline
 from django.utils.translation import gettext_lazy as _
+from django.db import models
 
 from risk_management.users.admin import risk_management_admin_site
 
@@ -99,12 +101,17 @@ class IdentificationRisque(admin.ModelAdmin):
         ControleInline,
     ]
     date_hierarchy = 'created'
-    list_editable = ['verifie', 'date_revue']
+    list_editable = ['date_revue']
     actions = ['mark_verified']
+    list_display_links = ['risque']
+    radio_fields = {'verifie': admin.HORIZONTAL}
+    formfield_overrides = {
+        models.DateTimeField: {'widget': AdminDateWidget},
+    }
 
     def mark_verified(self, request, queryset):
-        queryset = queryset.filter(verifie=0)
-        queryset.update(verifie=1)
+        queryset = queryset.filter(verifie='pending')
+        queryset.update(verifie='verified')
         queryset.update(verifie_par=request.user)
 
     mark_verified.short_description = _('marquer comme verifier')
