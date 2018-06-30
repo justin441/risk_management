@@ -3,7 +3,7 @@ from datetime import timedelta
 
 from django.db import models
 from django.utils.translation import gettext_lazy as _
-from django.core.exceptions import ValidationError
+from django.core.exceptions import ValidationError, FieldError
 from django.utils.timezone import now
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
@@ -17,7 +17,7 @@ from model_utils.models import TimeFramedModel, TimeStampedModel
 from risk_management.users.models import BusinessUnit
 
 
-class DonneesDeRisqueObsolete(Exception):
+class RiskDataError(Exception):
     pass
 
 
@@ -215,8 +215,7 @@ class IdentificationRisque(TimeStampedModel):
     risque = models.ForeignKey(Risque, on_delete=models.CASCADE, verbose_name=_('risque'))
     type_de_risque = models.CharField(max_length=1, choices=TYPE_DE_RISQUE, default='M',
                                       verbose_name=_('type de risque'))
-    date_revue = models.DateTimeField(
-        'revue', default=now() + timedelta(days=365))
+    date_revue = models.DateTimeField('revue', null=True, blank=True)
     criterisation = models.OneToOneField('CritereDuRisque', on_delete=models.SET_NULL, blank=True, null=True,
                                          verbose_name=_('Seuil de risque'))
     criterisation_change = MonitorField(monitor='criterisation')
@@ -226,7 +225,7 @@ class IdentificationRisque(TimeStampedModel):
     verifie_par = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True)
 
     def clean(self):
-        if self.date_revue < self.created:
+        if self.date_revue and (self.date_revue < self.created):
             raise ValidationError(
                 {
                     'date_revue': 'La date de revue du revue du risque ( %s ) ne peut pas précédée la date \
@@ -239,6 +238,16 @@ class IdentificationRisque(TimeStampedModel):
                     de son identification ( %s )' % (
                         self.modified, self.created)}
             )
+
+    def save(self, *args, **kwargs):
+        if self.date_revue and (self.date_revue < self.created):
+            raise FieldError(
+                _('la date de revue (%s) ne peut pas prédéder la date de cration (%s)' %
+                  (self.date_revue.date(), self.created.date()))
+            )
+        if self.verifie == 'verified':
+            self.date_revue = self.verifie_le + timedelta(days=365)
+        super().save(*args, **kwargs)
 
     def seuil_de_risque(self):
         if self.criterisation:
@@ -405,14 +414,18 @@ class Estimation(TimeStampedModel, RiskMixin):
         """s'assurer que les données du risque sont à jour et
         que la date de debut de l'activité précède la date de fin"""
         if self.content_object.est_obsolete:
-            raise DonneesDeRisqueObsolete(
-                'Les donneés du risque ont besoins d\'une mise à jour')
+            raise RiskDataError(
+                _('Les donneés du risque ont besoins d\'une mise à jour'))
+        if self.content_object.verifie == 'pending':
+            raise RiskDataError(
+                _('On ne peut pas estimer un risque sans l\'avoir verifié')
+            )
         super().save(*args, **kwargs)
 
     def clean(self):
         if self.created > self.date_revue:
             raise ValidationError(
-                {'date_revue': 'La date de revue de l\'estimation ne peut pas précédée sa date de création'
+                {'date_revue': _('La date de revue de l\'estimation ne peut pas précédée sa date de création')
                  })
 
     def __str__(self):
@@ -451,12 +464,18 @@ class Controle(TimeFramedModel, TimeStampedModel, RiskMixin):
             )
 
     def save(self, *args, **kwargs):
+        if self.start > self.end:
+            raise FieldError(
+                'la date de fin ne peut pas précédée celle du début. Veuillez corriger le champ "debut".'
+            )
         # todo inclure les exceptions présent ici dans les vues
-        if self.content_object.est_obsolete or (
-            self.content_object.estimations.all() and self.content_object.estimations.latest().est_obsolete
-        ):
-            raise DonneesDeRisqueObsolete(
-                'Les donneés du risque ont besoins d\'une mise à jour')
+        if not self.content_object.estimations.all():
+            raise RiskDataError(
+                {self.content_type.name: _(' le risque n\'a pas encore été estimé')}
+            )
+        elif self.content_object.est_obsolete or self.content_object.estimations.latest().est_obsolete:
+            raise RiskDataError(
+                _('Les donneés du risque ont besoins d\'une mise à jour'))
         super().save(*args, **kwargs)
 
     def __str__(self):

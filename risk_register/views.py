@@ -15,8 +15,8 @@ class BusinessUnitDetailView(DetailView):
         context = super().get_context_data(**kwargs)
         context['activiterisques'] = ActiviteRisque.objects.filter(
             activite__processus__business_unit=self.get_object()
-        ).filter(verifie='verified')
+        )
         context['processusrisques'] = ProcessusRisque.objects.filter(
             processus__business_unit=self.get_object()
-        ).filter(verifie='verified')
+        )
         return context
