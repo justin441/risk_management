@@ -1,10 +1,10 @@
 {% for bu in business_units %}
   {% if li %}
     <li class='{{ li_class }}'>
-      <a href="#" class='{{ a_class }}'>{{ bu }}</a>
+      <a href="{% url 'risk_register:detail_business_unit' pk=bu.pk %}" class='{{ a_class }}'>{{ bu }}</a>
     </li>
     {% else %}
-    <a href="#" class='{{ a_class }}'>{{ bu }}</a>
+    <a href="{% url 'risk_register:detail_business_unit' pk=bu.pk %}" class='{{ a_class }}'>{{ bu }}</a>
   {% endif %}
 
 {% endfor %}

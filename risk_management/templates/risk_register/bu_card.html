@@ -1,24 +1,27 @@
- <div class="card " style=" border-color:#00a5e3;">
-    <div class="card-header text-white" style="background-color:#00a5e3;">
-      <h4 class="card-title">
-        {% if bu.projet %}Projet: {% endif %}{{ bu.denomination }}
-      </h4>
-      <h6 class="card-subtitle">{{ bu.sigle }}</h6>
-      <p class="lead">{{ bu.marche }}</p>
-      <a href="#address" data-toggle="collape" class="card-link pull-right"><span data-feather="more-horizontal" class="text-info"></span></a>
-    </div>
-    <div class="card-footer collapse" id="address">
-      <address>
-        <dl class="row">
-          <dt class="col-sm-3">{% trans Manager %}:</dt>
-          <dd class="col-sm-9">{{ bu.bu_manager.civilite }} <a href="mailto:{{ bu.bu_manager.email }}">{{ bu.bu_manager }}</a></dd>
-          <dt class="col-sm-3"> {% trans Adresse %}:</dt>
-          <dd class="col-sm-9">{{ bu.adresse_physique }}, {{ bu.ville_siege }}</dd>
-          <dt class="col-sm-3"> {% trans Téléphone %}:</dt>
-          <dd class="col-sm-9">{{ bu.telephone }}</dd>
-          <dt class="col-sm-3">{% trans Site internet %}:</dt>
-          <dd class="col-sm-9">{{ bu.site_web }}</dd>
-        </dl>
-      </address>
-    </div>
+{% load i18n %}
+<div class="card mb-4" style=" border-color:#00a5e3;">
+  <div class="card-header text-white" style="background-color:#00a5e3;">
+    <h4 class="card-title">
+      {% if bu.projet %}Projet: {% endif %}{{ bu.denomination }}
+    </h4>
+    <h6 class="card-subtitle">{{ bu.sigle }}</h6>
+    <p class="lead">{{ bu.marche }}</p>
+    <a href="#address" data-toggle="collapse" class="float-right"><span data-feather="more-horizontal"
+                                                                        class="text-white"></span></a>
   </div>
+  <div class="card-footer collapse" id="address">
+    <address>
+      <dl class="row">
+        <dt class="col-sm-3">{% trans 'Manager' %}:</dt>
+        <dd class="col-sm-9">{{ bu.bu_manager.civilite }} <a
+          href="mailto:{{ bu.bu_manager.email }}">{{ bu.bu_manager }}</a></dd>
+        <dt class="col-sm-3"> {% trans 'Adresse' %}:</dt>
+        <dd class="col-sm-9">{{ bu.adresse_physique }}, {{ bu.ville_siege }}</dd>
+        <dt class="col-sm-3"> {% trans 'Téléphone' %}:</dt>
+        <dd class="col-sm-9">{{ bu.telephone }}</dd>
+        <dt class="col-sm-3">{% trans 'Site internet' %}:</dt>
+        <dd class="col-sm-9">{{ bu.site_web }}</dd>
+      </dl>
+    </address>
+  </div>
+</div>

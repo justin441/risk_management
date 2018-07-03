@@ -1,22 +1,29 @@
-<div class="card " style=" border-color:#00a5e3;">
+{% load i18n %}
+<div class="card mb-4" style=" border-color:#00a5e3;">
   <div class="card-header text-white" style="background-color:#00a5e3;">
     <h4 class="card-title">
-      {{ processus.nom }}
+      {% if processsus.business_unit.project %}
+        {% trans "Projet" %}
+      {% endif %}
+    {{ processus.business_unit.denomination }}
     </h4>
+    <h3 class="card-title">
+      {{ processus.nom }}
+    </h3>
   </div>
   <div class="card-body">
     <p class="lead">{{ processus.description }}</p>
     <dl class="row">
-      <dt class="col-sm-3">{% trans Business Unit %}:</dt>
+      <dt class="col-sm-3">{% trans 'Business Unit' %}:</dt>
       <dd class="col-sm-9">{{ processus.business_unit }}</dd>
-      <dt class="col-sm-3">{% trans Type %}:</dt>
+      <dt class="col-sm-3">{% trans 'Type' %}:</dt>
       <dd class="col-sm-9">{{ processus.type_processus }}</dd>
     </dl>
-    <a href="#address" data-toggle="collape"><span data-feather="more-horizontal" class="text-info pull-right"></span></a>
+    <a href="#address" data-toggle="collape"><span data-feather="more-horizontal" class="text-info float-right"></span></a>
   </div>
   <div class="card-footer collapse" id="address">
     <address>
-      {% trans Manager %}:{{ processus.proc_manager.civilite }} <a
+      {% trans 'Manager' %}:{{ processus.proc_manager.civilite }} <a
       href="mailto:{{ bu.bu_manager.email }}">{{ processus.proc_manager }}</a><br>
     </address>
   </div>

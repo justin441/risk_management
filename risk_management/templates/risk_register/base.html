@@ -5,7 +5,7 @@
 <head>
   <title>
     {% block title %}
-      risk register
+      {% trans 'Registre des risques' %}
     {% endblock title %}
   </title>
   <!-- Required meta tags -->
@@ -35,6 +35,8 @@
 <div class="mb-4">
   <nav class="navbar navbar-expand-md navbar-dark sticky-top bg-primary flex-md-nowrap p-0 shadow">
     <a href="#" class="navbar-brand col-sm-3 col-md-2 mr-0" style="background-color: #00a5e3;">NH-RM</a>
+    <input type="text" class=" ml-2 form-control-light w-50" placeholder="{% trans 'Rechercher' %}"
+           aria-label="Search">
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse"
             aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
@@ -49,12 +51,12 @@
             </a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
               <a class="dropdown-item" href="#">Accueil</a>
-              <a class="dropdown-item" href="{% url 'risk_register:logout' %}">Déconnexion</a>
+              <a class="dropdown-item" href="">Déconnexion</a> {# TODO: ajouter l'url#}
             </div>
           </li>
         {% else %}
           <li class="nav-item">
-            <a href="{% url 'risk_register:login' %}?next={% url 'risk_register:user_home' %}" class="nav-link">Connexion</a>
+            <a href="" class="nav-link">Connexion</a>{# TODO: ajouter l'url#}
           </li>
         {% endif %}
         <li class="nav-item dropdown d-md-none">
@@ -70,7 +72,7 @@
           <a href="#" id="RiskClassDropdown" class="nav-link dropdown-toggle " data-toggle="dropdown"
              aria-haspopup="true"
              aria-expanded="false">
-            {% trans Risques %}
+            {% trans 'Risques' %}
           </a>
           <div class="dropdown-menu" aria-labelledby="RiskClassDropdown">
             {% cl_menu li=False a_class='dropdown-item' %}
@@ -78,35 +80,33 @@
         </li>
       </ul>
     </div>
-    <input type="text" class="form-control form-control-dark w-100" placeholder="{% trans Rechercher %}"
-           aria-label="Search">
+
 
   </nav>
 </div>
 
 <div class="container-fluid">
   <div class="row">
-    {# sidebar#}
-    {% block sidemenu %}
-      <nav class="col-md-2 d-none d-md-block bg-light sidebar">
-        <div class="sidebar-sticky"></div>
+    <nav class="col-md-2 d-none d-md-block bg-light sidebar">
+      <div class="sidebar-sticky">
         <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
-          <span>{% trans Business Units %}</span>
+          <span>{% trans 'Business Units' %}</span>
         </h6>
-        <ul class="flex-column mb-2">
+        <ul class=" nav flex-column mb-2">
           {% bu_menu %}
         </ul>
         <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
-          <span>{% trans Base de données des risques %}</span>
+          <span>{% trans 'Base de données des risques' %}</span>
         </h6>
-        <ul class="flex-column mb-2">
+        <ul class="nav flex-column mb-2">
           {% cl_menu %}
         </ul>
-      </nav>
-    {% endblock %}
-    {#main#}
-    {% block content %}
-      <main class="col-md-9 ml-sm-auto col-lg-10 px4" role="main">
+      </div>
+
+    </nav>
+
+    <main class="col-md-9 ml-sm-auto col-lg-10 px4" role="main">
+      {% block content %}
         {% if messages %}
           {% for message in messages %}
             <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}">{{ message }}</div>
@@ -118,19 +118,20 @@
         {% endblock %}
         {% block data %}
         {% endblock %}
-      </main>
-    {% endblock %}
+      {% endblock %}
+    </main>
+
   </div>
 </div>
-{% block javascript %}
+
 
   <!-- Optional JavaScript -->
   <!-- jQuery first, then Popper.js, then Bootstrap JS -->
   <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
           integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
           crossorigin="anonymous"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js
-" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
+          integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"
           integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T"
           crossorigin="anonymous"></script>
@@ -140,7 +141,7 @@
   </script>
   <script src="{% static 'js/project.js' %}"></script>
 
-{% endblock %}
+{% block javascript %}{% endblock %}
 
 </body>
 </html>

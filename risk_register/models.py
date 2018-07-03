@@ -2,12 +2,13 @@ import uuid
 from datetime import timedelta
 
 from django.db import models
+from django.db.models import Q, F
 from django.utils.translation import gettext_lazy as _
 from django.core.exceptions import ValidationError, FieldError
 from django.utils.timezone import now
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
-from django.utils.html import format_html
+from django.urls import reverse
 from django.conf import settings
 
 from model_utils.fields import StatusField, MonitorField
@@ -19,6 +20,38 @@ from risk_management.users.models import BusinessUnit
 
 class RiskDataError(Exception):
     pass
+
+
+class ProcessData(models.Model):
+
+    nom = models.CharField(max_length=255)
+    origine = models.ForeignKey('Processus', on_delete=models.SET_NULL,
+                                null=True, blank=True, verbose_name=_('fournisseur interne'),
+                                related_name='ouput_data',
+                                help_text=_('Laisser vide si origine externe à l\'entreprise'))
+
+    commentaire = models.CharField(max_length=255, blank=True,
+                                   help_text=_('Veuillez indiquer le nom de l\'origine  externe'),
+                                   verbose_name=_('fournisseur externe'))
+
+    def __str__(self):
+        return self.nom
+
+    def clean(self):
+        if not self.origine and not self.commentaire:
+            raise ValidationError(
+                {'commentaire': 'Vous n\'avez indiquer aucun fournisseur.'}
+            )
+        elif self.origine and self.commentaire:
+            raise ValidationError(
+                {'commentaire': 'veuillez n\'indiquer qu\'un seul fournisseur'}
+            )
+
+    class Meta:
+        ordering = ['nom']
+        unique_together = (("nom", "origine"),)
+        verbose_name = _('données du processus')
+        verbose_name_plural = _('données des processus')
 
 
 class Processus(models.Model):
@@ -42,42 +75,20 @@ class Processus(models.Model):
                                      verbose_name=_('manager du processus'),
                                      related_name='processus_manages')
     input_data = models.ManyToManyField('ProcessData', verbose_name=_('Données d\'entrée'),
-                                        related_name='clients'
+                                        related_name='clients', blank=True
                                         )
 
     def __str__(self):
         return "%s: %s" % (self.business_unit.denomination, self.nom)
 
-    # def get_absolute_url(self):
-    #     if self.proc_manager:
-    #         return reverse('risk_register:manager_home', kwargs={'username': self.proc_manager})
+    def get_absolute_url(self):
+        if self.proc_manager:
+            return reverse('risk_register:detail_processus', kwargs={'p': self.code_processus})
 
     class Meta:
         verbose_name = _('processus')
         verbose_name_plural = _('processus')
         unique_together = (('business_unit', 'nom'), )
-
-
-class ProcessData(models.Model):
-
-    nom = models.CharField(max_length=255)
-    origine = models.ForeignKey(Processus, on_delete=models.SET_NULL,
-                                null=True, blank=True, verbose_name=_('Origine'),
-                                related_name='ouput_data',
-                                help_text=_('Laisser vide si origine externe à l\'entreprise'))
-
-    commentaire = models.CharField(max_length=255, blank=True,
-                                   help_text=_('Veuillez indiquer le nom de l\'origine  externe'),
-                                   verbose_name=_('commentaires'))
-
-    def __str__(self):
-        return self.nom
-
-    class Meta:
-        ordering = ['nom']
-        unique_together = (("nom", "origine"),)
-        verbose_name = _('données du processus')
-        verbose_name_plural = _('données des processus')
 
 
 class Activite(TimeFramedModel):
@@ -261,59 +272,54 @@ class IdentificationRisque(TimeStampedModel):
 
     facteur_risque.short_description = _('facteur risque')
 
-    def seuil_diplay(self):
-        """Affichage html du seuil de risque"""
+    def seuil_display(self):
+        """renvoie des classes css pour l'affichage html du seuil de risque"""
         seuil = self.seuil_de_risque()
         if seuil:
-            return format_html(
-                '<span style="color: #0b2e13;">{}</span>',
-                seuil
-            )
-    seuil_diplay.short_description = _('seuil de risque')
+            return "text-primary"
+        return "text-muted"
+
+    seuil_display.short_description = _('seuil de risque')
 
     def facteur_risque_display(self):
-        """Affichage html du facteur risque"""
+        """renvoi des classes css pour l'affichage du facteur risque"""
         facteur_risque = self.facteur_risque()
         if facteur_risque:
             if self.seuil_de_risque():
                 ratio = (self.facteur_risque() - self.seuil_de_risque()) / self.seuil_de_risque()
                 if ratio <= 0.1:
-                    return format_html(
-                        '<span class="facteur-1">{}</span>',
-                        facteur_risque
-                    )
+                    return "facteur-1"
                 elif 0.1 < ratio <= 0.3:
-                    return format_html(
-                        '<span class="facteur-1-3">{}</span>',
-                        facteur_risque
-                    )
+                    return "facteur-1-3"
                 elif 0.3 < ratio <= 0.5:
-                    return format_html(
-                        '<span class="facteur-3-5">{}</span>',
-                        facteur_risque
-                    )
+                    return "facteur-3-5"
                 elif ratio > 0.5:
-                    return format_html(
-                        '<span class="facteur-5">{}</span>',
-                        facteur_risque
-                    )
+                    return "facteur-5"
             else:
-                return format_html(
-                    '<span class="facteur-5">{}</span>',
-                    facteur_risque
-                )
+                return "facteur-5"
         else:
-            return format_html(
-                '<span class="facteur-5">{}</span>',
-                'Le risque n\'est pas encore estimé.'
-            )
+            return "text-muted"
 
     def status(self):
-        if self.seuil_de_risque() and self.facteur_risque():
-            if self.facteur_risque() <= self.seuil_de_risque():
-                return _('acceptable')
+        facteur_risque = self.facteur_risque()
+        seuil = self.seuil_de_risque()
+        if facteur_risque and seuil:
+            if facteur_risque <= seuil:
+                return 'acceptable'
+
             else:
-                return _('inacceptable')
+                return 'inacceptable'
+
+        return 'inconnu'
+
+    def status_display(self):
+        """classe css pour l'affichage du statut du risque"""
+        if self.status() == 'acceptable':
+            return "text-success"
+        elif self.status() == 'inacceptable':
+            return "text-danger"
+        else:
+            return "text-muted"
 
     status.short_description = _('statut du risque')
 

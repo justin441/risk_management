@@ -3,7 +3,7 @@ from django.contrib.admin.widgets import AdminDateWidget
 from django.contrib.contenttypes.admin import GenericStackedInline
 from django.utils.translation import gettext_lazy as _
 from django.db import models
-
+from django.db.models import Q
 from risk_management.users.admin import risk_management_admin_site
 
 # Register your models here.
@@ -15,6 +15,7 @@ from .models import (Processus, ProcessData, Activite, Risque, ClasseDeRisques, 
 class DonneesSortieProcessusInline(admin.StackedInline):
     extra = 1
     model = ProcessData
+    exclude = ['commentaire']
     verbose_name = _('donnée de sortie')
     verbose_name_plural = _('données de sortie')
     classes = ['collapse']
@@ -163,7 +164,7 @@ class ActiviteRisqueAdmin(IdentificationRisque):
 
     list_filter = ('activite__processus__business_unit', 'type_de_risque')
     list_display = ['created', 'date_revue', 'activite', 'risque', 'type_de_risque', 'verifie',
-                    'status', 'seuil_diplay', 'facteur_risque_display', 'get_proprietaire']
+                    'status', 'seuil_de_risque', 'facteur_risque', 'get_proprietaire']
 
 
 @admin.register(ProcessusRisque, site=risk_management_admin_site)
@@ -172,7 +173,7 @@ class ProcessusRisqueAdmin(IdentificationRisque):
     autocomplete_fields = ['processus', 'risque']
     list_filter = ('processus__business_unit', 'type_de_risque')
     list_display = ['created', 'date_revue', 'processus', 'risque', 'type_de_risque', 'verifie',
-                    'status',  'seuil_diplay', 'facteur_risque_display', 'get_proprietaire']
+                    'status',  'seuil_de_risque', 'facteur_risque', 'get_proprietaire']
 
 
 @admin.register(ProcessData, site=risk_management_admin_site)

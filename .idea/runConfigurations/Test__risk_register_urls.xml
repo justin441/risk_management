@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Test: risk_register.tests.test_urls.TestBuUrls" type="DjangoTestsConfigurationType" factoryName="Django tests" singleton="true">
+  <configuration default="false" name="Test: risk_register_urls" type="DjangoTestsConfigurationType" factoryName="Django tests" singleton="true">
     <module name="risk_management" />
     <option name="INTERPRETER_OPTIONS" value="" />
     <option name="PARENT_ENVS" value="true" />
@@ -14,7 +14,7 @@
     <option name="ADD_CONTENT_ROOTS" value="true" />
     <option name="ADD_SOURCE_ROOTS" value="true" />
     <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-    <option name="TARGET" value="risk_register.tests.test_urls.TestBuUrls" />
+    <option name="TARGET" value="risk_register.tests.test_urls" />
     <option name="SETTINGS_FILE" value="" />
     <option name="CUSTOM_SETTINGS" value="false" />
     <option name="USE_OPTIONS" value="false" />
