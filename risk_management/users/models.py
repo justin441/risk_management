@@ -40,7 +40,7 @@ class BusinessUnit(models.Model):
         try:
             bu_manager = self.employes.get(Q(fonction='project manager') | Q(fonction='general manager'))
         except User.DoesNotExist:
-            return _("Non défini")
+            return
         return bu_manager
 
     class Meta:

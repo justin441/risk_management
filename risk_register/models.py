@@ -92,7 +92,7 @@ class Processus(models.Model):
 
 
 class Activite(TimeFramedModel):
-    STATUS = Choices(('pendind', _('en cours')), ('completed', _('achevé')))
+    STATUS = Choices(('pending', _('en cours')), ('completed', _('achevé')))
     code_activite = models.UUIDField(
         primary_key=True, default=uuid.uuid4, editable=False)
     nom = models.CharField(max_length=50, db_index=True,
@@ -237,17 +237,25 @@ class IdentificationRisque(TimeStampedModel):
 
     def clean(self):
         if self.date_revue and (self.date_revue < self.created):
+            # la date de revue précède la date de création du risque
             raise ValidationError(
                 {
-                    'date_revue': 'La date de revue du revue du risque ( %s ) ne peut pas précédée la date \
-                    de son identification ( %s )' % (
+                    'date_revue': _( 'La date de revue du revue du risque ( %s ) ne peut pas précédée la date \
+                    de son identification ( %s )') % (
                         self.date_revue, self.created)})
         if self.modified and (self.modified < self.created):
+            # la date de modification précède la date de création du risque
             raise ValidationError(
                 {
-                    'modified': 'La date de modification du risque ( %s ) ne peut pas précédée la date \
-                    de son identification ( %s )' % (
+                    'modified': _('La date de modification du risque ( %s ) ne peut pas précédée la date \
+                    de son identification ( %s )') % (
                         self.modified, self.created)}
+            )
+        if self.date_revue and self.verifie == 'pending':
+            # la date de revue est fixée avant que le risque ne soit verifié
+            raise ValidationError(
+                {'date_revue': _('le risque doit être vérifié avant de fixer la date de revue')
+                 }
             )
 
     def save(self, *args, **kwargs):
@@ -256,8 +264,10 @@ class IdentificationRisque(TimeStampedModel):
                 _('la date de revue (%s) ne peut pas prédéder la date de cration (%s)' %
                   (self.date_revue.date(), self.created.date()))
             )
-        if self.verifie == 'verified':
-            self.date_revue = self.verifie_le + timedelta(days=365)
+        if self.verifie == 'verified' and not self.date_revue:
+            # si le risque est verifié et la date de revue non fixé,
+            # fixer la date de revue par défaut à un an dans le futur
+            self.date_revue = now() + timedelta(days=365)
         super().save(*args, **kwargs)
 
     def seuil_de_risque(self):
@@ -337,7 +347,9 @@ class IdentificationRisque(TimeStampedModel):
 
     @property
     def est_obsolete(self):
-        return now() > self.date_revue
+        if self.date_revue:
+            return now() > self.date_revue
+        return False
 
     class Meta:
         get_latest_by = 'created'

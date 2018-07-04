@@ -1,0 +1,11 @@
+{% extends 'risk_register/base.html' %}
+{% load i18n humanize %}
+{% block title %}
+{{ activite.nom }}: {% trans 'Registre des risques' %}
+{% endblock %}
+
+{% block content %}
+{% block header %}
+{% include 'risk_register/activite_card.html' %}
+{% endblock %}
+{% endblock %}

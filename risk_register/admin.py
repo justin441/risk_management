@@ -3,7 +3,6 @@ from django.contrib.admin.widgets import AdminDateWidget
 from django.contrib.contenttypes.admin import GenericStackedInline
 from django.utils.translation import gettext_lazy as _
 from django.db import models
-from django.db.models import Q
 from risk_management.users.admin import risk_management_admin_site
 
 # Register your models here.
@@ -12,6 +11,7 @@ from .models import (Processus, ProcessData, Activite, Risque, ClasseDeRisques, 
                      Controle, ProcessusRisque, CritereDuRisque)
 
 
+# todo: inclure rules
 class DonneesSortieProcessusInline(admin.StackedInline):
     extra = 1
     model = ProcessData

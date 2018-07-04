@@ -2,7 +2,7 @@ from django.urls import reverse, resolve
 
 from test_plus.test import TestCase
 
-from .factories import (BusinessFactory, Processfactory)
+from .factories import (BusinessFactory, Processfactory, ActiviteFactory)
 
 
 class TestBuUrls(TestCase):
@@ -28,8 +28,21 @@ class TestProcessUrls(TestCase):
 
     def test_process_reverse(self):
         self.assertEqual(reverse('risk_register:detail_processus', kwargs={'pk': self.process.code_processus}),
-                         '/risk-register/processus/%s/' % self.process.code_processus)
+                         '/risk-register/process/%s/' % self.process.code_processus)
 
     def test_process_resolve(self):
-        self.assertEqual(resolve('/risk-register/processus/%s/' % self.process.code_processus).view_name,
+        self.assertEqual(resolve('/risk-register/process/%s/' % self.process.code_processus).view_name,
                          'risk_register:detail_processus')
+
+
+class TestActivityUrls(TestCase):
+    def setUp(self):
+        self.activity = ActiviteFactory()
+
+    def test_activity_reverse(self):
+        self.assertEqual(reverse('risk_register:detail_activite', kwargs={'pk': self.activity.code_activite}),
+                         '/risk-register/activity/%s/' % self.activity.code_activite)
+
+    def test_activity_resolve(self):
+        self.assertEqual(resolve('/risk-register/activity/%s/' % self.activity.code_activite).view_name,
+                         'risk_register:detail_activite')

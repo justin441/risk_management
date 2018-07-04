@@ -1,9 +1,7 @@
 {% extends 'risk_register/base.html' %}
 {% load i18n humanize %}
 {% block title %}
-  {% blocktrans with bu=bu.denomination %}
-    Registre des risques de {{ bu }}
-  {% endblocktrans %}
+  {{ bu.denomination }}: {% trans 'Registre des risques' %}
 {% endblock %}
 
 {% block content %}
@@ -31,16 +29,16 @@
         {% for processus in bu.processus_set.all %}
           <div class="card">
             <div class="card-header">
-              <a href="{% url 'risk_register:detail_processus' pk=processus.code_processus %}" class="card-link h5">{{ processus.nom }}: {{ processus.description|truncatechars:50 }}</a> {# TODO: ajouter l'url#}
               <a class="card-link float-right" data-toggle="collapse" href="#{{ processus.nom }}-activities">
                 <span data-feather="more-horizontal" class="text-info"></span>
               </a>
+              <a href="{% url 'risk_register:detail_processus' pk=processus.code_processus %}" class="card-link h5">{{ processus.nom }}: {{ processus.description|truncatechars:50 }}</a>
             </div>
             <div id="{{ processus.nom }}-activities" class="collapse">
               {% if processus.activites.all %}
                 {% for activite in processus.activites.all %}
-                  <div class="card card-body ml-4 p-1">
-                    <a href="#" class="h6 card-link ml-2">{{ activite.nom }}: {{ activite.description|truncatechars:50 }}</a></li>{# TODO: ajouter l'url#}
+                  <div class="card card-body ml-4 p-1 mb-1">
+                    <a href="{% url 'risk_register:detail_activite' pk=activite.code_activite %}" class="h6 card-link ml-2">{{ activite.nom }}: {{ activite.description|truncatechars:50 }}</a></li>
                   </div>
                 {% endfor %}
               {% else %}
@@ -108,7 +106,15 @@
                   {% if processusrisque.est_obsolete %}
                     <span class="text-danger">{% trans passée %} {{ processusrisque.date_revue|naturaltime  }}</span>
                   {% else %}
-                    <span class="text-success">{{ processusrisque.date_revue|naturaltime }}</span>
+
+                      {% if processusrisque.date_revue %}
+                        <span class="text-success">
+                        {{ processusrisque.date_revue|naturaltime }}
+                        </span>
+                        {% else %}
+                        <span class="text-danger">????</span>
+                      {% endif %}
+
                   {% endif %}
                 </td>
               </tr>
@@ -165,7 +171,11 @@
                   {% if activiterisque.est_obsolete %}
                     <span class="text-danger">{% trans 'passée' %} {{ activiterisque.date_revue| naturaltime }}</span>
                   {% else %}
-                    <span class="text-success">{{ activiterisque.date_revue|naturaltime }}</span>
+                    {% if activiterisque.date_revue %}
+                      <span class="text-success">{{ activiterisque.date_revue|naturaltime }}</span>
+                      {% else %}
+                      <span class="text-danger">????</span>
+                    {% endif %}
                   {% endif %}
                 </td>
               </tr>

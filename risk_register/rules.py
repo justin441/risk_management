@@ -134,6 +134,7 @@ rules.add_rule('add_process_risk', rules.is_authenticated)
 rules.add_rule('change_activite', is_activity_supervisor | is_activity_upper_mgt)
 rules.add_rule('delete_activite', is_activity_supervisor | is_activity_upper_mgt)
 rules.add_rule('add_activity_risk', rules.is_authenticated)
+rules.add_rule('complete_activity', is_activity_owner | is_activity_supervisor)
 
 # Risques des activités
 
@@ -184,6 +185,7 @@ rules.add_perm('risk_register.add_process_risk', rules.is_authenticated)
 rules.add_perm('risk_register.change_activite', is_activity_supervisor | is_activity_upper_mgt)
 rules.add_perm('risk_register.delete_activite', is_activity_supervisor | is_activity_upper_mgt)
 rules.add_perm('risk_register.add_activity_risk', rules.is_authenticated)
+rules.add_perm('risk_register_complete_activity', is_activity_owner | is_activity_supervisor | is_activity_upper_mgt)
 
 # Risques des activités
 
@@ -197,6 +199,7 @@ rules.add_perm('risk_register.estimate_activity_risk', is_activity_risk_supervis
 rules.add_perm('risk_register.change_activiterisque', is_activity_risk_supervisor |
                is_activity_risk_upper_mgt | is_activity_risk_reporter)
 rules.add_perm('risk_register.delete_activiterisque', is_activity_risk_supervisor | is_activity_risk_upper_mgt)
+
 
 # Risques des processus
 rules.add_perm('risk_register.set_seuil_process_risk', is_process_risk_monitor | is_process_risk_upper_mgt)
