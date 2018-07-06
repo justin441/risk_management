@@ -1,8 +1,11 @@
 from django.shortcuts import render
+from fm.views import AjaxCreateView
+
 from django.views.generic import DetailView
 
 from risk_management.users.models import BusinessUnit
 from .models import (ActiviteRisque, ProcessusRisque, Processus, Activite)
+from .forms import CreateProcessForm
 
 # Create your views here.
 
@@ -44,3 +47,7 @@ class ActiviteRiskRegisterView(DetailView):
         context = super().get_context_data(**kwargs)
         context['activiterisques'] = ActiviteRisque.objects.filter(activite=self.get_object())
         return context
+
+
+class CreateProcessView(AjaxCreateView):
+    form_class = CreateProcessForm

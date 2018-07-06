@@ -1,31 +1,27 @@
 {% load i18n %}
-<nav aria-label="breadcrumb">
-  <ol class="breadcrumb">
-    <li class="breadcrumb-item"><a
-      href="{% url 'risk_register:detail_business_unit' pk=processus.business_unit.denomination %}">Business Unit</a>
-    </li>
-    <li class="breadcrumb-item active h5" aria-current="page">{% trans 'Processus' %}</li>
-  </ol>
-</nav>
-<div class="card mb-4" style="border-color:#00a5e3;">
-  <div class="card-header text-white" style="background-color:#00a5e3;">
-    <h4 class="card-title">
-      {{ processus.nom }}
-    </h4>
-    <p class="lead">{{ processus.description }}</p>
-    <a href="#detail" data-toggle="collapse"><span data-feather="more-horizontal" class="text-white float-right"></span></a>
+<div class="card">
+  <div class="card-header">
+    <a class="card-link float-right" data-toggle="collapse" href="#{{ processus.nom }}-activities">
+      <span data-feather="more-horizontal" class="text-info"></span>
+    </a>
+    <a href="{% url 'risk_register:detail_processus' pk=processus.code_processus %}"
+       class="card-link h5">{{ processus.nom }}: {{ processus.description|truncatechars:50 }}</a>
   </div>
-  <div class="card-footer collapse" id="detail">
-
-    <dl class="row">
-      <dt class="col-sm-3">{% trans 'Business Unit' %}:</dt>
-      <dd class="col-sm-9">{{ processus.business_unit }}</dd>
-      <dt class="col-sm-3">{% trans 'Type' %}:</dt>
-      <dd class="col-sm-9">{{ processus.get_type_processus_display }}</dd>
-      <dt class="col-sm-3">{% trans 'Manager' %}:</dt>
-      <dd class="col-sm-9">
-        <a href="mailto:{{ processus.proc_manager.email }}">{{ processus.proc_manager }}</a><br>
-      </dd>
-    </dl>
+  <div id="{{ processus.nom }}-activities" class="collapse">
+    {% if processus.activites.all %}
+      {% for activite in processus.activites.all %}
+        <div class="card card-body ml-4 p-1 mb-1">
+          <a href="{% url 'risk_register:detail_activite' pk=activite.code_activite %}"
+             class="h6 card-link ml-2">{{ activite.nom }}: {{ activite.description|truncatechars:50 }}</a></li>
+        </div>
+      {% endfor %}
+    {% else %}
+      <p class="lead ml-2">{% trans 'Ce processus ne comporte aucune activité' %}</p>
+    {% endif %}
+    <div class="card card-body ml-4 mb-2 p-1 ">
+      <a href="#" class="text-info card-link">
+        <span data-feather="plus-circle"></span> {% trans 'Nouvelle activité' %}
+      </a>{# TODO: ajouter l'url de création d'activité#}
+    </div>
   </div>
 </div>

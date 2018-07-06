@@ -1,0 +1,31 @@
+{% load i18n %}
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a
+      href="{% url 'risk_register:detail_business_unit' pk=processus.business_unit.denomination %}">Business Unit</a>
+    </li>
+    <li class="breadcrumb-item active h5" aria-current="page">{% trans 'Processus' %}</li>
+  </ol>
+</nav>
+<div class="card mb-4" style="border-color:#00a5e3;">
+  <div class="card-header text-white" style="background-color:#00a5e3;">
+    <h4 class="card-title">
+      {{ processus.nom }}
+    </h4>
+    <p class="lead">{{ processus.description }}</p>
+    <a href="#detail" data-toggle="collapse"><span data-feather="more-horizontal" class="text-white float-right"></span></a>
+  </div>
+  <div class="card-footer collapse" id="detail">
+
+    <dl class="row">
+      <dt class="col-sm-3">{% trans 'Business Unit' %}:</dt>
+      <dd class="col-sm-9">{{ processus.business_unit }}</dd>
+      <dt class="col-sm-3">{% trans 'Type' %}:</dt>
+      <dd class="col-sm-9">{{ processus.get_type_processus_display }}</dd>
+      <dt class="col-sm-3">{% trans 'Manager' %}:</dt>
+      <dd class="col-sm-9">
+        <a href="mailto:{{ processus.proc_manager.email }}">{{ processus.proc_manager }}</a><br>
+      </dd>
+    </dl>
+  </div>
+</div>
