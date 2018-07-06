@@ -1,13 +1,13 @@
 {% load i18n %}
 <div class="card">
   <div class="card-header">
-    <a class="card-link float-right" data-toggle="collapse" href="#{{ processus.nom }}-activities">
+    <a class="card-link float-right" data-toggle="collapse" href="#{{ processus.pk }}-activities">
       <span data-feather="more-horizontal" class="text-info"></span>
     </a>
     <a href="{% url 'risk_register:detail_processus' pk=processus.code_processus %}"
        class="card-link h5">{{ processus.nom }}: {{ processus.description|truncatechars:50 }}</a>
   </div>
-  <div id="{{ processus.nom }}-activities" class="collapse">
+  <div id="{{ processus.pk }}-activities" class="collapse">
     {% if processus.activites.all %}
       {% for activite in processus.activites.all %}
         <div class="card card-body ml-4 p-1 mb-1">

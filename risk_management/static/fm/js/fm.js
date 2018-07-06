@@ -222,6 +222,8 @@
 
             function process_response_data(data, options) {
                 if (data.status === 'ok') {
+                    debug('message:')
+                    debug(data.message)
                     modal.modal("hide");
                     var callback = options.modal_callback;
                     if (options.modal_callback === null || options.modal_callback === undefined) {

@@ -32,9 +32,9 @@
         {% else %}
           <h5>{% trans 'Ce Business unite ne comporte aucun processus pour le moment' %}</h5>
         {% endif %}
-        <div class="card card-header">
-          <a href="{% url 'risk_register:creer_processus' %}" class="fm-create text-info card-link"
-             data-fm-head="{% trans 'Nouveau Processus' %}" data-fm-callback="prepend" data-fm-target="">
+        <div class="card card-header" id="create">
+          <a href="{% url 'risk_register:creer_processus' business_unit=bu.denomination %}" class="fm-create text-info card-link"
+             data-fm-head="{% trans 'Nouveau Processus' %}" data-fm-callback="insertProcess" data-fm-target="#create">
             <span data-feather="plus-circle"></span> {% trans 'Nouveau processus' %}
           </a>
         </div>
@@ -175,4 +175,17 @@
     </div>
   {% endblock %}
 {% endblock %}
-
+{% block javascript %}
+  <script type="text/javascript">
+  $(function () {
+    $.fm({
+      debug: true,
+      custom_callbacks: {
+        "insertProcess": function (data, options) {
+          $(options.modal_target).before(data.message);
+        }
+      }
+    });
+  });
+  </script>
+{% endblock %}
