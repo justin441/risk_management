@@ -61,3 +61,5 @@ class CreateProcessView(AjaxCreateView):
         msg_ctx = super().get_message_template_context()
         msg_ctx['processus'] = self.object
         return msg_ctx
+
+

@@ -1,0 +1,46 @@
+{% load i18n %}
+<div class="card">
+  <div class="card-header">
+    <a class="card-link float-right" data-toggle="collapse" href="#risk-{{ activiterisque.pk }}">
+      <span data-feather="more-horizontal" class="text-info"></span>
+    </a>
+    <a href="#" class="card-title">{{ activiterisque.risque.nom }}: {{ activiterisque.risque.description|truncatechars:50 }}</a><br>
+    <div class="row">
+      <div class="col-sm-4">
+        <a href="" class="card-link mr-1">{% trans 'Seuil de risque' %}</a>
+        <span
+          class="{{ activiterisque.seuil_display }}">{{ activiterisque.seuil_de_risque|default_if_none:_('Non defini') }}</span>
+      </div>
+      <div class="col-sm-4">
+        <a href="" class="card-link mr-1">{% trans 'Facteur risque' %}</a>
+        <span
+          class="{{ activiterisque.facteur_risque_display }}">{{ activiterisque.facteur_risque|default_if_none:_('Non defini') }}</span>
+      </div>
+      <div class="col-sm-4">
+        <span class="mr-1">{% trans 'Statut du risque' %}</span>
+        <span class="{{ activiterisque.status_display }}">
+                  {% blocktrans with status=activiterisque.status|default_if_none:'Inconnu' %}
+                    {{ status }}
+                  {% endblocktrans %}
+                </span>
+      </div>
+    </div>
+  </div>
+  <div id="risk-{{ activiterisque.pk }}" class="collapse">
+    {% if activiterisque.controles.all %}
+      {% for controle in activiterisque.controles.all %}
+        <div class="card card-body ml-4 p-1 mb-1">
+          <a href="#"
+             class="h6 card-link ml-2">{{ controle.nom }}: {{ activite.description|truncatechars:50 }}</a></li>
+        </div>
+      {% endfor %}
+    {% else %}
+      <p class="lead ml-2">{% trans 'Ce risque ne comporte aucun contrôle' %}</p>
+    {% endif %}
+    <div class="card card-body ml-4 mb-2 p-1 ">
+      <a href="#" class="text-info card-link">
+        <span data-feather="plus-circle"></span> {% trans 'Nouveau contrôle' %}
+      </a>{# TODO: ajouter l'url de création du controle #}
+    </div>
+  </div>
+</div>

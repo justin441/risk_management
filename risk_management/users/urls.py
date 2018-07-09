@@ -12,4 +12,5 @@ urlpatterns = [
         view=views.UserDetailView.as_view(),
         name="detail",
     ),
+    path('user-autocomplete/', views.UserAutocomplete.as_view(), name='user-autocomplete')
 ]

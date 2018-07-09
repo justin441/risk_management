@@ -44,3 +44,6 @@ class TestUserURLs(TestCase):
     def test_update_resolve(self):
         """/users/~update/ should resolve to users:update."""
         self.assertEqual(resolve("/users/~update/").view_name, "users:update")
+
+    def test_user_autocomplete(self):
+        self.assertEqual(reverse('users:user-autocomplete'), "/users/user-autocomplete/")

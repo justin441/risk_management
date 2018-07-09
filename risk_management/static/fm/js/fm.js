@@ -117,6 +117,7 @@
                 }
                 modal_loader.show();
                 $.ajax({
+                    async: true,
                     url: options.url,
                     type: "GET",
                     dataType: "html",
@@ -171,6 +172,7 @@
                     var url = options.url;
                     disable_modal_buttons();
                     $.ajax({
+                        async: true,
                         url: url,
                         type: 'DELETE',
                         dataType: "json",
@@ -195,6 +197,7 @@
             function submit_form(form, options) {
 
                 var params = {
+                    async: true,
                     url: options.url,
                     type: form.attr('method').toUpperCase(),
                     dataType: "json"
