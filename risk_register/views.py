@@ -112,3 +112,7 @@ class DeleteActiviteView(AjaxDeleteView):
 
 class CreateProcessOutputView(AjaxCreateView):
     pass
+
+
+class AddProcessInputView(AjaxUpdateView):
+    pass
