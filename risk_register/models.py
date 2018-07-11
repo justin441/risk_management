@@ -113,7 +113,7 @@ class Activite(TimeFramedModel):
 
     def clean(self):
         """s'assurer que la date de debut de l'activité précède la date de fin"""
-        if self.start > self.end:
+        if (self.start and self.end) and (self.start > self.end):
             raise ValidationError(
                 {
                     'end': _('l\'activité ne peut pas se terminer avant d\'avoir commencé!')
@@ -457,7 +457,7 @@ class Estimation(TimeStampedModel, RiskMixin):
 
 
 class Controle(TimeFramedModel, TimeStampedModel, RiskMixin):
-    STATUS = Choices((0, 'in_progress', _('en cours')), (1, 'completed', _('achevé')))
+    STATUS = Choices(('in_progress', _('en cours')), ('completed', _('achevé')))
     code_traitement = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     critere_cible = models.CharField(max_length=1,
                                      choices={

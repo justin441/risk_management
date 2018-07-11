@@ -1,0 +1,27 @@
+{% load i18n %}
+
+<div class="text-center">
+  <form role="form" method="post">
+  <h4>{% blocktrans with nom=processus.nom %}
+  Vous allez supprimer le processus "{{ nom }}"
+{% endblocktrans %}</h4>
+
+  {% if activites.all %}
+    {% blocktrans count nb_activites=activites.count  %}
+      <p class="lead">Ce processus comporte une activité non achevée</p>
+      {% plural %}
+      <p class="lead">Ce processus comporte {{ nb_activites }} activités non achevées</p>
+    {% endblocktrans %}
+{% endif %}
+  {% if risques.all %}
+    {% blocktrans count nb_risques=risques.count %}
+      <p class="lead">Ce processus comporte un risque confirmé</p>
+      {% plural %}
+      <p class="lead">Ce processus comporte {{ nb_risques }} risques confirmés</p>
+    {% endblocktrans %}
+  {% endif %}
+
+<p>{% trans 'Êtes-vous sûr(e) de vouloir supprimer ce processus?' %}</p>
+</form>
+</div>
+

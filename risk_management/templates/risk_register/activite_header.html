@@ -8,6 +8,15 @@
 </nav>
 <div class="card mb-4" style=" border-color:#00a5e3;">
   <div class="card-header text-white" style="background-color:#00a5e3;">
+    <a href="{% url 'risk_register:effacer_activite' pk=activite.pk %}" class="fm-delete" data-fm-callback="redirect"
+       data-fm-head="{% trans 'Supprimer une activité' %}"
+       data-fm-target="{% url 'risk_register:detail_processus' pk=activite.processus.pk %}">
+      <span data-feather="trash-2" class="float-sm-right text-white ml-2"></span>
+    </a>
+    <a href="{% url 'risk_register:modifier_activite' pk=activite.pk %}" class="fm-update" data-fm-callback="reload"
+       data-fm-head="{% trans 'Modifier une activité' %}">
+      <span data-feather="edit-3" class="float-sm-right text-white"></span>
+    </a>
     <h4 class="card-title">
       {{ activite.nom}}
     </h4>
@@ -24,11 +33,11 @@
         <dt class="col-sm-3">{% trans 'Statut' %}:</dt>
         <dd class="col-sm-9">
           <span class="{% if activite.status == 'pending' %}text-info{% else %}text-danger{% endif %}">
-            {{ activite.status }}
+            {{ activite.get_status_display }}
           </span>
         </dd>
-      <dt class="col-sm-3">{% trans 'Risques soumis' %}:</dt>
-        <dd class="col-sm-9"><span class="badge badge-pill badge-danger">{{ activite.risques.count }}</span></dd>
+      <dt class="col-sm-3">{% trans 'Risques identifiés ' %}:</dt>
+        <dd class="col-sm-9"><span class="badge badge-pill badge-secondary">{{ activite.risques.count }}</span></dd>
         <dt class="col-sm-3">{% trans 'Propriétaire' %}:</dt>
         <dd class="col-sm-9"><a href="mailto:{{ activite.responsable.email }}">{{ activite.responsable }}</a></dd>
       </dl>

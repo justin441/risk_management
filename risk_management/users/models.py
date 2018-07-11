@@ -62,8 +62,8 @@ class User(AbstractUser):
     )
     civilite = models.CharField(
         max_length=3, choices=CIVILITE_CHOIX, default=MONSIEUR, verbose_name=_("Titre"))
-    first_name = models.CharField(_('first name'), max_length=30)
-    last_name = models.CharField(_('last name'), max_length=150)
+    first_name = models.CharField(_('prénom'), max_length=30)
+    last_name = models.CharField(_('nom'), max_length=150)
     business_unit = models.ForeignKey('BusinessUnit', on_delete=models.CASCADE, related_name='employes',
                                       verbose_name=_("Business Unit"))
     fonction = models.CharField(max_length=100, verbose_name=_('poste'),
@@ -118,5 +118,8 @@ class User(AbstractUser):
                 {'fonction': 'Ce projet / business unit a déjà un manager. Si vous voulez le changer veuillez d\'abord \
                              changer la fonction de l\'actuel manager'}
             )
+
+    class Meta:
+        ordering = ('first_name', 'last_name')
 
 

@@ -1,0 +1,23 @@
+{% load i18n %}
+
+<div class="text-center">
+  <form role="form" method="post">
+  <h4>{% blocktrans with nom=activite.nom %}
+  Vous allez supprimer l'activité "{{ nom }}"
+{% endblocktrans %}</h4>
+
+  {% if activite.status == 'pending' %}
+  <p class="lead">{% trans 'Cette activité est en cours' %}</p>
+  {% endif %}
+
+  {% if risques.all %}
+    {% blocktrans count nb_risques=risques.count %}
+      <p class="lead">Cette activité comporte un risque confirmé</p>
+      {% plural %}
+      <p class="lead">Cette activité comporte {{ nb_risques }} risques confirmés</p>
+    {% endblocktrans %}
+  {% endif %}
+
+<p>{% trans 'Êtes-vous sûr(e) de vouloir supprimer cette activité?' %}</p>
+</form>
+</div>

@@ -72,6 +72,7 @@ THIRD_PARTY_APPS = [
     'allauth.socialaccount',
     'rest_framework',
     'rules.apps.AutodiscoverRulesConfig',
+
 ]
 LOCAL_APPS = [
     'risk_management.users.apps.UsersConfig',
@@ -264,4 +265,3 @@ SOCIALACCOUNT_ADAPTER = 'risk_management.users.adapters.SocialAccountAdapter'
 ACCOUNT_SIGNUP_FORM_CLASS = 'risk_management.users.forms.UserForm'
 # Your stuff...
 # ------------------------------------------------------------------------------
-

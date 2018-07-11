@@ -7,6 +7,7 @@
                 create_button_selector: ".fm-create",
                 update_button_selector: ".fm-update",
                 delete_button_selector: ".fm-delete",
+                detail_button_selector: ".fm-detail",
                 modal_selector: '#fm-modal',
                 modal_wrapper_selector: '.modal-wrapper',
                 modal_head_selector: '.modal-head',
@@ -127,6 +128,8 @@
                     },
                     success: function (data) {
                         debug("modal body successfully loaded");
+                        debug('html:');
+                        debug(data);
                         modal_body.html(data);
                         show_modal_wrapper();
                         var form = modal.find('form');
@@ -182,6 +185,7 @@
                         }
                     });
                 });
+                load_content(options);
             }
 
             function extract_modal_options(element, action) {
@@ -291,6 +295,12 @@
                 delegate_target.on('click', global_options.delete_button_selector, function () {
                     var self = $(this);
                     show_delete_modal(self);
+                    return false;
+                });
+
+                delegate_target.on('click', global_options.detail_button_selector, function () {
+                    var self = $(this);
+                    show_modal(self);
                     return false;
                 });
             }

@@ -12,13 +12,14 @@
   {% endblock %}
   <ul class="nav nav-tabs nav-justified">
     <li class="nav-item">
-      <a href="#risquesprocessus" class="nav-link active" role="tab" data-toggle="tab">{% trans 'Risques du processus' %}</a>
-    </li>
-    <li class="nav-item">
-      <a href="#activiterisques" class="nav-link" role="tab" data-toggle="tab">{% trans 'Risques des activités' %}</a>
+      <a href="#risquesprocessus" class="nav-link active" role="tab"
+         data-toggle="tab">{% trans 'Risques du processus' %}</a>
     </li>
     <li class="nav-item">
       <a href="#activites" class="nav-link" role="tab" data-toggle="tab">{% trans 'Liste des activités' %}</a>
+    </li>
+    <li class="nav-item">
+      <a href="#activiterisques" class="nav-link" role="tab" data-toggle="tab">{% trans 'Risques des activités' %}</a>
     </li>
     <li class="nav-item">
       <a href="#inputOutput" class="nav-link" role="tab"
@@ -29,92 +30,47 @@
   {% block data %}
     <div class="tab-content">
       <div role="tabpanel" class="tab-pane mt-3" id="activites">
-        {% if processus.activites.all %}
-          {% for activite in processus.activites.all %}
-            <div class="card mb-1">
-              <div class="card-body">
+        {% for activite in processus.activites.all %}
+          <div class="card mb-2">
+            <div class="card-body">
               <a href="" class="card-link float-right"><span data-feather="settings" class="text-info"></span></a>
-                <h5 class="card-title"><a href="{% url 'risk_register:detail_activite' pk=activite.code_activite %}">{{ activite.nom }}</a></h5>
-                <p class="lead">{{ activite.description|truncatechars:50}}</p>
-                <dl class="row">
-                  <dt class="col-sm-3">{% trans 'Manager' %}</dt>
-                  <dd class="col-sm-9">{{ activite.responsable }}</dd>
-                  <dt class="col-sm-3">{% trans 'Statut' %}</dt>
-                  <dd class="col-sm-9">
-                    {% if activite.status == 'completed' %}
-                      <span class="text-success">{{ activite.status }}</span>
-                    {% else %}
-                      <span class="text-muted">{{ activite.status }}</span>
-                    {% endif %}
-                  </dd>
-                </dl>
+              <a href="{% url 'risk_register:detail_activite' pk=activite.code_activite %}"
+                 class="h6 card-title">{{ activite.nom }}: {{ activite.description|truncatechars:50 }}</a>
+              <div class="row mt-2">
+                <div class="col-md-3">
+                  <a href="">{% trans 'Propriétaire' %}</a><br>
+                  <span>{{ activite.responsable }}</span>
+                </div>
+                <div class="col-md-3">
+                  <a href="">{% trans 'Statut' %}</a><br>
+                  <span>{{ activite.get_status_display }}</span>
+                </div>
               </div>
             </div>
-          {% endfor %}
-        {% else %}
+          </div>
+        {% empty %}
           <p class="lead ml-2">{% trans 'Ce processus ne comporte aucune activité' %}</p>
-        {% endif %}
+        {% endfor %}
+        <div class="card card-body mt-4 p-1 border-0" id="create-activity-2">
+          <a href="{% url 'risk_register:creer_activite' processus=processus.pk %}"
+             class="text-info card-link fm-create"
+             data-fm-head="{% trans 'Nouvelle activité' %}" data-fm-callback="insertProcess" data-fm-target="#">
+            <span data-feather="plus-circle"></span> {% trans 'Nouvelle activité' %}
+          </a>
+        </div>
       </div>
       <div role="tabpanel" class="tab-pane mt-3 active" id="risquesprocessus">
-        <div class="table-responsive ">
-          <table class="table table-striped table-sm" id="processusRisqueTable">
-          <thead>
-          <tr>
-            <th>{% trans 'Ajouté' %}</th>
-            <th>{% trans 'Risque' %}</th>
-            <th>{% trans 'Ajouté par' %}</th>
-            <th>{% trans 'Vérification' %}</th>
-            <th>{% trans 'Seuil de risque' %}</th>
-            <th>{% trans 'Facteur risque' %}</th>
-            <th>{% trans 'Statut du risque' %}</th>
-            <th>{% trans 'Propriétaire' %}</th>
-            <th>{% trans 'Date de revue' %}</th>
-          </tr>
-          </thead>
-          <tbody>
-          {% if processusrisques %}
-             {% for processusrisque in processusrisques %}
-              <tr>
-                <td>{{ processusrisque.created|naturaltime }}</td>
-                <td>{{ processusrisque.risque.nom }}</td>
-                <td>{{ processusrisque.soumis_par }}</td>
-                <td>
-                  {% if processusrisque.verifie == 'verified' %}
-                    {{ processusrisque.get_verifie_display }}<span data-feather="check" class="text-success"></span>
-                    {% else %}
-                    <span class="text-danger">{{ processusrisque.get_verifie_display }}</span>
-                  {% endif %}
-                </td>
-                <td class="{{ processusrisque.seuil_display }}">{{ processusrisque.seuil_de_risque|default_if_none:_('Non defini') }}</td>
-                <td class="{{ processusrisque.facteur_risque_display }}">{{ processusrisque.facteur_risque|default_if_none:_('Non estimé') }}</td>
-                <td class="{{ processusrisque.status_display }}">
-                  {% blocktrans with status=processusrisque.status|default_if_none:_('inconnu') %}
-                    {{ status }}
-                  {% endblocktrans %}
-                </td>
-                <td><a href="#">{{ processusrisque.get_proprietaire|default_if_none:_('Non assigné') }}</a></td> {# TODO: ajouter l'url#}
-                <td>
-                  {% if processusrisque.est_obsolete %}
-                    <span class="text-danger">{% trans passée %} {{ processusrisque.date_revue|naturaltime  }}</span>
-                  {% else %}
-                   {% if processusrisque.date_revue %}
-                      <span class="text-success">{{ processusrisque.date_revue|naturaltime }}</span>
-                     {% else %}
-                       <span class="text-danger">????</span>
-                   {% endif %}
-                  {% endif %}
-                </td>
-              </tr>
-             {% endfor %}
-            {% else %}
-            <tr>
-            <td class="bg-white"><h5>{% trans 'Aucun risque identifié pour les processus de ce processus' %}</h5></td>
-            </tr>
-            {% endif %}
-          </tbody>
-
-          </table>
+        {% for processusrisque in processusrisques %}
+          {% include 'risk_register/processusrisque_card.html' %}
+        {% empty %}
+          <h5>{% trans 'Aucun risque identifié pour de ce processus' %}</h5>
+        {% endfor %}
+      <div class="card card-body mt-4 p-1 border-0" id="create-processusrisque">
+          <a href="" class="text-info card-link fm-create" data-fm-head="{% trans 'Nouvelle activité' %}" data-fm-callback="insertProcess" data-fm-target="processusrisque">
+            <span data-feather="plus-circle"></span> {% trans 'Nouveau risque' %}
+          </a>
         </div>
+
       </div>
       <div role="tabpanel" class="tab-pane mt-3" id="activiterisques">
         <div class="table-responsive">
@@ -173,9 +129,11 @@
                 </tr>
               {% endfor %}
             {% else %}
-              <tr><td class="bg-white">
-                <h5 >{% trans 'Aucun risque identifié pour les activités de ce processus' %}</h5>
-              </td></tr>
+              <tr>
+                <td class="bg-white" colspan="10">
+                  <h5>{% trans 'Aucun risque identifié pour les activités de ce processus' %}</h5>
+                </td>
+              </tr>
             {% endif %}
             </tbody>
 
@@ -193,58 +151,61 @@
               </tr>
               </thead>
               <tbody>
-              {% if processus.input_data.all %}
-                {% for processdata in processus.input_data.all %}
-                  <tr>
+              {% for processdata in processus.input_data.all %}
+                <tr>
                   <td>{{ processdata.nom }}</td>
                   <td>
                     {% if processdata.origine %}
-                      <a href="{% url 'risk_register:detail_processus' pk=processdata.origine.code_processus %}">{{ processdata.origine}}</a>
+                      <a
+                        href="{% url 'risk_register:detail_processus' pk=processdata.origine.code_processus %}">{{ processdata.origine }}</a>
                     {% else %}
-                      {{ processdata.commentaire}}
+                      {{ processdata.commentaire|default:_('Fournisseur externe') }}
                     {% endif %}
                   </td>
                 </tr>
-                {% endfor %}
-              {% else %}
-               <tr>
-               <td>{% trans "Aucune donnée d'entrée" %}</td>
-               </tr>
-              {% endif %}
+              {% empty %}
+                <tr>
+                  <td colspan="2">{% trans "Aucune donnée d'entrée" %}</td>
+                </tr>
+              {% endfor %}
               </tbody>
             </table>
+            <a href="" class="text-info"> <span data-feather="plus"></span>{% trans 'Ajouter' %}</a>
           </div>
           <div class="col">
             <table class="table table-sm">
               <thead class="thead-light">
-                <tr>
-                  <th>{% trans "Données de sortie" %}</th>
-                  <th>{% trans "Clients" %}</th>
-                </tr>
+              <tr>
+                <th>{% trans "Données de sortie" %}</th>
+                <th>{% trans "Clients" %}</th>
+              </tr>
               </thead>
               <tbody>
-                {% if processus.ouput_data.all %}
-                  {% for dataprocess in processus.ouput_data.all %}
-                    <tr>
-                      <th>{{ dataprocess.nom }}</th>
-                      <th>
-                        {% if dataprocess.clients.all %}
-                          {% for process in dataprocess.clients.all %}
-                            <a href="{% url 'risk_register:detail_processus' pk=processdata.origine.code_processus %}">{{ process.nom }}</a>;
-                          {% endfor %}
-                        {% else %}
-                          {{ dataprocess.commentaire|default_if_none:_('Client externe') }}
-                        {% endif %}
-                      </th>
-                    </tr>
-                  {% endfor %}
-                {% else %}
+              {% if processus.ouput_data.all %}
+                {% for dataprocess in processus.ouput_data.all %}
                   <tr>
-                  <td>{% trans "Aucune donnée de sortie" %}</td>
+                    <th>{{ dataprocess.nom }}</th>
+                    <th>
+                      {% if dataprocess.clients.all %}
+                        {% for process in dataprocess.clients.all %}
+                          <a
+                            href="{% url 'risk_register:detail_processus' pk=processdata.origine.code_processus %}">{{ process.nom }}</a>
+                          ;
+                        {% endfor %}
+                      {% else %}
+                        {{ dataprocess.commentaire|default:_('Client externe') }}
+                      {% endif %}
+                    </th>
                   </tr>
-                {% endif %}
+                {% endfor %}
+              {% else %}
+                <tr>
+                  <td>{% trans "Aucune donnée de sortie" %}</td>
+                </tr>
+              {% endif %}
               </tbody>
             </table>
+            <a href="" class="text-info"> <span data-feather="plus"></span>{% trans 'Ajouter' %}</a>
           </div>
         </div>
       </div>

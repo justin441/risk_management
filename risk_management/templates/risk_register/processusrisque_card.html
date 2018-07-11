@@ -1,35 +1,36 @@
 {% load i18n %}
 <div class="card mb-3">
   <div class="card-body">
-    <a class="card-link float-right" data-toggle="collapse" href="#risk-{{ activiterisque.pk }}">
+    <a class="card-link float-right" data-toggle="collapse" href="#risk-{{ processusrisque.pk }}">
       <span data-feather="more-horizontal" class="text-info"></span>
     </a>
-    <a href="#" class="card-title h6">{{ activiterisque.risque.nom }}: {{ activiterisque.risque.description|truncatechars:50 }}</a><br>
+    <a href="#"
+       class="card-title h6">{{ processusrisque.risque.nom }}: {{ processusrisque.risque.description|truncatechars:50 }}</a><br>
     <div class="row mt-2">
       <div class="col-md-2">
         <a href="">{% trans 'Seuil de risque' %}</a><br>
         <span
-          class="{{ activiterisque.seuil_display }}">{{ activiterisque.seuil_de_risque|default_if_none:_('Non defini') }}</span>
+          class="{{ processusrisque.seuil_display }}">{{ processusrisque.seuil_de_risque|default_if_none:_('Non defini') }}</span>
       </div>
       <div class="col-md-2">
         <a href="">{% trans 'Facteur risque' %}</a><br>
         <span
-          class="{{ activiterisque.facteur_risque_display }}">{{ activiterisque.facteur_risque|default_if_none:_('Non defini') }}</span>
+          class="{{ processusrisque.facteur_risque_display }}">{{ processusrisque.facteur_risque|default_if_none:_('Non defini') }}</span>
       </div>
       <div class="col-md-2">
         <span>{% trans 'Statut du risque' %}</span><br>
-        <span class="{{ activiterisque.status_display }}">
-                  {% blocktrans with status=activiterisque.status|default_if_none:'Inconnu' %}
+        <span class="{{ processusrisque.status_display }}">
+                  {% blocktrans with status=processusrisque.status|default_if_none:'Inconnu' %}
                     {{ status }}
                   {% endblocktrans %}
                 </span>
       </div>
     </div>
   </div>
-  <div id="risk-{{ activiterisque.pk }}" class="collapse">
-  <h5 class="ml-4">{% trans 'Contrôles' %}</h5>
-    {% if activiterisque.controles.all %}
-      {% for controle in activiterisque.controles.all %}
+  <div id="risk-{{ processusrisque.pk }}" class="collapse">
+    <h5 class="ml-4">{% trans 'Contrôles' %}</h5>
+    {% if processusrisque.controles.all %}
+      {% for controle in processusrisque.controles.all %}
         <div class="card card-body ml-4 p-1 mb-1">
           <a href="#"
              class="h6 card-link ml-2">{{ controle.nom }}: {{ activite.description|truncatechars:50 }}</a></li>

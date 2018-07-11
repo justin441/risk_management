@@ -1,27 +1,25 @@
 {% load i18n %}
-<div class="card">
+<div class="card mt-3">
   <div class="card-header">
     <a class="card-link float-right" data-toggle="collapse" href="#{{ processus.pk }}-activities">
       <span data-feather="more-horizontal" class="text-info"></span>
     </a>
     <a href="{% url 'risk_register:detail_processus' pk=processus.code_processus %}"
        class="card-link h5">{{ processus.nom }}: {{ processus.description|truncatechars:50 }}</a>
+    <br>
+
   </div>
   <div id="{{ processus.pk }}-activities" class="collapse">
-    {% if processus.activites.all %}
       {% for activite in processus.activites.all %}
-        <div class="card card-body ml-4 p-1 mb-1">
-          <a href="{% url 'risk_register:detail_activite' pk=activite.code_activite %}"
-             class="h6 card-link ml-2">{{ activite.nom }}: {{ activite.description|truncatechars:50 }}</a></li>
-        </div>
+        {% include 'risk_register/activity_card.html' %}
+        {% empty %}
+        <p class="lead ml-2">{% trans 'Ce processus ne comporte aucune activité' %}</p>
       {% endfor %}
-    {% else %}
-      <p class="lead ml-2">{% trans 'Ce processus ne comporte aucune activité' %}</p>
-    {% endif %}
-    <div class="card card-body ml-4 mb-2 p-1 ">
-      <a href="#" class="text-info card-link">
+    <div class="card card-body ml-4 mt-4 mb-2 p-1 border-0" id="create-activity-2">
+      <a href="{% url 'risk_register:creer_activite' processus=processus.pk %}" class="text-info card-link fm-create"
+         data-fm-head="{% trans 'Nouvelle activité' %}" data-fm-callback="insertProcess" data-fm-target="#">
         <span data-feather="plus-circle"></span> {% trans 'Nouvelle activité' %}
-      </a>{# TODO: ajouter l'url de création d'activité#}
+      </a>
     </div>
   </div>
 </div>

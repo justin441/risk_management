@@ -25,15 +25,14 @@
   {% block data %}
     <div class="tab-content">
       <div role="tabpanel" class="tab-pane active mt-3" id="processus">
-        {% if bu.processus_set.all %}
-          {% for processus in bu.processus_set.all %}
-            {% include 'risk_register/process_card.html' %}
-          {% endfor %}
-        {% else %}
+        {% for processus in bu.processus_set.all %}
+          {% include 'risk_register/process_card.html' %}
+        {% empty %}
           <h5>{% trans 'Ce Business unite ne comporte aucun processus pour le moment' %}</h5>
-        {% endif %}
-        <div class="card card-header" id="create">
-          <a href="{% url 'risk_register:creer_processus' business_unit=bu.denomination %}" class="fm-create text-info card-link"
+        {% endfor %}
+        <div class="card card-header border-0 mt-3" id="create">
+          <a href="{% url 'risk_register:creer_processus' business_unit=bu.denomination %}"
+             class="fm-create text-info card-link"
              data-fm-head="{% trans 'Nouveau Processus' %}" data-fm-callback="insertProcess" data-fm-target="#create">
             <span data-feather="plus-circle"></span> {% trans 'Nouveau processus' %}
           </a>
@@ -45,6 +44,7 @@
           <table class="table table-striped table-sm" id="processusRisqueTable">
             <thead>
             <tr>
+              <th>#</th>
               <th>{% trans 'Ajouté' %}</th>
               <th>{% trans 'processus' %}</th>
               <th>{% trans 'Risque' %}</th>
@@ -61,6 +61,7 @@
             {% if processusrisques %}
               {% for processusrisque in processusrisques %}
                 <tr>
+                  <td><a href="">{{ forloop.counter }}</a></td>
                   <td>{{ processusrisque.created|naturaltime }}</td>
                   <td>{{ processusrisque.processus }}</td>
                   <td>{{ processusrisque.risque.nom }}</td>
@@ -101,7 +102,10 @@
                 </tr>
               {% endfor %}
             {% else %}
-              <h5>{% trans 'Aucun risque identifié pour les processus de ce Business Unit' %}</h5>
+              <tr>
+                <td colspan="10"><h5>{% trans 'Aucun risque identifié pour les processus de ce Business Unit' %}</h5>
+                </td>
+              </tr>
             {% endif %}
             </tbody>
 
@@ -113,6 +117,7 @@
           <table class="table table-striped table-sm" id="activiteRisqueTable">
             <thead>
             <tr>
+              <th>#</th>
               <th>{% trans 'Ajouté' %}</th>
               <th>{% trans 'Activités' %}</th>
               <th>{% trans 'Risque' %}</th>
@@ -129,6 +134,7 @@
             {% if activiterisques %}
               {% for activiterisque in activiterisques %}
                 <tr>
+                  <td><a href="">{{ forloop.counter }}</a></td>
                   <td>{{ activiterisque.created|naturaltime }}</td>
                   <td>{{ activiterisque.activite }}</td>
                   <td>{{ activiterisque.risque.nom }}</td>
@@ -165,7 +171,10 @@
                 </tr>
               {% endfor %}
             {% else %}
-              <h5>{% trans 'Aucun risque identifié pour les activités de ce Business Unit' %}</h5>
+              <tr>
+                <td colspan="10"><h5>{% trans 'Aucun risque identifié pour les activités de ce Business Unit' %}</h5>
+                </td>
+              </tr>
             {% endif %}
             </tbody>
 
@@ -177,15 +186,15 @@
 {% endblock %}
 {% block javascript %}
   <script type="text/javascript">
-  $(function () {
-    $.fm({
-      debug: true,
-      custom_callbacks: {
-        "insertProcess": function (data, options) {
-          $(options.modal_target).before(data.message);
+    $(function () {
+      $.fm({
+        debug: true,
+        custom_callbacks: {
+          "insertProcess": function (data, options) {
+            $(options.modal_target).before(data.message);
+          }
         }
-      }
+      });
     });
-  });
   </script>
 {% endblock %}

@@ -34,6 +34,22 @@ class TestProcessUrls(TestCase):
         self.assertEqual(resolve('/risk-register/process/%s/' % self.process.code_processus).view_name,
                          'risk_register:detail_processus')
 
+    def test_create_process_reverse(self):
+        self.assertEqual(reverse('risk_register:creer_processus', kwargs={'business_unit': 'Cameroon Tobacco Company'}),
+                         '/risk-register/Cameroon%20Tobacco%20Company/create-process/')
+
+    def test_create_process_resolve(self):
+        self.assertEqual(resolve('/risk-register/Cameroon%20Tobacco%20Company/create-process/').view_name,
+                         'risk_register:creer_processus')
+
+    def test_update_process_resolve(self):
+        self.assertEqual(resolve('/risk-register/%s/update-process/' % self.process.pk).view_name,
+                         'risk_register:modifier_processus')
+
+    def test_update_process_reverse(self):
+        self.assertEqual(reverse('risk_register:modifier_processus', kwargs={'pk': self.process.pk}),
+                         '/risk-register/%s/update-process/' % self.process.pk)
+
 
 class TestActivityUrls(TestCase):
     def setUp(self):
