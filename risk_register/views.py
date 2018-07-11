@@ -108,3 +108,7 @@ class DeleteActiviteView(AjaxDeleteView):
         context['risques'] = ActiviteRisque.objects.filter(activite=self.get_object(), verifie='verified')
         context['activite'] = self.get_object()
         return context
+
+
+class CreateProcessOutputView(AjaxCreateView):
+    pass
