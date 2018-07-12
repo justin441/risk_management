@@ -37,16 +37,6 @@ class ProcessData(models.Model):
     def __str__(self):
         return self.nom
 
-    def clean(self):
-        if not self.origine and not self.commentaire:
-            raise ValidationError(
-                {'commentaire': 'Vous n\'avez indiquer aucun fournisseur.'}
-            )
-        elif self.origine and self.commentaire:
-            raise ValidationError(
-                {'commentaire': 'veuillez n\'indiquer qu\'un seul fournisseur'}
-            )
-
     class Meta:
         ordering = ['nom']
         unique_together = (("nom", "origine"),)

@@ -6,8 +6,8 @@ from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy, reverse
 
 from risk_management.users.models import BusinessUnit
-from .models import (ActiviteRisque, ProcessusRisque, Processus, Activite)
-from .forms import CreateProcessForm, CreateActivityForm
+from .models import (ActiviteRisque, ProcessusRisque, Processus, Activite, ProcessData)
+from .forms import (CreateProcessForm, CreateActivityForm, CreateProcessOutputDataForm, AddInputDataForm)
 
 # Create your views here.
 
@@ -111,8 +111,18 @@ class DeleteActiviteView(AjaxDeleteView):
 
 
 class CreateProcessOutputView(AjaxCreateView):
-    pass
+    form_class = CreateProcessOutputDataForm
+
+    def get_message_template_context(self):
+        msg_ctx = super().get_message_template_context()
+        msg_ctx['dataprocess'] = self.object
+        return msg_ctx
+
+    def pre_save(self):
+        self.object.origine = get_object_or_404(Processus, pk=self.kwargs['processus'])
 
 
 class AddProcessInputView(AjaxUpdateView):
-    pass
+    form_class = AddInputDataForm
+    model = Processus
+    pk_url_kwarg = 'processus'

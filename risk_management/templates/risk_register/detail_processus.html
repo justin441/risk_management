@@ -65,8 +65,9 @@
         {% empty %}
           <h5>{% trans 'Aucun risque identifié pour de ce processus' %}</h5>
         {% endfor %}
-      <div class="card card-body mt-4 p-1 border-0" id="create-processusrisque">
-          <a href="" class="text-info card-link fm-create" data-fm-head="{% trans 'Nouvelle activité' %}" data-fm-callback="insertProcess" data-fm-target="processusrisque">
+        <div class="card card-body mt-4 p-1 border-0" id="create-processusrisque">
+          <a href="" class="text-info card-link fm-create" data-fm-head="{% trans 'Nouvelle activité' %}"
+             data-fm-callback="insertProcess" data-fm-target="processusrisque">
             <span data-feather="plus-circle"></span> {% trans 'Nouveau risque' %}
           </a>
         </div>
@@ -150,19 +151,9 @@
                 <th>{% trans "Fournisseurs" %}</th>
               </tr>
               </thead>
-              <tbody>
+              <tbody id="inputData">
               {% for processdata in processus.input_data.all %}
-                <tr>
-                  <td>{{ processdata.nom }}</td>
-                  <td>
-                    {% if processdata.origine %}
-                      <a
-                        href="{% url 'risk_register:detail_processus' pk=processdata.origine.code_processus %}">{{ processdata.origine }}</a>
-                    {% else %}
-                      {{ processdata.commentaire|default:_('Fournisseur externe') }}
-                    {% endif %}
-                  </td>
-                </tr>
+                {% include 'risk_register/processInputData_row.html' %}
               {% empty %}
                 <tr>
                   <td colspan="2">{% trans "Aucune donnée d'entrée" %}</td>
@@ -170,7 +161,11 @@
               {% endfor %}
               </tbody>
             </table>
-            <a href="" class="text-info"> <span data-feather="plus"></span>{% trans 'Ajouter' %}</a>
+            <a href="{% url 'risk_register:ajout_entree' processus=processus.pk %}" class="fm-update text-info"
+               data-fm-head="{% trans "Ajouteer une donnée d'entrée" %}"
+            data-fm-callback="reload">
+              <span data-feather="plus"></span>{% trans 'Ajouter' %}
+            </a>
           </div>
           <div class="col">
             <table class="table table-sm">
@@ -180,32 +175,21 @@
                 <th>{% trans "Clients" %}</th>
               </tr>
               </thead>
-              <tbody>
-              {% if processus.ouput_data.all %}
-                {% for dataprocess in processus.ouput_data.all %}
-                  <tr>
-                    <th>{{ dataprocess.nom }}</th>
-                    <th>
-                      {% if dataprocess.clients.all %}
-                        {% for process in dataprocess.clients.all %}
-                          <a
-                            href="{% url 'risk_register:detail_processus' pk=processdata.origine.code_processus %}">{{ process.nom }}</a>
-                          ;
-                        {% endfor %}
-                      {% else %}
-                        {{ dataprocess.commentaire|default:_('Client externe') }}
-                      {% endif %}
-                    </th>
-                  </tr>
-                {% endfor %}
-              {% else %}
+              <tbody id="outputData">
+              {% for dataprocess in processus.ouput_data.all %}
+                {% include 'risk_register/processOutputData_row.html' %}
+              {% empty %}
                 <tr>
-                  <td>{% trans "Aucune donnée de sortie" %}</td>
+                  <td colspan="2">{% trans "Aucune donnée de sortie" %}</td>
                 </tr>
-              {% endif %}
+              {% endfor %}
               </tbody>
             </table>
-            <a href="" class="text-info"> <span data-feather="plus"></span>{% trans 'Ajouter' %}</a>
+            <a href="{% url 'risk_register:ajout_sortie' processus=processus.pk %}" class="fm-create text-info"
+               data-fm-head="{% trans 'Ajouter une donnée de sortie' %}"
+            data-fm-callback="append" data-fm-target="#outputData">
+              <span data-feather="plus"></span>{% trans 'Ajouter' %}
+            </a>
           </div>
         </div>
       </div>

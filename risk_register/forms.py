@@ -5,7 +5,7 @@ from django import forms
 from django.utils.translation import ugettext_lazy as _
 from django.utils.timezone import now
 
-from .models import (Processus, Activite)
+from .models import (Processus, Activite, ProcessData)
 
 
 class CreateProcessForm(forms.ModelForm):
@@ -13,8 +13,23 @@ class CreateProcessForm(forms.ModelForm):
         model = Processus
         exclude = ['business_unit', 'input_data']
         widgets = {
-            'proc_manager': autocomplete.ModelSelect2(url='users:user-autocomplete')
+            'proc_manager': autocomplete.ModelSelect2(url='users:user-autocomplete'),
         }
+
+
+class AddInputDataForm(forms.ModelForm):
+    class Meta:
+        model = Processus
+        widgets = {
+            'input_data': forms.CheckboxSelectMultiple(),
+        }
+        fields = ['input_data']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        processus = self.instance
+        q = ProcessData.objects.filter(origine__business_unit=processus.business_unit)
+        self.fields['input_data'].queryset = q.exclude(origine=processus)
 
 
 class CreateActivityForm(forms.ModelForm):
@@ -30,3 +45,18 @@ class CreateActivityForm(forms.ModelForm):
             'nom': forms.TextInput(attrs={'size': 80}),
             'description': forms.Textarea(attrs={'cols': 80, 'rows': 3, 'style': 'resize: none;'}),
         }
+
+    def clean(self):
+        cleaned_data = super().clean()
+        start = cleaned_data.get('start', '')
+        end = cleaned_data.get('end', '')
+        if start > end:
+            msg = _('La date de debut est postérieure à la date de fin.')
+            raise forms.ValidationError(msg)
+        return cleaned_data
+
+
+class CreateProcessOutputDataForm(forms.ModelForm):
+    class Meta:
+        model = ProcessData
+        fields = ['nom']
