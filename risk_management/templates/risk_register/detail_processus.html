@@ -66,8 +66,9 @@
           <h5>{% trans 'Aucun risque identifié pour de ce processus' %}</h5>
         {% endfor %}
         <div class="card card-body mt-4 p-1 border-0" id="create-processusrisque">
-          <a href="" class="text-info card-link fm-create" data-fm-head="{% trans 'Nouvelle activité' %}"
-             data-fm-callback="insertProcess" data-fm-target="processusrisque">
+          <a href="{% url 'risk_register:ajout_processusrisque' processus=processus.pk %}"
+             class="text-info card-link fm-create" data-fm-head="{% trans 'Identification du risque' %}"
+             data-fm-callback="reload">
             <span data-feather="plus-circle"></span> {% trans 'Nouveau risque' %}
           </a>
         </div>
@@ -163,7 +164,7 @@
             </table>
             <a href="{% url 'risk_register:ajout_entree' processus=processus.pk %}" class="fm-update text-info"
                data-fm-head="{% trans "Ajouteer une donnée d'entrée" %}"
-            data-fm-callback="reload">
+               data-fm-callback="reload">
               <span data-feather="plus"></span>{% trans 'Ajouter' %}
             </a>
           </div>
@@ -187,7 +188,7 @@
             </table>
             <a href="{% url 'risk_register:ajout_sortie' processus=processus.pk %}" class="fm-create text-info"
                data-fm-head="{% trans 'Ajouter une donnée de sortie' %}"
-            data-fm-callback="append" data-fm-target="#outputData">
+               data-fm-callback="append" data-fm-target="#outputData">
               <span data-feather="plus"></span>{% trans 'Ajouter' %}
             </a>
           </div>

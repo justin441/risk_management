@@ -1,13 +1,15 @@
 from django.shortcuts import render
 from fm.views import AjaxCreateView, AjaxUpdateView, AjaxDeleteView
+from dal import autocomplete
 
 from django.views.generic import DetailView
 from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy, reverse
 
 from risk_management.users.models import BusinessUnit
-from .models import (ActiviteRisque, ProcessusRisque, Processus, Activite, ProcessData)
-from .forms import (CreateProcessForm, CreateActivityForm, CreateProcessOutputDataForm, AddInputDataForm)
+from .models import (ActiviteRisque, ProcessusRisque, Processus, Activite, Risque)
+from .forms import (CreateProcessForm, CreateActivityForm, CreateProcessOutputDataForm, AddInputDataForm,
+                    AddProcessusrisqueForm)
 
 # Create your views here.
 
@@ -62,6 +64,11 @@ class CreateProcessView(AjaxCreateView):
         msg_ctx = super().get_message_template_context()
         msg_ctx['processus'] = self.object
         return msg_ctx
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['bu'] = BusinessUnit.objects.get(pk=self.kwargs['business_unit'])
+        return kwargs
 
 
 class UpdateProcessView(AjaxUpdateView):
@@ -121,8 +128,79 @@ class CreateProcessOutputView(AjaxCreateView):
     def pre_save(self):
         self.object.origine = get_object_or_404(Processus, pk=self.kwargs['processus'])
 
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['processus'] = get_object_or_404(Processus, pk=self.kwargs['processus'])
+        return kwargs
+
 
 class AddProcessInputView(AjaxUpdateView):
     form_class = AddInputDataForm
     model = Processus
     pk_url_kwarg = 'processus'
+
+
+class RiskAutocomplete(autocomplete.Select2QuerySetView):
+    def get_queryset(self):
+        if not self.request.user.is_authenticated:
+            return Risque.objects.none()
+
+        qs = Risque.objects.all()
+
+        classe = self.forwarded.get('classe_de_risque', None)
+
+        if classe:
+            qs = qs.filter(classe=classe)
+
+        if self.q:
+            qs = qs.filter(description__icontains=self.q)
+
+        return qs
+
+
+class NewRiskForProcessView(AjaxCreateView):
+    form_class = None
+
+
+class AddProcessusrisqueView(AjaxCreateView):
+    form_class = AddProcessusrisqueForm
+    pk_url_kwarg = 'processus'
+
+    def pre_save(self):
+        self.object.processus = get_object_or_404(Processus, pk=self.kwargs['processus'])
+        self.object.soumis_par = self.request.user
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['processus'] = get_object_or_404(Processus, pk=self.kwargs['processus'])
+        return kwargs
+
+
+class EditProcessusrisqueView(AjaxUpdateView):
+    model = ProcessusRisque
+
+
+class DeleteProcessusrisqueView(AjaxDeleteView):
+    model = ProcessusRisque
+
+
+class NewRiskForActivityView(AjaxCreateView):
+    form_class = None
+
+
+class AddActiviterisqueView(AjaxCreateView):
+    form_class = None
+
+
+class EditActiviterisqueView(AjaxUpdateView):
+    model = ActiviteRisque
+
+
+class DeleteActiviterisqueView(AjaxDeleteView):
+    model = ActiviteRisque
+
+
+
+
+
+

@@ -69,7 +69,7 @@ class Processus(models.Model):
                                         )
 
     def __str__(self):
-        return "%s: %s" % (self.business_unit.denomination, self.nom)
+        return self.nom
 
     def get_absolute_url(self):
         if self.proc_manager:
@@ -151,7 +151,7 @@ class Risque(models.Model):
                                  on_delete=models.SET_NULL, verbose_name=_('Crée par'))
 
     def __str__(self):
-        return '%s...' % self.description[:50]
+        return '%s...' % self.description[:100]
 
     class Meta:
         verbose_name = _('risque')

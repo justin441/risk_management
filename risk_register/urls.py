@@ -5,7 +5,7 @@ from . import views
 app_name = 'risk_register'
 
 urlpatterns = [
-    path('<str:pk>/', views.BusinessUnitRiskRegisterView.as_view(), name='detail_business_unit'),
+    path('business-unit/<str:pk>/', views.BusinessUnitRiskRegisterView.as_view(), name='detail_business_unit'),
     path('process/<uuid:pk>/', views.ProcessusRiskRegisterView.as_view(), name='detail_processus'),
     path('activity/<uuid:pk>/', views.ActiviteRiskRegisterView.as_view(), name='detail_activite'),
     path('<str:business_unit>/create-process/', views.CreateProcessView.as_view(), name='creer_processus'),
@@ -16,4 +16,15 @@ urlpatterns = [
     path('<uuid:pk>/update-activity/', views.UpdateActiviteView.as_view(), name='modifier_activite'),
     path('<uuid:pk>/delete-activity/', views.DeleteActiviteView.as_view(), name='effacer_activite'),
     path('<uuid:processus>/add-output/', views.CreateProcessOutputView.as_view(), name='ajout_sortie'),
+    path('<uuid:processus>/add-risk-to-process/', views.AddProcessusrisqueView.as_view(), name='ajout_processusrisque'),
+    path('<uuid:processus>/create-process-risk/', views.NewRiskForProcessView.as_view(), name='creer_risque_processus'),
+    path('<uuid:processus>/edit-process-risk/', views.EditProcessusrisqueView.as_view(),
+         name='modifier_processusrisque'),
+    path('<uuid:processus>/delete-process-risk/', views.DeleteProcessusrisqueView.as_view(),
+         name='effacer_processusrisque'),
+    path('<uuid:pk>/add-risk-to-activity/', views.AddActiviterisqueView.as_view(), name='ajout_activiterisque'),
+    path('<uuid:pk>/create-activity-risk/', views.NewRiskForActivityView.as_view(), name='creer_risque_activite'),
+    path('<uuid:pk>/edit-activity-risk/', views.EditActiviterisqueView.as_view(), name='modifier_activiterisque'),
+    path('<uuid:pk>/delete-activity-risk/', views.DeleteActiviterisqueView.as_view(), name='effacer_activiterisque'),
+    path('risque-autocomplete/', views.RiskAutocomplete.as_view(), name='risque-autocomplete')
 ]
