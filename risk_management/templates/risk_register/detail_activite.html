@@ -16,8 +16,8 @@
         <h6>{% trans 'Aucun risque identifié pour cette activité' %}</h6>
       {% endfor %}
     <div class="card card-header" id="create">
-          <a href="#" class="fm-create text-info card-link"
-             data-fm-head="{% trans 'Nouveau risque' %}" data-fm-callback="" data-fm-target="#create">
+          <a href="{% url 'risk_register:ajout_activiterisque' activite=activite.pk %}" class="fm-create text-info card-link"
+             data-fm-head="{% trans "Nouveau risque d'activité"  %}" data-fm-callback="reload">
             <span data-feather="plus-circle"></span> {% trans 'Ajouter un risque' %} {# TODO: ajouter l'url de création du risque #}
           </a>
         </div>

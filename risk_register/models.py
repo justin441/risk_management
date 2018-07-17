@@ -225,29 +225,6 @@ class IdentificationRisque(TimeStampedModel):
     verifie_le = MonitorField(monitor='verifie')
     verifie_par = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True)
 
-    def clean(self):
-        if self.date_revue and (self.date_revue < self.created):
-            # la date de revue précède la date de création du risque
-            raise ValidationError(
-                {
-                    'date_revue': _( 'La date de revue du revue du risque ( %s ) ne peut pas précédée la date \
-                    de son identification ( %s )') % (
-                        self.date_revue, self.created)})
-        if self.modified and (self.modified < self.created):
-            # la date de modification précède la date de création du risque
-            raise ValidationError(
-                {
-                    'modified': _('La date de modification du risque ( %s ) ne peut pas précédée la date \
-                    de son identification ( %s )') % (
-                        self.modified, self.created)}
-            )
-        if self.date_revue and self.verifie == 'pending':
-            # la date de revue est fixée avant que le risque ne soit verifié
-            raise ValidationError(
-                {'date_revue': _('le risque doit être vérifié avant de fixer la date de revue')
-                 }
-            )
-
     def save(self, *args, **kwargs):
         if self.date_revue and (self.date_revue < self.created):
             raise FieldError(

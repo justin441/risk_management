@@ -26,7 +26,7 @@
     width: 75px;
 }
 .modal-dialog {
-  top: 50px;
+  margin-top: 10%;
 }
 
 .fm-modal .close-modal:hover {
@@ -82,4 +82,7 @@
 }
 .select2-dropdown{
     z-index: 3051;
+}
+.select2-container {
+  min-width: 0;
 }

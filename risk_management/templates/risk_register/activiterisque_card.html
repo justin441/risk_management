@@ -4,7 +4,11 @@
     <a class="card-link float-right" data-toggle="collapse" href="#risk-{{ activiterisque.pk }}">
       <span data-feather="more-horizontal" class="text-info"></span>
     </a>
-    <a href="#" class="card-title h6">{{ activiterisque.risque.nom }}: {{ activiterisque.risque.description|truncatechars:50 }}</a><br>
+    <a href="{% url 'risk_register:modifier_activiterisque' activiterisque=activiterisque.pk %}"
+       class="fm-update card-title h6" data-fm-head="{% trans "Modifier un risque d'activité" %}"
+       data-fm-callback="reload">
+      {{ activiterisque.risque.nom }}: {{ activiterisque.risque.description|truncatechars:50 }}
+    </a><br>
     <div class="row mt-2">
       <div class="col-md-2">
         <a href="">{% trans 'Seuil de risque' %}</a><br>
@@ -27,12 +31,17 @@
     </div>
   </div>
   <div id="risk-{{ activiterisque.pk }}" class="collapse">
-  <h5 class="ml-4">{% trans 'Contrôles' %}</h5>
+    <a href="{% url 'risk_register:effacer_activiterisque' activiterisque=activiterisque.pk %}" class="fm-delete"
+       data-fm-callback="reload"
+       data-fm-head="{% trans 'Supprimer un risque' %}">
+      <span data-feather="trash-2" class="float-sm-right mr-4 text-danger"></span>
+    </a>
+    <h5 class="ml-4">{% trans 'Contrôles' %}</h5>
     {% if activiterisque.controles.all %}
       {% for controle in activiterisque.controles.all %}
         <div class="card card-body ml-4 p-1 mb-1">
           <a href="#"
-             class="h6 card-link ml-2">{{ controle.nom }}: {{ activite.description|truncatechars:50 }}</a></li>
+             class="h6 card-link ml-2">{{ controle.nom }}</a></li>
         </div>
       {% endfor %}
     {% else %}

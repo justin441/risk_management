@@ -128,8 +128,6 @@
                     },
                     success: function (data) {
                         debug("modal body successfully loaded");
-                        debug('html:');
-                        debug(data);
                         modal_body.html(data);
                         show_modal_wrapper();
                         var form = modal.find('form');

@@ -1,0 +1,19 @@
+{% load i18n %}
+
+<div class="text-center">
+  <form role="form" method="post">
+  <h4>{% blocktrans with nom_risque=activiterisque.risque.nom nom_activite=activiterisque.activite.nom %}
+  Vous allez supprimer le "{{ nom_risque }}" de l'activité {{ nom_activite}}
+{% endblocktrans %}</h4>
+
+  {% if activiterisque.controles.all %}
+    {% blocktrans count nb_controle=activiterisque.controles.count  %}
+      <p class="lead">un contrôle lié à ce risque n'est pas achevé et sera également supprimé.</p>
+      {% plural %}
+      <p class="lead">{{ nb_controle }} contrôles liés à ce risque ne sont pas achevés et seront également supprimés.</p>
+    {% endblocktrans %}
+{% endif %}
+<p>{% trans 'Êtes-vous sûr(e) de vouloir supprimer ce risque?' %}</p>
+</form>
+</div>
+

@@ -7,9 +7,11 @@ from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy, reverse
 
 from risk_management.users.models import BusinessUnit
-from .models import (ActiviteRisque, ProcessusRisque, Processus, Activite, Risque)
+from .models import (ActiviteRisque, ProcessusRisque, Processus, Activite, Risque, Controle)
 from .forms import (CreateProcessForm, CreateActivityForm, CreateProcessOutputDataForm, AddInputDataForm,
-                    AddProcessusrisqueForm)
+                    AddProcessusrisqueForm, CreateRiskForm, UpdateProcessusrisqueForm, AddActiviterisqueForm,
+                    UpdateActiviterisqueForm)
+
 
 # Create your views here.
 
@@ -159,7 +161,29 @@ class RiskAutocomplete(autocomplete.Select2QuerySetView):
 
 
 class NewRiskForProcessView(AjaxCreateView):
-    form_class = None
+    form_class = CreateRiskForm
+    pk_url_kwarg = 'processus'
+
+    def pre_save(self):
+        self.object.cree_par = self.request.user
+
+    def post_save(self):
+        self.pr = ProcessusRisque.objects.create(
+            type_de_risque=self.tr,
+            risque=self.object,
+            processus=get_object_or_404(Processus, pk=self.kwargs['processus']),
+            soumis_par=self.request.user
+        )
+
+    def form_valid(self, form):
+        self.tr = form.data.get('type_de_risque')
+        return super().form_valid(form)
+
+
+class RiskDetailView(DetailView):
+    model = Risque
+    template_name = 'risk_register/detail_risque.html'
+    context_object_name = 'risque'
 
 
 class AddProcessusrisqueView(AjaxCreateView):
@@ -175,32 +199,72 @@ class AddProcessusrisqueView(AjaxCreateView):
         kwargs['processus'] = get_object_or_404(Processus, pk=self.kwargs['processus'])
         return kwargs
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['processus'] = get_object_or_404(Processus, pk=self.kwargs['processus'])
+        return context
+
 
 class EditProcessusrisqueView(AjaxUpdateView):
     model = ProcessusRisque
+    form_class = UpdateProcessusrisqueForm
+    pk_url_kwarg = 'processusrisque'
 
 
 class DeleteProcessusrisqueView(AjaxDeleteView):
     model = ProcessusRisque
+    pk_url_kwarg = 'processusrisque'
+    template_name = 'risk_register/confirmer_suppression_processusrisque.html'
+    context_object_name = 'processusrisque'
 
 
 class NewRiskForActivityView(AjaxCreateView):
-    form_class = None
+    form_class = CreateRiskForm
+    pk_url_kwarg = 'activite'
+
+    def pre_save(self):
+        self.object.cree_par = self.request.user
+
+    def post_save(self):
+        self.ar = ActiviteRisque.objects.create(
+            type_de_risque=self.tr,
+            risque=self.object,
+            activite=get_object_or_404(ActiviteRisque, pk=self.kwargs['activite']),
+            soumis_par=self.request.user
+        )
+
+    def form_valid(self, form):
+        self.tr = form.data.get('type_de_risque')
+        return super().form_valid(form)
 
 
 class AddActiviterisqueView(AjaxCreateView):
-    form_class = None
+    form_class = AddActiviterisqueForm
+    pk_url_kwarg = 'activite'
+
+    def pre_save(self):
+        self.object.activite = get_object_or_404(Activite, pk=self.kwargs['activite'])
+        self.object.soumis_par = self.request.user
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['activite'] = get_object_or_404(Activite, pk=self.kwargs['activite'])
+        return kwargs
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['activite'] = get_object_or_404(Activite, pk=self.kwargs['activite'])
+        return context
 
 
 class EditActiviterisqueView(AjaxUpdateView):
     model = ActiviteRisque
+    form_class = UpdateActiviterisqueForm
+    pk_url_kwarg = 'activiterisque'
 
 
 class DeleteActiviterisqueView(AjaxDeleteView):
     model = ActiviteRisque
-
-
-
-
-
-
+    pk_url_kwarg = 'activiterisque'
+    template_name = 'risk_register/confirmer_suppression_activiterisque.html'
+    context_object_name = 'activiterisque'

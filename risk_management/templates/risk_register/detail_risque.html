@@ -1,0 +1,9 @@
+{% load i18n %}
+<dl class="row">
+  <dt class="col-sm-4">{% trans 'Description' %}</dt>
+  <dd class="col-sm-8 text-justify">{{ risque.description }}</dd>
+  <dt class="col-sm-4">{% trans 'Cause' %}</dt>
+  <dd class="col-sm-8 text-justify">{{ risque.cause }}</dd>
+  <dt class="col-sm-4">{% trans 'Conséquence' %}</dt>
+  <dd class="col-sm-8 text-justify">{{ risque.consequence }}</dd>
+</dl>

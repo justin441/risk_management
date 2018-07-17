@@ -4,8 +4,9 @@
     <a class="card-link float-right" data-toggle="collapse" href="#risk-{{ processusrisque.pk }}">
       <span data-feather="more-horizontal" class="text-info"></span>
     </a>
-    <a href="#"
-       class="card-title h6">{{ processusrisque.risque.nom }}: {{ processusrisque.risque.description|truncatechars:50 }}</a><br>
+    <a href="{% url 'risk_register:modifier_processusrisque' processusrisque=processusrisque.pk %}"
+       class="fm-update card-title h6" data-fm-head="{% trans 'Modifier un risque de processus' %}"
+       data-fm-callback="reload">{{ processusrisque.risque.nom }}: {{ processusrisque.risque.description|truncatechars:50 }}</a><br>
     <div class="row mt-2">
       <div class="col-md-2">
         <a href="">{% trans 'Seuil de risque' %}</a><br>
@@ -28,6 +29,11 @@
     </div>
   </div>
   <div id="risk-{{ processusrisque.pk }}" class="collapse">
+    <a href="{% url 'risk_register:effacer_processusrisque' processusrisque=processusrisque.pk %}" class="fm-delete"
+       data-fm-callback="reload"
+       data-fm-head="{% trans 'Supprimer un risque' %}">
+      <span data-feather="trash-2" class="float-sm-right mr-4 text-danger"></span>
+    </a>
     <h5 class="ml-4">{% trans 'Contrôles' %}</h5>
     {% if processusrisque.controles.all %}
       {% for controle in processusrisque.controles.all %}

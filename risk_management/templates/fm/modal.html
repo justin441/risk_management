@@ -1,7 +1,7 @@
 {% load i18n %}
 {% load static %}
 {% load fm_tags %}
-<div role="dialog" aria-hidden="true" id="fm-modal" class="fm-modal modal fade" style="overflow: hidden;">
+<div role="dialog" aria-hidden="true" id="fm-modal" class="fm-modal modal fade" style="overflow: auto">
   <div class="modal-loader" style="display: none;">
     <img class="modal-loader-img" src="{% static "fm/img/loading-bars.svg" %}">
   </div>
@@ -18,7 +18,7 @@
           <div class="col-md-8 offset-md-2">
             <div class="modal-wrapper" style="display: none;">
               <div class="modal-head"></div>
-              <div class="modal-body"></div>
+              <div class="modal-body" id="select2-parent"></div>
               <div class="modal-buttons">
                 <button class="btn btn-primary" type="submit">
                   {% trans 'OK' %}
@@ -37,5 +37,37 @@
 
 <link rel="stylesheet" href="{% static "fm/css/modal.css" %}?v={% fm_version %}"/>
 <script type="text/javascript" src="{% static "fm/js/fm.js" %}"></script>
+<script>
+  $('#fm-modal').on('shown.bs.modal', function (e) {
+    if($('#id_risque').val().length){
+      var url = '/risk-register/risk-detail/' + $('#id_risque').val() + '/';
+      $.get(url, function (data, status) {
+        if(status==='success'){
+          $('#detail-risque').html(data);
+        }
+        else {
+          $('#detail-risque').html('');
+        }
+      });
+    }
+    $('#id_risque').on('change', function (e) {
+       if($('#id_risque').val().length){
+         var url = '/risk-register/risk-detail/' + $('#id_risque').val() + '/';
+         $.get(url, function (data, status){
+           if(status==='success'){
+              $('#detail-risque').html(data);
+           }
+           else {
+             $('#detail-risque').html('');
+           }
+         });
+       }
+    });
+    $('#id_risque').on('select2:unselecting', function () {
+        $('#detail-risque').html('');
+    });
+
+  });
+</script>
 
 
