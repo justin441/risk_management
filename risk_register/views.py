@@ -327,6 +327,35 @@ class ProcessusrisqueEstimationView(AjaxCreateView):
         return kwargs
 
 
+class SetSeuilActiviterisqueView(AjaxCreateView):
+    form_class = SetSeuilDeRisqueForm
+    pk_url_kwarg = 'activiterisque'
+
+    def post_save(self):
+        activiterisque = get_object_or_404(ActiviteRisque, pk=self.kwargs['activiterisque'])
+        if activiterisque.criterisation:
+            activiterisque.criterisation.delete()
+        activiterisque.criterisation = self.object
+        activiterisque.save()
+
+
+class ActiviterisqueEstimationView(AjaxCreateView):
+    form_class = SetSeuilDeRisqueForm
+    pk_url_kwarg = 'activiterisque'
+
+    def post_save(self):
+        activiterisque = get_object_or_404(ActiviteRisque, pk=self.kwargs['activiterisque'])
+        Estimation.objects.create(
+            criterisation=self.object,
+            content_object=activiterisque
+        )
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['activiterisque'] = get_object_or_404(ActiviteRisque, pk=self.kwargs['activiterisque'])
+        return kwargs
+
+
 def checkriskstatus(request, pk):
     if request.is_ajax():
         data = {}
@@ -347,4 +376,8 @@ def checkriskstatus(request, pk):
             data['result'] = 'Success'
 
         return JsonResponse(data)
+
+
+def changeriskstatus(request, pk):
+    pass
 

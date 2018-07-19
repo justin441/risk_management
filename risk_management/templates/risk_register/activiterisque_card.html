@@ -22,13 +22,22 @@
       <div class="col-md-3 col-sm-12">
         <span>{% trans 'Seuil de risque' %}</span>
         <br>
-        <a href=""><span data-feather="sliders" class="mr-2"></span></a>
+        <a href="{% url 'risk_register:definir_seuil_activiterisque' activiterisque=activiterisque.pk %}"
+           class="text-info fm-create" data-fm-head="{% trans 'Définir le seuil de risque' %}"
+           data-fm-callback="reload">
+          <span data-feather="sliders" class="mr-2"></span>
+        </a>
         <span
           class="{{ activiterisque.seuil_display }}">{{ activiterisque.seuil_de_risque|default_if_none:_('Non defini') }}</span>
       </div>
       <div class="col-md-3 col-sm-12">
         <span>{% trans 'Facteur risque' %}</span><br>
-        <a href=""><span data-feather="sliders" class="mr-2"></span></a>
+        <a href="{% url 'risk_register:estimer_activiterisque' activiterisque=activiterisque.pk %}"
+           class="text-info fm-create"
+           data-fm-head="{% trans 'Estimer le risque' %}" data-fm-callback="reload">
+          <span data-feather="sliders" class="mr-2">
+
+          </span></a>
         <span
           class="{{ activiterisque.facteur_risque_display }}">{{ activiterisque.facteur_risque|default_if_none:_('Non defini') }}</span>
       </div>

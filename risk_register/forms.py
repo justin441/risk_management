@@ -378,7 +378,6 @@ class UpdateActiviterisqueForm(ActiviterisqueBaseForm):
         fields = ['risque', 'type_de_risque']
 
 
-
 class AddControleForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         self.processusrisque = kwargs.pop('processusrisque', None)
@@ -435,6 +434,7 @@ class AddControleForm(forms.ModelForm):
 class SetSeuilDeRisqueForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         self.processusrisque = kwargs.pop('processusrisque', None)
+        self.activiterisque = kwargs.pop('activiterisque', None)
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.form_method = 'post'
@@ -447,6 +447,9 @@ class SetSeuilDeRisqueForm(forms.ModelForm):
         fields = ['detectabilite', 'severite', 'occurence']
 
     def clean(self):
-        if self.processusrisque.verifie == "pending":
+        if (self.processusrisque and
+            self.processusrisque.verifie == "pending") or (self.activiterisque and
+                                                           self.activiterisque.verifie == 'pending'):
             msg = _('Ce risque n\'a pas encore été vérifié; impossible de l\'estimer.')
             self.add_error(None, msg)
+        return super().clean()
