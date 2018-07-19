@@ -141,12 +141,14 @@
 {% include 'fm/modal.html' %}
 {% block javascript %}
   <script type="text/javascript">
-  $(function () {
-    $.fm({debug: true});
-  });
-</script>
+    $(function () {
+      $.fm({debug: true});
+    });
+  </script>
 
-<script src="{% static 'js/project.js' %}"></script>
+  <script src="{% static 'js/project.js' %}"></script>
+
+  <script src="{% static 'js/checkRiskVerify.js' %}"></script>
 {% endblock %}
 
 </body>

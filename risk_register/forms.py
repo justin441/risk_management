@@ -8,10 +8,8 @@ from django import forms
 from django.utils.translation import ugettext_lazy as _
 from django.utils.timezone import now
 
-
-
 from .models import (Processus, Activite, ProcessData, ProcessusRisque, ClasseDeRisques,
-                     Risque, ActiviteRisque)
+                     Risque, ActiviteRisque, Controle, CritereDuRisque)
 
 
 class CreateProcessForm(forms.ModelForm):
@@ -87,19 +85,25 @@ class CreateActivityForm(forms.ModelForm):
 
     class Meta:
         model = Activite
-        fields = ['start', 'end', 'nom', 'description', 'responsable']
+        fields = ['nom', 'description', 'start', 'end', 'responsable']
         widgets = {
-            'responsable': autocomplete.ModelSelect2(url='users:user-autocomplete'),
+            'responsable': autocomplete.ModelSelect2(url='users:user-autocomplete',
+                                                     attrs={
+                                                         'data-placeholder': _('Nom ou prénom'),
+                                                         'data-allow-clear': 'true',
+                                                         'data-width': '100%',
+                                                     }),
             'description': forms.Textarea(attrs={'rows': 3, 'style': 'resize: none;'}),
         }
 
     def clean(self):
         cleaned_data = super().clean()
-        start = cleaned_data.get('start', '')
-        end = cleaned_data.get('end', '')
-        if start > end:
+        debut = cleaned_data.get('start', '')
+        fin = cleaned_data.get('end', '')
+        if debut > fin:
             msg = _('La date de debut est postérieure à la date de fin.')
-            raise forms.ValidationError(msg)
+            self.add_error('start', msg)
+            self.add_error('end', msg)
         return cleaned_data
 
 
@@ -348,8 +352,8 @@ class AddActiviterisqueForm(ActiviterisqueBaseForm):
         except ActiviteRisque.DoesNotExist:
             return cleaned_data
         else:
-            if ProcessusRisque.objects.get(risque=risque, activite=self.activite,
-                                           type_de_risque=type_de_risque) == self.instance:
+            if ActiviteRisque.objects.get(risque=risque, activite=self.activite,
+                                          type_de_risque=type_de_risque) == self.instance:
                 return cleaned_data
             else:
                 msg = _('Ce risque a déjà été rapporté')
@@ -372,3 +376,77 @@ class UpdateActiviterisqueForm(ActiviterisqueBaseForm):
 
     class Meta(ActiviterisqueBaseForm.Meta):
         fields = ['risque', 'type_de_risque']
+
+
+
+class AddControleForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        self.processusrisque = kwargs.pop('processusrisque', None)
+        self.activiterisque = kwargs.pop('activiterisque', None)
+        super().__init__(*args, **kwargs)
+        self.fields['start'].label = _('debut')
+        self.fields['end'].label = _('fin')
+        self.helper = FormHelper
+        self.helper.form_method = 'post'
+        self.helper.form_class = 'form-horizontal'
+        self.helper.label_class = 'col-md-4'
+        self.helper.field_class = 'col-md-8'
+        self.helper.layout = Layout(
+            InlineRadios('critere_cible'),
+            'nom',
+            'start',
+            'end'
+        )
+
+    class Meta:
+        model = Controle
+        fields = ['critere_cible', 'nom', 'start', 'end']
+        widgets = {
+            'start': forms.SelectDateWidget,
+            'end': forms.SelectDateWidget,
+            'nom': forms.Textarea(attrs={'rows': 3, 'style': 'resize: none;'})
+        }
+
+    def clean(self):
+        if self.processusrisque:
+            if not self.processusrisque.estimations.all():
+                msg = _('Ce risque n\'a pas encore été estimé; impossible d\'y ajouter un contrôle')
+                self.add_error(None, msg)
+            elif self.processusrisque.estimations.latest().est_obsolete or self.processusrisque.est_obsolete:
+                msg = _('Les données du risque sont obsolètes; impossible d\'y ajouter un contrôle')
+                self.add_error(None, msg)
+        if self.activiterisque:
+            if not self.activiterisque.estimations.all():
+                msg = _('Ce risque n\'a pas encore été estimé; impossible d\'y ajouter un contrôle')
+                self.add_error(None, msg)
+            elif self.activiterisque.estimations.latest().est_obsolete or self.activiterisque.est_obsolete:
+                msg = _('Les données du risque sont obsolètes; impossible d\'y ajouter un contrôle')
+                self.add_error(None, msg)
+        cleaned_data = super().clean()
+        debut = cleaned_data.get('start', '')
+        fin = cleaned_data.get('end', '')
+        if (debut and fin) and (fin < debut):
+            msg = _('La date de debut est postérieure à la date de fin.')
+            self.add_error('start', msg)
+            self.add_error('end', msg)
+        return cleaned_data
+
+
+class SetSeuilDeRisqueForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        self.processusrisque = kwargs.pop('processusrisque', None)
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_method = 'post'
+        self.helper.form_class = 'form-horizontal'
+        self.helper.label_class = 'col-md-4'
+        self.helper.field_class = 'col-md-8'
+
+    class Meta:
+        model = CritereDuRisque
+        fields = ['detectabilite', 'severite', 'occurence']
+
+    def clean(self):
+        if self.processusrisque.verifie == "pending":
+            msg = _('Ce risque n\'a pas encore été vérifié; impossible de l\'estimer.')
+            self.add_error(None, msg)

@@ -1,54 +1,72 @@
 {% load i18n %}
 <div class="card mb-3">
-  <div class="card-body">
+  <div class="card-header">
+    <strong>{% trans 'Confirmé' %}</strong><strong id="status-risk-{{ processusrisque.pk }}" class="confirm-risk ml-2"
+                                                   data-url="{% url 'risk_register:ajax-statut-risque' pk=processusrisque.pk %}">{% trans 'Inconnu' %}</strong>
+    <a href="{% url 'risk_register:effacer_processusrisque' processusrisque=processusrisque.pk %}" class="fm-delete"
+       data-fm-callback="reload"
+       data-fm-head="{% trans 'Supprimer un risque' %}">
+      <span data-feather="x" class="float-right text-danger ml-3"></span>
+    </a>
     <a class="card-link float-right" data-toggle="collapse" href="#risk-{{ processusrisque.pk }}">
       <span data-feather="more-horizontal" class="text-info"></span>
     </a>
+  </div>
+  <div class="card-body">
     <a href="{% url 'risk_register:modifier_processusrisque' processusrisque=processusrisque.pk %}"
        class="fm-update card-title h6" data-fm-head="{% trans 'Modifier un risque de processus' %}"
        data-fm-callback="reload">{{ processusrisque.risque.nom }}: {{ processusrisque.risque.description|truncatechars:50 }}</a><br>
     <div class="row mt-2">
-      <div class="col-md-2">
-        <a href="">{% trans 'Seuil de risque' %}</a><br>
-        <span
-          class="{{ processusrisque.seuil_display }}">{{ processusrisque.seuil_de_risque|default_if_none:_('Non defini') }}</span>
+      <div class="col-sm-12 col-md-3">
+        <span>{% trans 'Seuil de risque' %}</span><br>
+        <a href="{% url 'risk_register:definir_seuil_processusrisque' processusrisque=processusrisque.pk %}"
+           class="text-info fm-create" data-fm-head="{% trans 'Définir le seuil de risque' %}"
+           data-fm-callback="reload">
+          <span data-feather="sliders" class="mr-2"></span>
+        </a>
+        <span class="{{ processusrisque.seuil_display }}">
+           {{ processusrisque.seuil_de_risque|default_if_none:_('Non defini') }}
+        </span>
       </div>
-      <div class="col-md-2">
-        <a href="">{% trans 'Facteur risque' %}</a><br>
-        <span
-          class="{{ processusrisque.facteur_risque_display }}">{{ processusrisque.facteur_risque|default_if_none:_('Non defini') }}</span>
+      <div class="col-sm-12 col-md-3">
+        <span>{% trans 'Facteur risque' %}</span><br>
+        <a href="{% url 'risk_register:estimer_processusrisque' processusrisque=processusrisque.pk %}"
+           class="text-info fm-create"
+           data-fm-head="{% trans 'Estimer le risque' %}" data-fm-callback="reload">
+          <span data-feather="sliders" class="mr-2"></span>
+        </a>
+        <span class="{{ processusrisque.facteur_risque_display }}">
+          {{ processusrisque.facteur_risque|default_if_none:_('Non defini') }}
+        </span>
       </div>
-      <div class="col-md-2">
+      <div class="col-sm-12 col-md-3">
         <span>{% trans 'Statut du risque' %}</span><br>
         <span class="{{ processusrisque.status_display }}">
                   {% blocktrans with status=processusrisque.status|default_if_none:'Inconnu' %}
-                    {{ status }}
+                    <span data-feather="thermometer" class="mr-2"></span>{{ status }}
                   {% endblocktrans %}
                 </span>
       </div>
     </div>
   </div>
   <div id="risk-{{ processusrisque.pk }}" class="collapse">
-    <a href="{% url 'risk_register:effacer_processusrisque' processusrisque=processusrisque.pk %}" class="fm-delete"
-       data-fm-callback="reload"
-       data-fm-head="{% trans 'Supprimer un risque' %}">
-      <span data-feather="trash-2" class="float-sm-right mr-4 text-danger"></span>
-    </a>
+
     <h5 class="ml-4">{% trans 'Contrôles' %}</h5>
-    {% if processusrisque.controles.all %}
-      {% for controle in processusrisque.controles.all %}
-        <div class="card card-body ml-4 p-1 mb-1">
-          <a href="#"
-             class="h6 card-link ml-2">{{ controle.nom }}: {{ activite.description|truncatechars:50 }}</a></li>
-        </div>
-      {% endfor %}
-    {% else %}
+    {% for controle in processusrisque.controles.all %}
+      <div class="card card-body ml-4 p-1 mb-1">
+        <a href="#"
+           class="h6 card-link ml-2">{{ controle.nom }}: {{ activite.description|truncatechars:50 }}</a></li>
+      </div>
+    {% empty %}
       <p class="lead ml-4">{% trans 'Ce risque ne comporte aucun contrôle' %}</p>
-    {% endif %}
+    {% endfor %}
     <div class="card card-body ml-4 mb-2 p-1 ">
-      <a href="#" class="text-info card-link">
+      <a href="{% url 'risk_register:ajout_controle_processusrique' processusrisque=processusrisque.pk %}"
+         class="text-info card-link fm-create"
+         data-fm-head="{% trans 'Ajouter un contrôle' %}" data-fm-callback="reload">
         <span data-feather="plus-circle"></span> {% trans 'Nouveau contrôle' %}
-      </a>{# TODO: ajouter l'url de création du controle #}
+      </a>
     </div>
   </div>
 </div>
+

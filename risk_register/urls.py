@@ -29,5 +29,14 @@ urlpatterns = [
          name='modifier_activiterisque'),
     path('<uuid:activiterisque>/delete-activity-risk/', views.DeleteActiviterisqueView.as_view(),
          name='effacer_activiterisque'),
-    path('risque-autocomplete/', views.RiskAutocomplete.as_view(), name='risque-autocomplete')
+    path('risque-autocomplete/', views.RiskAutocomplete.as_view(), name='risque-autocomplete'),
+    path('<uuid:processusrisque>/add-control-process-risk/', views.AddProcessusrisqueControleView.as_view(),
+         name='ajout_controle_processusrique'),
+    path('<uuid:activiterisque>/add-control-activity-risk/', views.AddActiviterisqueControle.as_view(),
+         name='ajout_controle_activiterisque'),
+    path('<uuid:processusrisque>/set-seuil-de-processusrisque/', views.SetSeuilProcessusrisqueView.as_view(),
+         name='definir_seuil_processusrisque'),
+    path('<uuid:processusrisque>/processusrisque-estimation/', views.ProcessusrisqueEstimationView.as_view(),
+         name='estimer_processusrisque'),
+    path('ajax-risk-verification-status/<uuid:pk>', views.checkriskstatus, name='ajax-statut-risque'),
 ]

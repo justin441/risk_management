@@ -2,7 +2,6 @@ import uuid
 from datetime import timedelta
 
 from django.db import models
-from django.db.models import Q, F
 from django.utils.translation import gettext_lazy as _
 from django.core.exceptions import ValidationError, FieldError
 from django.utils.timezone import now
@@ -430,7 +429,7 @@ class Controle(TimeFramedModel, TimeStampedModel, RiskMixin):
                                      choices={
                                          ('D', _('Détectabilité')), ('S', _('Sévérité')), ('O', _('Occurence'))},
                                      verbose_name=_('critère cible'), default='O')
-    nom = models.CharField(max_length=300, verbose_name=_('nom'))
+    nom = models.CharField(max_length=300, verbose_name=_('description'))
     cree_par = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL,
                                  verbose_name=_('créé par'), null=True,
                                  related_name='traitements_crees')
@@ -443,7 +442,7 @@ class Controle(TimeFramedModel, TimeStampedModel, RiskMixin):
     acheve_le = MonitorField(monitor='status', when=['achevé'])
 
     def clean(self):
-        if self.start > self.end:
+        if (self.start and self.end) and (self.start > self.end):
             raise ValidationError(
                 {'end': _('la date de fin ne peut pas précédée celle du début. Veuillez corriger le champ "debut".')}
             )
@@ -454,11 +453,12 @@ class Controle(TimeFramedModel, TimeStampedModel, RiskMixin):
                 'la date de fin ne peut pas précédée celle du début. Veuillez corriger le champ "debut".'
             )
         # todo inclure les exceptions présent ici dans les vues
-        if not self.content_object.estimations.all():
+        if self.content_object and not self.content_object.estimations.all():
             raise RiskDataError(
                 {self.content_type.name: _(' le risque n\'a pas encore été estimé')}
             )
-        elif self.content_object.est_obsolete or self.content_object.estimations.latest().est_obsolete:
+        elif self.content_object and (self.content_object.est_obsolete or
+                                      self.content_object.estimations.latest().est_obsolete):
             raise RiskDataError(
                 _('Les donneés du risque ont besoins d\'une mise à jour'))
         super().save(*args, **kwargs)

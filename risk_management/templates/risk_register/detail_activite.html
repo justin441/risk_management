@@ -1,5 +1,5 @@
 {% extends 'risk_register/base.html' %}
-{% load i18n humanize %}
+{% load i18n humanize static %}
 {% block title %}
   {{ activite.nom }}: {% trans 'Registre des risques' %}
 {% endblock %}
@@ -23,3 +23,4 @@
         </div>
   {% endblock %}
 {% endblock %}
+

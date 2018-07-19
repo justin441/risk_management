@@ -5,6 +5,8 @@ from .models import Processus, ProcessData
 
 @receiver(m2m_changed, sender=Processus.input_data.through)
 def change_input_data(sender, **kwargs):
+    """Après avoir modifier la liste des données d'entrée du processus , vérifier si elle ne contient pas
+    une ou plusieurs données sorties du même processus et supprimer celles-ci ."""
     action = kwargs['action']
     instance = kwargs['instance']
 

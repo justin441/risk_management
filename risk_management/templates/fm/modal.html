@@ -38,9 +38,11 @@
 <link rel="stylesheet" href="{% static "fm/css/modal.css" %}?v={% fm_version %}"/>
 <script type="text/javascript" src="{% static "fm/js/fm.js" %}"></script>
 <script>
-  $('#fm-modal').on('shown.bs.modal', function (e) {
-    if($('#id_risque').val().length){
-      var url = '/risk-register/risk-detail/' + $('#id_risque').val() + '/';
+  $('#fm-modal').on('shown.bs.modal', function () {
+    var risque = $('#id_risque');
+    if(risque){
+      if(risque.val()){
+      var url = '/risk-register/risk-detail/' + risque.val() + '/';
       $.get(url, function (data, status) {
         if(status==='success'){
           $('#detail-risque').html(data);
@@ -50,9 +52,9 @@
         }
       });
     }
-    $('#id_risque').on('change', function (e) {
-       if($('#id_risque').val().length){
-         var url = '/risk-register/risk-detail/' + $('#id_risque').val() + '/';
+    risque.on('change', function (e) {
+       if(risque.val().length){
+         var url = '/risk-register/risk-detail/' + risque.val() + '/';
          $.get(url, function (data, status){
            if(status==='success'){
               $('#detail-risque').html(data);
@@ -63,9 +65,10 @@
          });
        }
     });
-    $('#id_risque').on('select2:unselecting', function () {
+    risque.on('select2:unselecting', function () {
         $('#detail-risque').html('');
     });
+    }
 
   });
 </script>

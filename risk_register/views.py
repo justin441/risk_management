@@ -1,16 +1,16 @@
-from django.shortcuts import render
 from fm.views import AjaxCreateView, AjaxUpdateView, AjaxDeleteView
 from dal import autocomplete
 
 from django.views.generic import DetailView
 from django.shortcuts import get_object_or_404
-from django.urls import reverse_lazy, reverse
+from django.http import JsonResponse
+from django.utils.translation import ugettext_lazy as _
 
 from risk_management.users.models import BusinessUnit
-from .models import (ActiviteRisque, ProcessusRisque, Processus, Activite, Risque, Controle)
+from .models import (ActiviteRisque, ProcessusRisque, Processus, Activite, Risque, Estimation)
 from .forms import (CreateProcessForm, CreateActivityForm, CreateProcessOutputDataForm, AddInputDataForm,
                     AddProcessusrisqueForm, CreateRiskForm, UpdateProcessusrisqueForm, AddActiviterisqueForm,
-                    UpdateActiviterisqueForm)
+                    UpdateActiviterisqueForm, AddControleForm, SetSeuilDeRisqueForm)
 
 
 # Create your views here.
@@ -229,7 +229,7 @@ class NewRiskForActivityView(AjaxCreateView):
         self.ar = ActiviteRisque.objects.create(
             type_de_risque=self.tr,
             risque=self.object,
-            activite=get_object_or_404(ActiviteRisque, pk=self.kwargs['activite']),
+            activite=get_object_or_404(Activite, pk=self.kwargs['activite']),
             soumis_par=self.request.user
         )
 
@@ -268,3 +268,83 @@ class DeleteActiviterisqueView(AjaxDeleteView):
     pk_url_kwarg = 'activiterisque'
     template_name = 'risk_register/confirmer_suppression_activiterisque.html'
     context_object_name = 'activiterisque'
+
+
+class AddControlMixin(AjaxCreateView):
+    form_class = AddControleForm
+
+
+class AddProcessusrisqueControleView(AddControlMixin):
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['processusrisque'] = get_object_or_404(ProcessusRisque, pk=self.kwargs['processusrisque'])
+        return kwargs
+
+    def pre_save(self):
+        self.object.cree_par = self.request.user
+        self.object.content_object = get_object_or_404(ProcessusRisque, pk=self.kwargs['processusrisque'])
+
+
+class AddActiviterisqueControle(AddControlMixin):
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['activiterisque'] = get_object_or_404(ActiviteRisque, pk=self.kwargs['activiterisque'])
+        return kwargs
+
+    def pre_save(self):
+        self.object.cree_par = self.request.user
+        self.object.content_object = get_object_or_404(ActiviteRisque, pk=self.kwargs['activiterisque'])
+
+
+class SetSeuilProcessusrisqueView(AjaxCreateView):
+    form_class = SetSeuilDeRisqueForm
+    pk_url_kwarg = 'processusrisque'
+
+    def post_save(self):
+        processusrisque = get_object_or_404(ProcessusRisque, pk=self.kwargs['processusrisque'])
+        if processusrisque.criterisation:
+            processusrisque.criterisation.delete()
+        processusrisque.criterisation = self.object
+        processusrisque.save()
+
+
+class ProcessusrisqueEstimationView(AjaxCreateView):
+    form_class = SetSeuilDeRisqueForm
+    pk_url_kwarg = 'processusrisque'
+
+    def post_save(self):
+        processusrisque = get_object_or_404(ProcessusRisque, pk=self.kwargs['processusrisque'])
+        Estimation.objects.create(
+            criterisation=self.object,
+            content_object=processusrisque
+        )
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['processusrisque'] = get_object_or_404(ProcessusRisque, pk=self.kwargs['processusrisque'])
+        return kwargs
+
+
+def checkriskstatus(request, pk):
+    if request.is_ajax():
+        data = {}
+        try:
+            risque = ProcessusRisque.objects.get(pk=pk)
+        except ProcessusRisque.DoesNotExist:
+            try:
+                risque = ActiviteRisque.objects.get(pk=pk)
+            except ActiviteRisque.DoesNotExist:
+                data['error_message'] = _('Aucun risque trouvé')
+                data['result'] = 'Failure'
+
+            else:
+                data['verifie'] = risque.verifie
+                data['result'] = 'Success'
+        else:
+            data['verifie'] = risque.verifie
+            data['result'] = 'Success'
+
+        return JsonResponse(data)
+
