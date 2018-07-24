@@ -43,4 +43,5 @@ urlpatterns = [
     path('<uuid:activiterisque>/activiterisque-estimation', views.ActiviterisqueEstimationView.as_view(),
          name='estimer_activiterisque'),
     path('ajax-risk-verification-status/<uuid:pk>', views.checkriskstatus, name='ajax-statut-risque'),
+    path('ajax-risk-verification-status-change/<uuid:pk>', views.changeriskstatus, name='ajax-changer-statut-risque'),
 ]

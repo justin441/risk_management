@@ -74,14 +74,15 @@ class AddInputDataForm(forms.ModelForm):
 class CreateActivityForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.fields['start'].label = 'début'
+        self.fields['start'].initial = datetime(now().year, 1, 1)
+        self.fields['end'].label = 'fin'
+        self.fields['end'].initial = datetime(now().year, 12, 31)
         self.helper = FormHelper()
         self.helper.form_method = 'post'
         self.helper.form_class = 'form-horizontal'
         self.helper.label_class = 'col-md-4'
         self.helper.field_class = 'col-md-8'
-
-    start = forms.DateTimeField(label=_('debut'), initial=datetime(now().year, 1, 1), widget=forms.SelectDateWidget())
-    end = forms.DateTimeField(label=_('fin'), initial=datetime(now().year, 12, 31), widget=forms.SelectDateWidget())
 
     class Meta:
         model = Activite
@@ -94,6 +95,8 @@ class CreateActivityForm(forms.ModelForm):
                                                          'data-width': '100%',
                                                      }),
             'description': forms.Textarea(attrs={'rows': 3, 'style': 'resize: none;'}),
+            'start': forms.SelectDateWidget(),
+            'end': forms.SelectDateWidget()
         }
 
     def clean(self):
@@ -101,7 +104,7 @@ class CreateActivityForm(forms.ModelForm):
         debut = cleaned_data.get('start', '')
         fin = cleaned_data.get('end', '')
         if debut > fin:
-            msg = _('La date de debut est postérieure à la date de fin.')
+            msg = _('La date de début est postérieure à la date de fin.')
             self.add_error('start', msg)
             self.add_error('end', msg)
         return cleaned_data
@@ -383,7 +386,7 @@ class AddControleForm(forms.ModelForm):
         self.processusrisque = kwargs.pop('processusrisque', None)
         self.activiterisque = kwargs.pop('activiterisque', None)
         super().__init__(*args, **kwargs)
-        self.fields['start'].label = _('debut')
+        self.fields['start'].label = _('début')
         self.fields['end'].label = _('fin')
         self.helper = FormHelper
         self.helper.form_method = 'post'
@@ -425,7 +428,7 @@ class AddControleForm(forms.ModelForm):
         debut = cleaned_data.get('start', '')
         fin = cleaned_data.get('end', '')
         if (debut and fin) and (fin < debut):
-            msg = _('La date de debut est postérieure à la date de fin.')
+            msg = _('La date de début est postérieure à la date de fin.')
             self.add_error('start', msg)
             self.add_error('end', msg)
         return cleaned_data

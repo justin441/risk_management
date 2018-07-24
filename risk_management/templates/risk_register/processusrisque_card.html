@@ -2,7 +2,8 @@
 <div class="card mb-3">
   <div class="card-header">
     <strong>{% trans 'Confirmé' %}</strong><strong id="status-risk-{{ processusrisque.pk }}" class="confirm-risk ml-2"
-                                                   data-url="{% url 'risk_register:ajax-statut-risque' pk=processusrisque.pk %}">{% trans 'Inconnu' %}</strong>
+                                                   data-check-url="{% url 'risk_register:ajax-statut-risque' pk=processusrisque.pk %}"
+                                                    data-change-url="{% url 'risk_register:ajax-changer-statut-risque' pk=processusrisque.pk %}">{% csrf_token %}{% trans 'Inconnu' %}</strong>
     <a href="{% url 'risk_register:effacer_processusrisque' processusrisque=processusrisque.pk %}" class="fm-delete"
        data-fm-callback="reload"
        data-fm-head="{% trans 'Supprimer un risque' %}">

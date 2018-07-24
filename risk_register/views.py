@@ -210,6 +210,9 @@ class EditProcessusrisqueView(AjaxUpdateView):
     form_class = UpdateProcessusrisqueForm
     pk_url_kwarg = 'processusrisque'
 
+    def pre_save(self):
+        self.object.modifie_par = self.request.user
+
 
 class DeleteProcessusrisqueView(AjaxDeleteView):
     model = ProcessusRisque
@@ -261,6 +264,9 @@ class EditActiviterisqueView(AjaxUpdateView):
     model = ActiviteRisque
     form_class = UpdateActiviterisqueForm
     pk_url_kwarg = 'activiterisque'
+
+    def pre_save(self):
+        self.object.modifie_par = self.request.user
 
 
 class DeleteActiviterisqueView(AjaxDeleteView):
@@ -379,5 +385,40 @@ def checkriskstatus(request, pk):
 
 
 def changeriskstatus(request, pk):
-    pass
+    if request.method == 'POST' and request.is_ajax():
+        data = {}
+        try:
+            risque = ProcessusRisque.objects.get(pk=pk)
+        except ProcessusRisque.DoesNotExist:
+            try:
+                risque = ActiviteRisque.objects.get(pk=pk)
+            except ActiviteRisque.DoesNotExist:
+                risque = None
+                data['error_message'] = _('Aucun risque trouvé')
+                data['result'] = 'Failure'
+        if risque:
+            print(risque.verifie)
+            print(request.POST.get('verifie'))
+            if risque.verifie != request.POST.get('verifie'):
+                data['result'] = 'Failure'
+                data['error_message'] = _('statut du risque désynchronisé.')
+            elif request.POST.get('verifie') == 'pending':
+                risque.verifie = 'verified'
+                risque.save()
+                data['result'] = 'success'
+            elif request.POST.get('verifie') == 'verified':
+                risque.verifie = 'pending'
+                risque.save()
+                data['result'] = 'success'
+            else:
+                data['result'] = 'Failure'
+                data['error_message'] = _('status du risque inconnu')
+
+        return JsonResponse(data)
+
+
+
+
+
+
 
