@@ -10,7 +10,7 @@ from risk_management.users.models import BusinessUnit
 from .models import (ActiviteRisque, ProcessusRisque, Processus, Activite, Risque, Estimation)
 from .forms import (CreateProcessForm, CreateActivityForm, CreateProcessOutputDataForm, AddInputDataForm,
                     AddProcessusrisqueForm, CreateRiskForm, UpdateProcessusrisqueForm, AddActiviterisqueForm,
-                    UpdateActiviterisqueForm, AddControleForm, SetSeuilDeRisqueForm)
+                    UpdateActiviterisqueForm, AddControleForm, CritereRisqueForm, AssignRiskform)
 
 
 # Create your views here.
@@ -305,7 +305,7 @@ class AddActiviterisqueControle(AddControlMixin):
 
 
 class SetSeuilProcessusrisqueView(AjaxCreateView):
-    form_class = SetSeuilDeRisqueForm
+    form_class = CritereRisqueForm
     pk_url_kwarg = 'processusrisque'
 
     def post_save(self):
@@ -317,14 +317,15 @@ class SetSeuilProcessusrisqueView(AjaxCreateView):
 
 
 class ProcessusrisqueEstimationView(AjaxCreateView):
-    form_class = SetSeuilDeRisqueForm
+    form_class = CritereRisqueForm
     pk_url_kwarg = 'processusrisque'
 
     def post_save(self):
         processusrisque = get_object_or_404(ProcessusRisque, pk=self.kwargs['processusrisque'])
         Estimation.objects.create(
             criterisation=self.object,
-            content_object=processusrisque
+            content_object=processusrisque,
+            proprietaire=processusrisque.get_proprietaire()
         )
 
     def get_form_kwargs(self):
@@ -334,7 +335,7 @@ class ProcessusrisqueEstimationView(AjaxCreateView):
 
 
 class SetSeuilActiviterisqueView(AjaxCreateView):
-    form_class = SetSeuilDeRisqueForm
+    form_class = CritereRisqueForm
     pk_url_kwarg = 'activiterisque'
 
     def post_save(self):
@@ -346,7 +347,7 @@ class SetSeuilActiviterisqueView(AjaxCreateView):
 
 
 class ActiviterisqueEstimationView(AjaxCreateView):
-    form_class = SetSeuilDeRisqueForm
+    form_class = CritereRisqueForm
     pk_url_kwarg = 'activiterisque'
 
     def post_save(self):
@@ -360,6 +361,18 @@ class ActiviterisqueEstimationView(AjaxCreateView):
         kwargs = super().get_form_kwargs()
         kwargs['activiterisque'] = get_object_or_404(ActiviteRisque, pk=self.kwargs['activiterisque'])
         return kwargs
+
+
+class AssignerRisqueView(AjaxUpdateView):
+    form_class = AssignRiskform
+
+    def get_object(self, queryset=None):
+        try:
+            risque = ProcessusRisque.objects.get(pk=self.kwargs['risque'])
+        except ProcessusRisque.DoesNotExist:
+            risque = get_object_or_404(ActiviteRisque, pk=self.kwargs['risque'])
+
+        return risque.estimations.latest()
 
 
 def checkriskstatus(request, pk):
@@ -397,8 +410,6 @@ def changeriskstatus(request, pk):
                 data['error_message'] = _('Aucun risque trouvé')
                 data['result'] = 'Failure'
         if risque:
-            print(risque.verifie)
-            print(request.POST.get('verifie'))
             if risque.verifie != request.POST.get('verifie'):
                 data['result'] = 'Failure'
                 data['error_message'] = _('statut du risque désynchronisé.')

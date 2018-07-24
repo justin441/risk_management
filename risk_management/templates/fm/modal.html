@@ -40,6 +40,7 @@
 <script>
   $('#fm-modal').on('shown.bs.modal', function () {
     var risque = $('#id_risque');
+    var user = $('#id_proprietaire');
     if(risque){
       if(risque.val()){
       var url = '/risk-register/risk-detail/' + risque.val() + '/';
@@ -67,6 +68,36 @@
     });
     risque.on('select2:unselecting', function () {
         $('#detail-risque').html('');
+    });
+    }
+
+    if (user){
+      if (user.val()){
+        var infoUrl = '/users/user-info/' + user.val() + '/';
+        $.get(infoUrl, function (data, status) {
+          if (status==='success'){
+            $('#user-info').html(data);
+          }
+          else {
+            $('#user-info').html('')
+          }
+        });
+      }
+      user.on('change', function (e) {
+        if (user.val()){
+          var info = '/users/user-info/' + user.val() + '/';
+          $.get(info, function (data, status) {
+          if (status==='success'){
+            $('#user-info').html(data);
+          }
+          else {
+            $('#user-info').html('')
+          }
+        });
+        }
+      });
+      user.on('select2:unselecting', function () {
+        $('#user-info').html('');
     });
     }
 

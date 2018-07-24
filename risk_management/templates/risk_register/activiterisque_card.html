@@ -2,7 +2,9 @@
 <div class="card mb-3">
   <div class="card-header">
     <strong>{% trans 'Confirmé' %}</strong><strong id="status-risk-{{ activiterisque.pk }}" class="confirm-risk ml-2"
-                                                   data-url="{% url 'risk_register:ajax-statut-risque' pk=activiterisque.pk %}">{% trans 'Inconnu' %}</strong>
+                                                   data-check-url="{% url 'risk_register:ajax-statut-risque' pk=activiterisque.pk %}"
+                                                   data-change-url="{% url 'risk_register:ajax-changer-statut-risque' pk=activiterisque.pk %}">
+    {% csrf_token %}{% trans 'Inconnu' %}</strong>
     <a href="{% url 'risk_register:effacer_activiterisque' activiterisque=activiterisque.pk %}" class="fm-delete"
        data-fm-callback="reload"
        data-fm-head="{% trans 'Supprimer un risque' %}">
@@ -33,11 +35,9 @@
       <div class="col-md-3 col-sm-12">
         <span>{% trans 'Facteur risque' %}</span><br>
         <a href="{% url 'risk_register:estimer_activiterisque' activiterisque=activiterisque.pk %}"
-           class="text-info fm-create"
-           data-fm-head="{% trans 'Estimer le risque' %}" data-fm-callback="reload">
-          <span data-feather="sliders" class="mr-2">
-
-          </span></a>
+           class="text-info fm-create" data-fm-head="{% trans 'Estimer le risque' %}" data-fm-callback="reload">
+          <span data-feather="sliders" class="mr-2"></span>
+        </a>
         <span
           class="{{ activiterisque.facteur_risque_display }}">{{ activiterisque.facteur_risque|default_if_none:_('Non defini') }}</span>
       </div>
@@ -48,6 +48,19 @@
                     <span data-feather="thermometer" class="mr-2"></span>{{ status }}
                   {% endblocktrans %}
                 </span>
+      </div>
+      <div class="col-md-3 col-sm-12">
+        <span>{% trans 'Propriétaire' %}</span><br>
+        {% if activiterisque.facteur_risque %}
+          <a href="{% url 'risk_register:assigner-risque' risque=activiterisque.pk %}" class="text-info fm-update"
+             data-fm-head="{% trans 'Assigner le risque à:' %}"
+             data-fm-callback="reload">
+            <span data-feather="user" class="mr-2"></span>
+          </a>
+        {% else %}
+          <span data-feather="user" class="mr-2"></span>
+        {% endif %}
+        {{ activiterisque.get_proprietaire|default_if_none:_('Non assigné') }}
       </div>
     </div>
   </div>

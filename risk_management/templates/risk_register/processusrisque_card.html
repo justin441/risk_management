@@ -3,7 +3,8 @@
   <div class="card-header">
     <strong>{% trans 'Confirmé' %}</strong><strong id="status-risk-{{ processusrisque.pk }}" class="confirm-risk ml-2"
                                                    data-check-url="{% url 'risk_register:ajax-statut-risque' pk=processusrisque.pk %}"
-                                                    data-change-url="{% url 'risk_register:ajax-changer-statut-risque' pk=processusrisque.pk %}">{% csrf_token %}{% trans 'Inconnu' %}</strong>
+                                                   data-change-url="{% url 'risk_register:ajax-changer-statut-risque' pk=processusrisque.pk %}">
+    {% csrf_token %}{% trans 'Inconnu' %}</strong>
     <a href="{% url 'risk_register:effacer_processusrisque' processusrisque=processusrisque.pk %}" class="fm-delete"
        data-fm-callback="reload"
        data-fm-head="{% trans 'Supprimer un risque' %}">
@@ -47,6 +48,18 @@
                     <span data-feather="thermometer" class="mr-2"></span>{{ status }}
                   {% endblocktrans %}
                 </span>
+      </div>
+      <div class="col-md-3 col-sm-12">
+        <span>{% trans 'Propriétaire' %}</span><br>
+        {% if processusrisque.facteur_risque %}
+          <a href="{% url 'risk_register:assigner-risque' risque=processusrisque.pk %}" class="text-info fm-update"
+             data-fm-head="{% trans 'Assigner le risque à:' %}"
+             data-fm-callback="reload"> <span data-feather="user" class="mr-2"></span>
+          </a>
+         {% else %}
+            <span data-feather="user" class="mr-2"></span>
+        {% endif %}
+        {{ processusrisque.get_proprietaire|default_if_none:_('Non assigné') }}
       </div>
     </div>
   </div>

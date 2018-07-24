@@ -9,7 +9,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.utils.timezone import now
 
 from .models import (Processus, Activite, ProcessData, ProcessusRisque, ClasseDeRisques,
-                     Risque, ActiviteRisque, Controle, CritereDuRisque)
+                     Risque, ActiviteRisque, Controle, CritereDuRisque, Estimation)
 
 
 class CreateProcessForm(forms.ModelForm):
@@ -26,7 +26,13 @@ class CreateProcessForm(forms.ModelForm):
         model = Processus
         exclude = ['business_unit', 'input_data']
         widgets = {
-            'proc_manager': autocomplete.ModelSelect2(url='users:user-autocomplete'),
+            'proc_manager': autocomplete.ModelSelect2(url='users:user-autocomplete',
+                                                      attrs={
+                                                          'data-placeholder': _('Nom ou prénom'),
+                                                          'data-allow-clear': 'true',
+                                                          'data-width': '100%',
+                                                      }
+                                                      ),
             'description': forms.Textarea(attrs={
                 'rows': 5,
                 'style': 'resize: none'
@@ -434,7 +440,7 @@ class AddControleForm(forms.ModelForm):
         return cleaned_data
 
 
-class SetSeuilDeRisqueForm(forms.ModelForm):
+class CritereRisqueForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         self.processusrisque = kwargs.pop('processusrisque', None)
         self.activiterisque = kwargs.pop('activiterisque', None)
@@ -456,3 +462,33 @@ class SetSeuilDeRisqueForm(forms.ModelForm):
             msg = _('Ce risque n\'a pas encore été vérifié; impossible de l\'estimer.')
             self.add_error(None, msg)
         return super().clean()
+
+
+class AssignRiskform(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_method = 'post'
+        self.helper.form_class = 'form-horizontal'
+        self.helper.label_class = 'col-md-4'
+        self.helper.field_class = 'col-md-8'
+        self.helper.layout = Layout(
+            'proprietaire',
+            HTML(
+                '<div id="user-info"></div>'
+            )
+        )
+        self.fields['proprietaire'].label = _('Employé')
+
+    class Meta:
+        model = Estimation
+        fields = ['proprietaire']
+        widgets = {
+            'proprietaire': autocomplete.ModelSelect2(url='users:user-autocomplete',
+                                                      attrs={
+                                                          'data-placeholder': _('Nom ou prénom'),
+                                                          'data-allow-clear': 'true',
+                                                          'data-width': '100%',
+                                                      }
+                                                      ),
+        }
