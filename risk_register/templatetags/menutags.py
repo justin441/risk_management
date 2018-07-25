@@ -7,7 +7,18 @@ register = template.Library()
 
 @register.inclusion_tag('risk_register/bu_menu.html')
 def bu_menu(li=True, li_class="nav_item", a_class="nav-link"):
-    business_units = BusinessUnit.objects.all()
+    business_units = BusinessUnit.objects.filter(projet=False)
+    return {
+        'business_units': business_units,
+        'li_class': li_class,
+        'a_class': a_class,
+        'li': li
+    }
+
+
+@register.inclusion_tag('risk_register/bu_menu.html')
+def project_menu(li=True, li_class="nav_item", a_class="nav-link"):
+    business_units = BusinessUnit.objects.filter(projet=True)
     return {
         'business_units': business_units,
         'li_class': li_class,

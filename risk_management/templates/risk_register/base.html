@@ -14,7 +14,7 @@
   <meta name="description" content="">
   <meta name="author" content="Justin Fotue Kamga">
 
-  <link rel="icon" href="{% static 'images/favicons/favicon.ico' %}">
+  <link rel="icon" href="{% static 'images/favicons/favicon.jpg' %}">
 
   <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
   <!--[if lt IE 9]>
@@ -34,9 +34,10 @@
 {#navbar#}
 <div class="mb-4">
   <nav class="navbar navbar-expand-md navbar-dark sticky-top bg-primary flex-md-nowrap p-0 shadow">
-    <a href="#" class="navbar-brand col-sm-3 col-md-2 mr-0" style="background-color: #00a5e3;">NH-RM</a>
-    <input type="text" class=" ml-2 form-control-light w-50" placeholder="{% trans 'Rechercher' %}"
-           aria-label="Search">
+    <a href="{% url 'home' %}" class="navbar-brand col-sm-3 col-md-2 mr-0" style="background-color: #00a5e3;">NH-RM</a>
+    {# TODO: ajouter l'url #}
+    <input type="text" class="ml-2 mr-2 form-control-light w-50" placeholder="{% trans 'Rechercher' %}"
+           aria-label="Search"> {# TODO: ajouter la vue de la recherche #}
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse"
             aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
@@ -45,27 +46,46 @@
       <ul class="navbar-nav ml-auto mr-5">
         {% if user.is_authenticated %}
           <li class="nav-item dropdown">
-            <a href="" class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" data-toggle="dropdown"
+            <a href="" class="nav-link dropdown-toggle text-nowrap" id="navbarDropdownMenuLink" data-toggle="dropdown"
                aria-haspopup="true" aria-expanded="false">
-              {{ user.get_short_name }}<span data-feather="user"></span>
+              <span data-feather="user" class="mr-2"></span>{{ user.get_short_name }}
             </a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-              <a class="dropdown-item" href="#">Accueil</a>
-              <a class="dropdown-item" href="">Déconnexion</a> {# TODO: ajouter l'url#}
+              <a class="dropdown-item"
+                 href="{% url 'users:detail' request.user.username %}">{% trans 'Mes activités' %}</a>
+              <a class="dropdown-item" href="{% url 'account_logout' %}">{% trans 'Déconnexion' %}</a>
             </div>
           </li>
         {% else %}
           <li class="nav-item">
-            <a href="" class="nav-link">Connexion</a>{# TODO: ajouter l'url#}
+            <a href="{% url 'account_login' %}" class="nav-link">{% trans "Connexion" %}</a>
+          </li>
+          <li class="nav-item">
+            <a href="{% url 'account_signup' %}" class="nav-link">{% trans "Créer un compte" %}</a>
           </li>
         {% endif %}
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'home' %}">{% trans 'Accueil' %} <span class="sr-only">(current)</span></a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-nowrap" href="{% url 'about' %}">{% trans 'A Propos' %}</a>
+        </li>
         <li class="nav-item dropdown d-md-none">
           <a href="#" id="BusinessunitDropdown" class="nav-link dropdown-toggle " data-toggle="dropdown"
              aria-haspopup="true" aria-expanded="false">
-            Business units
+            {% trans 'Business units' %}
           </a>
           <div class="dropdown-menu" aria-labelledby="BusinessunitDropdown">
             {% bu_menu li=False a_class='dropdown-item' %}
+          </div>
+        </li>
+        <li class="nav-item dropdown d-md-none">
+          <a href="#" id="ProjectDropdown" class="nav-link dropdown-toggle " data-toggle="dropdown"
+             aria-haspopup="true" aria-expanded="false">
+            {% trans 'Projets' %}
+          </a>
+          <div class="dropdown-menu" aria-labelledby="ProjectDropdown">
+            {% project_menu li=False a_class='dropdown-item' %}
           </div>
         </li>
         <li class="nav-item dropdown d-md-none">
@@ -94,6 +114,18 @@
         </h6>
         <ul class=" nav flex-column mb-2">
           {% bu_menu %}
+          <li class="nav-item">
+            <a href="" class="nav-link"><span data-feather="plus"></span></a>
+          </li>
+        </ul>
+        <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+          <span>{% trans 'Projets' %}</span>
+        </h6>
+        <ul class=" nav flex-column mb-2">
+          {% project_menu %}
+          <li class="nav-item">
+            <a href="" class="nav-link"><span data-feather="plus"></span></a>
+          </li>
         </ul>
         <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
           <span>{% trans 'Base de données des risques' %}</span>
@@ -138,7 +170,9 @@
 <script type="text/javascript">
   feather.replace();
 </script>
-{% include 'fm/modal.html' %}
+{% block modal %}
+  {% include 'fm/modal.html' %}
+{% endblock %}
 {% block javascript %}
   <script type="text/javascript">
     $(function () {

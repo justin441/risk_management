@@ -3,7 +3,7 @@
 __pycache__/
 *.py[cod]
 *$py.class
-
+MailHog.exe
 # C extensions
 *.so
 
@@ -337,6 +337,9 @@ pip-selfcheck.json
 
 MailHog
 risk_management/media/
-.env
-.envs/*
-!.envs/.local/
+.env
+
+.envs/*
+
+!.envs/.local/
+

@@ -20,38 +20,3 @@ Issues with the above approach:
 */
 $('.form-group').removeClass('row');
 
-// modal for risk creation
-
- $('#fm-modal').on('shown.bs.modal', function () {
-    var risque = $('#id_risque');
-    if(risque){
-      if(risque.val()){
-      var url = '/risk-register/risk-detail/' + risque.val() + '/';
-      $.get(url, function (data, status) {
-        if(status==='success'){
-          $('#detail-risque').html(data);
-        }
-        else {
-          $('#detail-risque').html('');
-        }
-      });
-    }
-    risque.on('change', function (e) {
-       if(risque.val().length){
-         var url = '/risk-register/risk-detail/' + risque.val() + '/';
-         $.get(url, function (data, status){
-           if(status==='success'){
-              $('#detail-risque').html(data);
-           }
-           else {
-             $('#detail-risque').html('');
-           }
-         });
-       }
-    });
-    risque.on('select2:unselecting', function () {
-        $('#detail-risque').html('');
-    });
-    }
-
-  });

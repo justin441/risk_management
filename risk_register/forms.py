@@ -44,8 +44,10 @@ class CreateProcessForm(forms.ModelForm):
         nom = self.cleaned_data['nom']
         try:
             if hasattr(self.instance, 'business_unit'):
+                # le formulaire est utilisé pour modifier un processus
                 Processus.objects.get(nom=nom, business_unit=self.instance.business_unit)
             else:
+                # le formulaire est utilisé pour créer un processus
                 Processus.objects.get(nom=nom, business_unit=self.bu)
         except Processus.DoesNotExist:
             return nom

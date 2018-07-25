@@ -7,6 +7,7 @@ from django.db.models import Q
 
 
 from .models import User
+from .forms import UserUpdateForm
 
 
 class UserDetailView(LoginRequiredMixin, DetailView):
@@ -25,7 +26,7 @@ class UserRedirectView(LoginRequiredMixin, RedirectView):
 
 class UserUpdateView(LoginRequiredMixin, UpdateView):
 
-    fields = ["civilite", "first_name", "last_name", "telephone", "fonction", "business_unit"]
+    form_class = UserUpdateForm
 
     # we already imported User in the view code above, remember?
     model = User
