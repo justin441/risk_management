@@ -3,15 +3,19 @@
 {% block title %}{% trans 'utilisateurs' %}{% endblock %}
 
 {% block content %}
-<div class="container">
-  <h2>Users</h2>
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item active h5" aria-current="page">{% trans 'Utilisateurs' %}</li>
+    </ol>
+  </nav>
+  <div class="container">
 
-  <div class="list-group">
-    {% for user in user_list %}
-      <a href="{% url 'users:detail' user.username %}" class="list-group-item">
-        <h4 class="list-group-item-heading">{{ user.username }}</h4>
-      </a>
-    {% endfor %}
+    <div class="list-group mt-3">
+      {% for user in user_list %}
+        <a href="{% url 'users:detail' user.username %}" class="list-group-item">
+          <h4 class="list-group-item-heading">{{ user }}</h4>
+        </a>
+      {% endfor %}
+    </div>
   </div>
-</div>
 {% endblock content %}

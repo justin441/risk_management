@@ -74,6 +74,9 @@ class User(AbstractUser):
         self.fonction = self.fonction.lower()
         super().save(*args, **kwargs)
 
+    def get_username(self):
+        return self.username[:-36]
+
     def get_absolute_url(self):
         return reverse("users:detail", kwargs={"username": self.username})
 

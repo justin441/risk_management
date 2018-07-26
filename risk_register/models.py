@@ -429,12 +429,13 @@ class Controle(TimeFramedModel, TimeStampedModel, RiskMixin):
                                      choices={
                                          ('D', _('Détectabilité')), ('S', _('Sévérité')), ('O', _('Occurence'))},
                                      verbose_name=_('critère cible'), default='O')
-    nom = models.CharField(max_length=300, verbose_name=_('description'))
+    nom = models.CharField(max_length=50, verbose_name=_('nom'))
+    description = models.CharField(max_length=300, verbose_name=_('description'))
     cree_par = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL,
                                  verbose_name=_('créé par'), null=True,
                                  related_name='traitements_crees')
     assigne_a = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, verbose_name=_('assigné à'),
-                                  null=True, related_name='traitement_assignes')
+                                  null=True, related_name='traitements_assignes')
     modifie_par = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL,
                                     related_name='traitements_modifies',
                                     null=True, blank=True, verbose_name=_('modifié par'))

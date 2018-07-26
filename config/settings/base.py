@@ -254,9 +254,12 @@ ACCOUNT_EMAIL_REQUIRED = True
 # https://django-allauth.readthedocs.io/en/latest/configuration.html
 ACCOUNT_USERNAME_REQUIRED = False
 ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
+ACCOUNT_UNIQUE_EMAIL = True
+ACCOUNT_SIGNUP_EMAIL_ENTER_TWICE = True
 # https://django-allauth.readthedocs.io/en/latest/configuration.html
 ACCOUNT_ADAPTER = 'risk_management.users.adapters.AccountAdapter'
 # https://django-allauth.readthedocs.io/en/latest/configuration.html
+SOCIALACCOUNT_AUTO_SIGNUP = False
 SOCIALACCOUNT_ADAPTER = 'risk_management.users.adapters.SocialAccountAdapter'
 # custom signup form
 # ACCOUNT_FORMS = {

@@ -1,0 +1,40 @@
+{% load i18n %}
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item active h5">
+      <a href="{% url 'users:list' %}">{% trans 'Utilisateurs' %}</a>
+    </li>
+    <li class="breadcrumb-item active h5" aria-current="page">{{ user.get_username }}</li>
+  </ol>
+</nav>
+
+<div class="card mb-4" style="border-color:#00a5e3;">
+  <div class="card-header text-white" style="background-color:#00a5e3;">
+    <h4 class="card-title">
+      {{ user.get_full_name }}
+    </h4>
+    <h6 class="card-subtitle">{{ user.fonction }}</h6>
+    <a href="#detail-user" data-toggle="collapse" class="float-right"><span data-feather="more-horizontal" class="text-white"></span></a>
+  </div>
+  <div class="card-footer collapse" id="detail-user">
+    <dl class="row">
+      <dt class="col-sm-3">{% trans 'Téléphone' %}</dt>
+      <dd class="col-sm-9">{{ user.telephone }}</dd>
+      <dt class="col-sm-3">{% trans 'Email' %}</dt>
+      <dd class="col-sm-9">{{ user.email|urlize }}</dd>
+    </dl>
+    {% if user == request.user %}
+      <!-- Action buttons -->
+      <div class="row">
+
+        <div class="col-sm-12">
+          <a class="btn btn-primary" href="{% url 'users:update' %}" role="button">My Info</a>
+          <a class="btn btn-primary" href="{% url 'account_email' %}" role="button">E-Mail</a>
+          <!-- Your Stuff: Custom user template urls -->
+        </div>
+
+      </div>
+      <!-- End Action buttons -->
+    {% endif %}
+  </div>
+</div>

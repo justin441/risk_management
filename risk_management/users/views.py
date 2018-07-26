@@ -15,6 +15,7 @@ class UserDetailView(LoginRequiredMixin, DetailView):
     # These next two lines tell the view to index lookups by username
     slug_field = "username"
     slug_url_kwarg = "username"
+    context_object_name = 'user'
 
 
 class UserRedirectView(LoginRequiredMixin, RedirectView):

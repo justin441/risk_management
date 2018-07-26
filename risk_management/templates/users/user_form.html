@@ -4,6 +4,8 @@
 {% block title %}{{ user.first_name }}{% endblock %}
 
 {% block content %}
-  <h1>{{ user }}</h1>
-  {% crispy form %}
+  <div class="container">
+    <h1>{{ user }}</h1>
+    {% crispy form %}
+  </div>
 {% endblock %}

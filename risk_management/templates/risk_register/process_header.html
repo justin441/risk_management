@@ -2,7 +2,13 @@
 <nav aria-label="breadcrumb">
   <ol class="breadcrumb">
     <li class="breadcrumb-item"><a
-      href="{% url 'risk_register:detail_business_unit' pk=processus.business_unit.denomination %}">Business Unit</a>
+      href="{% url 'risk_register:detail_business_unit' pk=processus.business_unit.denomination %}">
+      {% if processus.business_unit.projet %}
+        {% trans 'Projet' %}
+      {% else %}
+        {% trans 'Business Unit' %}
+      {% endif %}
+    </a>
     </li>
     <li class="breadcrumb-item active h5" aria-current="page">{% trans 'Processus' %}</li>
   </ol>

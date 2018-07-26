@@ -1,36 +1,35 @@
 {% extends "risk_register/base.html" %}
-{% load static %}
+{% load static i18n %}
 
-{% block title %}User: {{ object.username }}{% endblock %}
+{% block title %}{{ user.get_username }}{% endblock %}
 
 {% block content %}
-<div class="container">
-
-  <div class="row">
-    <div class="col-sm-12">
-
-      <h2>{{ object.username }}</h2>
-      {% if object.name %}
-        <p>{{ object.name }}</p>
-      {% endif %}
+  {% block header %}
+    {% include 'users/user_header.html' %}
+  {% endblock %}
+  <ul class="nav nav-tabs nav-justified">
+    <li class="nav-item">
+      <a href="#my-risks" class="nav-link" role="tab" data-toggle="tab">{% trans 'Risques assignés' %}</a></li>
+    <li class="nav-item">
+      <a href="#my-controls" class="nav-link" role="tab" data-toggle="tab">{% trans 'Contrôles assignés' %}</a>
+    </li>
+    {% if user.processus_manages.all %}
+      <li class="nav-item">
+        <a href="#my-processes" class="nav-link" role="tab" data-toggle="tab">{% trans 'Processus managés' %}</a>
+      </li>
+    {% endif %}
+    <li class="nav-item">
+      <a href="#my-activities" class="nav-link" role="tab" data-toggle="tab">{% trans 'Activités' %}</a>
+    </li>
+  </ul>
+  {% block data %}
+    <div class="tab-content">
+      <div class="tab-pane mt3 active" role="tabpanel" id="my-risks"></div>
+      <div class="tab-pane mt3" role="tabpanel" id="my-controls"></div>
+      <div class="tab-pane mt3" role="tabpanel" id="my-processes"></div>
+      <div class="tab-pane mt3" role="tabpanel" id="my-activities"></div>
     </div>
-  </div>
 
-{% if object == request.user %}
-<!-- Action buttons -->
-<div class="row">
-
-  <div class="col-sm-12">
-    <a class="btn btn-primary" href="{% url 'users:update' %}" role="button">My Info</a>
-    <a class="btn btn-primary" href="{% url 'account_email' %}" role="button">E-Mail</a>
-    <!-- Your Stuff: Custom user template urls -->
-  </div>
-
-</div>
-<!-- End Action buttons -->
-{% endif %}
-
-
-</div>
+  {% endblock %}
 {% endblock content %}
 
