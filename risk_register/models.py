@@ -330,11 +330,19 @@ class ActiviteRisque(IdentificationRisque):
                                    verbose_name=_('soumis par'))
     modifie_par = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True,
                                     related_name='activiterisques_modifies', verbose_name=_('modifié par'))
+    suivi_par = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='activiterisques_suivis')
+    proprietaire = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True,
+                                     related_name='activiterisques_manages', verbose_name=_('propriétaire du risque'))
+    proprietaire_change = MonitorField(monitor='proprietaire')
     estimations = GenericRelation('Estimation', related_query_name='activiterisque')
     controles = GenericRelation('Controle', related_query_name='activiterisque')
 
     def __str__(self):
         return "%s/%s" % (self.activite.nom, self.risque.nom)
+
+    def save(self, *args, **kwargs):
+        self.suivi_par.add(self.soumis_par)
+        super().save(*args, *kwargs)
 
     class Meta(IdentificationRisque.Meta):
         verbose_name = _('risque de l\'activité')
@@ -349,11 +357,19 @@ class ProcessusRisque(IdentificationRisque):
                                    verbose_name=_('soumis par'))
     modifie_par = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True,
                                     related_name='processusrisques_modifies', verbose_name=_('modifié par'))
+    suivi_par = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='processusrisques_suivis')
+    proprietaire = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True,
+                                     related_name='processusrisques_manages', verbose_name=_('propriétaire du risque'))
+    proprietaire_change = MonitorField(monitor='proprietaire')
     estimations = GenericRelation('Estimation', related_query_name='processusrisque')
     controles = GenericRelation('Controle', related_query_name='processusrisque')
 
     def __str__(self):
         return '%s/%s' % (self.processus.nom, self.risque.nom)
+
+    def save(self, *args, **kwargs):
+        self.suivi_par.add(self.soumis_par)
+        super().save(*args, *kwargs)
 
     class Meta(IdentificationRisque.Meta):
         verbose_name = _('risque du processus')
@@ -379,11 +395,8 @@ class Estimation(TimeStampedModel, RiskMixin):
     date_revue = models.DateTimeField(_('revue prevue pour le'), default=now()+timedelta(days=60))
     criterisation = models.OneToOneField(CritereDuRisque, on_delete=models.SET_NULL, blank=True, null=True,
                                          verbose_name=_('Scoring'))
-    proprietaire = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True,
-                                     related_name='risques_manages', verbose_name=_('propriétaire du risque'))
     date_revue_change = MonitorField(monitor='date_revue')
     criterisation_change = MonitorField(monitor='criterisation')
-    proprietaire_change = MonitorField(monitor='proprietaire')
 
     def facteur_risque(self):
         """renvoit le facteur risque"""
@@ -429,8 +442,8 @@ class Controle(TimeFramedModel, TimeStampedModel, RiskMixin):
                                      choices={
                                          ('D', _('Détectabilité')), ('S', _('Sévérité')), ('O', _('Occurence'))},
                                      verbose_name=_('critère cible'), default='O')
-    nom = models.CharField(max_length=50, verbose_name=_('nom'))
-    description = models.CharField(max_length=300, verbose_name=_('description'))
+    nom = models.CharField(max_length=50, verbose_name=_('intitulé'))
+    description = models.CharField(max_length=500, verbose_name=_('détail'), null=True, blank=True)
     cree_par = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL,
                                  verbose_name=_('créé par'), null=True,
                                  related_name='traitements_crees')
@@ -439,6 +452,10 @@ class Controle(TimeFramedModel, TimeStampedModel, RiskMixin):
     modifie_par = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL,
                                     related_name='traitements_modifies',
                                     null=True, blank=True, verbose_name=_('modifié par'))
+    # ajouté a la liste des contrôles à mettre en eouvre
+    est_approuve = models.BooleanField(verbose_name=_('approuvé'), default=False)
+    # validé l'exécution du contrôle
+    est_validide = models.BooleanField(verbose_name=_('validé'), default=False)
     status = StatusField()
     acheve_le = MonitorField(monitor='status', when=['achevé'])
 

@@ -1,7 +1,7 @@
 {% extends "risk_register/base.html" %}
 {% load static i18n %}
 
-{% block title %}{{ user.get_username }}{% endblock %}
+{% block title %}{{ employe.get_username }}{% endblock %}
 
 {% block content %}
   {% block header %}
@@ -9,11 +9,15 @@
   {% endblock %}
   <ul class="nav nav-tabs nav-justified">
     <li class="nav-item">
-      <a href="#my-risks" class="nav-link" role="tab" data-toggle="tab">{% trans 'Risques assignés' %}</a></li>
+      <a href="#my-risks" class="nav-link" role="tab" data-toggle="tab">{% trans 'Risques assignés' %}</a>
+    </li>
     <li class="nav-item">
       <a href="#my-controls" class="nav-link" role="tab" data-toggle="tab">{% trans 'Contrôles assignés' %}</a>
     </li>
-    {% if user.processus_manages.all %}
+    <li class="nav-item">
+      <a href="#followed-risks" class="nav-link" role="tab" data-toggle="tab">{% trans 'Risques suivis' %}</a>
+    </li>
+    {% if employe.processus_manages.all %}
       <li class="nav-item">
         <a href="#my-processes" class="nav-link" role="tab" data-toggle="tab">{% trans 'Processus managés' %}</a>
       </li>
@@ -24,7 +28,10 @@
   </ul>
   {% block data %}
     <div class="tab-content">
-      <div class="tab-pane mt3 active" role="tabpanel" id="my-risks"></div>
+      <div class="tab-pane mt3 active" role="tabpanel" id="my-risks">
+
+      </div>
+      <div class="tab-pane mt3" role="tabpanel" id="followed-risks"></div>
       <div class="tab-pane mt3" role="tabpanel" id="my-controls"></div>
       <div class="tab-pane mt3" role="tabpanel" id="my-processes"></div>
       <div class="tab-pane mt3" role="tabpanel" id="my-activities"></div>

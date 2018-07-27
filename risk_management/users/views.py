@@ -8,6 +8,7 @@ from django.db.models import Q
 
 from .models import User
 from .forms import UserUpdateForm
+from risk_register.models import ActiviteRisque, ProcessusRisque
 
 
 class UserDetailView(LoginRequiredMixin, DetailView):
@@ -15,7 +16,12 @@ class UserDetailView(LoginRequiredMixin, DetailView):
     # These next two lines tell the view to index lookups by username
     slug_field = "username"
     slug_url_kwarg = "username"
-    context_object_name = 'user'
+    context_object_name = 'employe'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        processusrisques = ProcessusRisque.objects.all()
+
 
 
 class UserRedirectView(LoginRequiredMixin, RedirectView):

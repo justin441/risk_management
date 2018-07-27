@@ -1,11 +1,8 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
-from django.core.exceptions import ValidationError
 from django.urls import reverse
-from django.db.models import Q
 from django.utils.translation import gettext_lazy as _
 from django.core.validators import RegexValidator
-
 
 phone_regex = RegexValidator(regex=r'^(\(\+\d{0,3}\))? ?\d{9}$',
                              message=_("le format du numéro de téléphone est:[(+000)][ ]000000000;"

@@ -4,26 +4,26 @@
     <li class="breadcrumb-item active h5">
       <a href="{% url 'users:list' %}">{% trans 'Utilisateurs' %}</a>
     </li>
-    <li class="breadcrumb-item active h5" aria-current="page">{{ user.get_username }}</li>
+    <li class="breadcrumb-item active h5" aria-current="page">{{ employe.get_username }}</li>
   </ol>
 </nav>
 
 <div class="card mb-4" style="border-color:#00a5e3;">
   <div class="card-header text-white" style="background-color:#00a5e3;">
     <h4 class="card-title">
-      {{ user.get_full_name }}
+      {{ employe.get_full_name }}
     </h4>
-    <h6 class="card-subtitle">{{ user.fonction }}</h6>
+    <h6 class="card-subtitle">{{ employe.fonction }}</h6>
     <a href="#detail-user" data-toggle="collapse" class="float-right"><span data-feather="more-horizontal" class="text-white"></span></a>
   </div>
   <div class="card-footer collapse" id="detail-user">
     <dl class="row">
       <dt class="col-sm-3">{% trans 'Téléphone' %}</dt>
-      <dd class="col-sm-9">{{ user.telephone }}</dd>
+      <dd class="col-sm-9">{{ employe.telephone }}</dd>
       <dt class="col-sm-3">{% trans 'Email' %}</dt>
-      <dd class="col-sm-9">{{ user.email|urlize }}</dd>
+      <dd class="col-sm-9">{{ employe.email|urlize }}</dd>
     </dl>
-    {% if user == request.user %}
+    {% if employe == request.user %}
       <!-- Action buttons -->
       <div class="row">
 
