@@ -405,16 +405,17 @@ class AddControleForm(forms.ModelForm):
             InlineRadios('critere_cible'),
             'nom',
             'start',
-            'end'
+            'end',
+            'description'
         )
 
     class Meta:
         model = Controle
-        fields = ['critere_cible', 'nom', 'start', 'end']
+        fields = ['critere_cible', 'nom', 'start', 'end', 'description']
         widgets = {
             'start': forms.SelectDateWidget,
             'end': forms.SelectDateWidget,
-            'nom': forms.Textarea(attrs={'rows': 3, 'style': 'resize: none;'})
+            'description': forms.Textarea(attrs={'rows': 3, 'style': 'resize: none;'})
         }
 
     def clean(self):
@@ -483,7 +484,6 @@ class AssignRiskform(forms.ModelForm):
         self.fields['proprietaire'].label = _('Employé')
 
     class Meta:
-        model = Estimation
         fields = ['proprietaire']
         widgets = {
             'proprietaire': autocomplete.ModelSelect2(url='users:user-autocomplete',
@@ -494,3 +494,13 @@ class AssignRiskform(forms.ModelForm):
                                                       }
                                                       ),
         }
+
+
+class AssignActiviterisqueForm(AssignRiskform):
+    class Meta(AssignRiskform.Meta):
+        model = ActiviteRisque
+
+
+class AssignProcessusrisqueForm(AssignRiskform):
+    class Meta(AssignRiskform.Meta):
+        model = ProcessusRisque

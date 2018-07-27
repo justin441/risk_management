@@ -301,15 +301,7 @@ class IdentificationRisque(TimeStampedModel):
 
     # le risque est-il assigné
     def est_assigne(self):
-        if self.estimations.all() and self.estimations.latest().proprietaire:
-            return True
-        return False
-
-    def get_proprietaire(self):
-        if self.est_assigne():
-            return self.estimations.latest().proprietaire
-
-    get_proprietaire.short_description = _('propriétaire du risque')
+            return self.proprietaire is not None
 
     @property
     def est_obsolete(self):

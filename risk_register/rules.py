@@ -43,7 +43,7 @@ def is_activity_risk_reporter(user, activiterisque):
 
 @rules.predicate
 def is_activity_risk_owner(user, activiterisque):
-    return activiterisque.get_proprietaire() == user
+    return activiterisque.proprietaire == user
 
 
 @rules.predicate
@@ -75,7 +75,7 @@ def is_process_risk_reporter(user, processusrisque):
 
 @rules.predicate
 def is_process_risk_owner(user, processusrisque):
-    return processusrisque.get_proprietaire() == user
+    return processusrisque.proprietaire == user
 
 
 @rules.predicate

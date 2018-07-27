@@ -52,7 +52,7 @@
       <div class="col-md-3 col-sm-12">
         <span>{% trans 'Propriétaire' %}</span><br>
         {% if activiterisque.facteur_risque %}
-          <a href="{% url 'risk_register:assigner-risque' risque=activiterisque.pk %}" class="text-info fm-update"
+          <a href="{% url 'risk_register:assigner-activiterisque' activiterisque=activiterisque.pk %}" class="text-info fm-update"
              data-fm-head="{% trans 'Assigner le risque à:' %}"
              data-fm-callback="reload">
             <span data-feather="user" class="mr-2"></span>
@@ -60,7 +60,7 @@
         {% else %}
           <span data-feather="user" class="mr-2"></span>
         {% endif %}
-        {{ activiterisque.get_proprietaire|default_if_none:_('Non assigné') }}
+        {{ activiterisque.proprietaire|default_if_none:_('Non assigné') }}
       </div>
     </div>
   </div>

@@ -52,14 +52,14 @@
       <div class="col-md-3 col-sm-12">
         <span>{% trans 'Propriétaire' %}</span><br>
         {% if processusrisque.facteur_risque %}
-          <a href="{% url 'risk_register:assigner-risque' risque=processusrisque.pk %}" class="text-info fm-update"
+          <a href="{% url 'risk_register:assigner-processusrisque' processusrisque=processusrisque.pk %}" class="text-info fm-update"
              data-fm-head="{% trans 'Assigner le risque à:' %}"
              data-fm-callback="reload"> <span data-feather="user" class="mr-2"></span>
           </a>
          {% else %}
             <span data-feather="user" class="mr-2"></span>
         {% endif %}
-        {{ processusrisque.get_proprietaire|default_if_none:_('Non assigné') }}
+        {{ processusrisque.proprietaire|default_if_none:_('Non assigné') }}
       </div>
     </div>
   </div>

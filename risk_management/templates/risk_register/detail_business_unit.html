@@ -82,7 +82,7 @@
                       {{ status }}
                     {% endblocktrans %}
                   </td>
-                  <td><a href="#">{{ processusrisque.get_proprietaire|default_if_none:_('Non assigné') }}</a></td>
+                  <td><a href="#">{{ processusrisque.proprietaire|default_if_none:_('Non assigné') }}</a></td>
                   {# TODO: ajouter l'url#}
                   <td>
                     {% if processusrisque.est_obsolete %}
@@ -155,7 +155,7 @@
                       {{ status }}
                     {% endblocktrans %}
                   </td>
-                  <td><a href="#">{{ activiterisque.get_proprietaire|default_if_none:_('Non assigné') }}</a></td>
+                  <td><a href="#">{{ activiterisque.proprietaire|default_if_none:_('Non assigné') }}</a></td>
                   {# TODO: ajouter l'url#}
                   <td>
                     {% if activiterisque.est_obsolete %}

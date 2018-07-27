@@ -164,7 +164,7 @@ class ActiviteRisqueAdmin(IdentificationRisque):
 
     list_filter = ('activite__processus__business_unit', 'type_de_risque')
     list_display = ['created', 'date_revue', 'activite', 'risque', 'type_de_risque', 'verifie',
-                    'status', 'seuil_de_risque', 'facteur_risque', 'get_proprietaire']
+                    'verifie_par', 'status', 'seuil_de_risque', 'facteur_risque', 'proprietaire']
 
 
 @admin.register(ProcessusRisque, site=risk_management_admin_site)
@@ -173,7 +173,7 @@ class ProcessusRisqueAdmin(IdentificationRisque):
     autocomplete_fields = ['processus', 'risque']
     list_filter = ('processus__business_unit', 'type_de_risque')
     list_display = ['created', 'date_revue', 'processus', 'risque', 'type_de_risque', 'verifie',
-                    'status',  'seuil_de_risque', 'facteur_risque', 'get_proprietaire']
+                    'verifie_par', 'status',  'seuil_de_risque', 'facteur_risque', 'proprietaire']
 
 
 @admin.register(ProcessData, site=risk_management_admin_site)
