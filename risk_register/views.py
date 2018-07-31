@@ -309,6 +309,10 @@ class SetSeuilProcessusrisqueView(AjaxCreateView):
     form_class = CritereRisqueForm
     pk_url_kwarg = 'processusrisque'
 
+    def pre_save(self):
+        self.object.evalue_par = self.request.user
+        self.object.modifie_par = self.request.user
+
     def post_save(self):
         processusrisque = get_object_or_404(ProcessusRisque, pk=self.kwargs['processusrisque'])
         if processusrisque.criterisation:
@@ -321,12 +325,14 @@ class ProcessusrisqueEstimationView(AjaxCreateView):
     form_class = CritereRisqueForm
     pk_url_kwarg = 'processusrisque'
 
+    def pre_save(self):
+        self.object.evalue_par = self.request.user
+
     def post_save(self):
         processusrisque = get_object_or_404(ProcessusRisque, pk=self.kwargs['processusrisque'])
         Estimation.objects.create(
             criterisation=self.object,
             content_object=processusrisque,
-            proprietaire=processusrisque.get_proprietaire()
         )
 
     def get_form_kwargs(self):
@@ -339,6 +345,10 @@ class SetSeuilActiviterisqueView(AjaxCreateView):
     form_class = CritereRisqueForm
     pk_url_kwarg = 'activiterisque'
 
+    def pre_save(self):
+        self.object.evalue_par = self.request.user
+        self.object.modifie_par = self.request.user
+
     def post_save(self):
         activiterisque = get_object_or_404(ActiviteRisque, pk=self.kwargs['activiterisque'])
         if activiterisque.criterisation:
@@ -350,6 +360,9 @@ class SetSeuilActiviterisqueView(AjaxCreateView):
 class ActiviterisqueEstimationView(AjaxCreateView):
     form_class = CritereRisqueForm
     pk_url_kwarg = 'activiterisque'
+
+    def pre_save(self):
+        self.object.evalue_par = self.request.user
 
     def post_save(self):
         activiterisque = get_object_or_404(ActiviteRisque, pk=self.kwargs['activiterisque'])
