@@ -18,11 +18,6 @@ class UserDetailView(LoginRequiredMixin, DetailView):
     slug_url_kwarg = "username"
     context_object_name = 'employe'
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        processusrisques = ProcessusRisque.objects.all()
-
-
 
 class UserRedirectView(LoginRequiredMixin, RedirectView):
     permanent = False

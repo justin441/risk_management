@@ -10,7 +10,8 @@ from risk_management.users.models import BusinessUnit
 from .models import (ActiviteRisque, ProcessusRisque, Processus, Activite, Risque, Estimation)
 from .forms import (CreateProcessForm, CreateActivityForm, CreateProcessOutputDataForm, AddInputDataForm,
                     AddProcessusrisqueForm, CreateRiskForm, UpdateProcessusrisqueForm, AddActiviterisqueForm,
-                    UpdateActiviterisqueForm, AddControleForm, CritereRisqueForm, AssignActiviterisqueForm, AssignProcessusrisqueForm)
+                    UpdateActiviterisqueForm, AddControleForm, CritereRisqueForm, AssignActiviterisqueForm, AssignProcessusrisqueForm,
+                    ChangeActiviterisqueReviewDateForm, ChangeProcessusrisqueReviewDateForm)
 
 
 # Create your views here.
@@ -376,6 +377,24 @@ class AssignerProcessusrisqueView(AjaxUpdateView):
     form_class = AssignProcessusrisqueForm
     pk_url_kwarg = 'processusrisque'
     model = ProcessusRisque
+
+    def pre_save(self):
+        self.object.modifie_par = self.request.user
+
+
+class SetProcessusrisqueReviewDate(AjaxUpdateView):
+    form_class = ChangeProcessusrisqueReviewDateForm
+    pk_url_kwarg = 'processusrisque'
+    model = ProcessusRisque
+
+    def pre_save(self):
+        self.object.modifie_par = self.request.user
+
+
+class SetActiviterisqueReviewDate(AjaxUpdateView):
+    form_class = ChangeActiviterisqueReviewDateForm
+    pk_url_kwarg = 'activiterisque'
+    model = ActiviteRisque
 
     def pre_save(self):
         self.object.modifie_par = self.request.user

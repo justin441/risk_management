@@ -46,6 +46,10 @@ urlpatterns = [
          name='assigner-activiterisque'),
     path('<uuid:processusrisque>/assign-process-risk/', views.AssignerProcessusrisqueView.as_view(),
          name='assigner-processusrisque'),
+    path('<uuid:processusrisque>/set-processusrisque-review-date', views.SetProcessusrisqueReviewDate.as_view(),
+         name='revue-processusrisque'),
+    path('<uuid:activiterisque>/set-activiterisque-review-date', views.SetActiviterisqueReviewDate.as_view(),
+         name='revue-activiterisque'),
     path('ajax-risk-verification-status/<uuid:pk>', views.checkriskstatus, name='ajax-statut-risque'),
     path('ajax-risk-verification-status-change/<uuid:pk>', views.changeriskstatus, name='ajax-changer-statut-risque'),
 ]

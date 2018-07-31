@@ -1,10 +1,12 @@
 {% load i18n %}
 <nav aria-label="breadcrumb">
   <ol class="breadcrumb">
-    <li class="breadcrumb-item active h5">
+    <li class="breadcrumb-item">
       <a href="{% url 'users:list' %}">{% trans 'Utilisateurs' %}</a>
     </li>
-    <li class="breadcrumb-item active h5" aria-current="page">{{ employe.get_username }}</li>
+    <li class="breadcrumb-item active h5" aria-current="page">
+      {{ employe.get_username }}
+    </li>
   </ol>
 </nav>
 

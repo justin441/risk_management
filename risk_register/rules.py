@@ -170,6 +170,8 @@ rules.add_rule('assign_control', is_controle_reviewer)
 rules.add_rule('complete_control', is_controle_owner)
 rules.add_rule('change_controle', is_controle_reviewer | is_controle_creator)
 rules.add_rule('delete_controle', is_controle_creator | is_controle_reviewer)
+rules.add_rule('approve_controle', is_controle_reviewer)
+rules.add_rule('validate_controle_completion', is_controle_reviewer | is_controle_creator)
 
 
 # ------------permissions------------
@@ -221,3 +223,5 @@ rules.add_perm('risk_register.assign_control', is_controle_reviewer)
 rules.add_perm('risk_register.complete_control', is_controle_owner)
 rules.add_perm('risk_register.change_controle', is_controle_reviewer | is_controle_creator)
 rules.add_perm('risk_register.delete_controle', is_controle_creator | is_controle_reviewer)
+rules.add_perm('risk_register.approve_controle', is_controle_reviewer)
+rules.add_perm('risk_register.validate_controle_completion', is_controle_reviewer | is_controle_creator)

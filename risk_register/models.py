@@ -34,7 +34,7 @@ class ProcessData(models.Model):
                                    verbose_name=_('fournisseur externe'))
 
     def __str__(self):
-        return self.nom
+        return _("%s (%s)") % (self.nom, self.origine)
 
     class Meta:
         ordering = ['nom']

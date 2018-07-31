@@ -43,11 +43,11 @@ class CreateProcessForm(forms.ModelForm):
         # le nom du processus doit être unique pour un business_unit
         nom = self.cleaned_data['nom']
         try:
-            if hasattr(self.instance, 'business_unit'):
-                # le formulaire est utilisé pour modifier un processus
+            try:
+                # si le formulaire est utilisé pour modifier un processus
                 Processus.objects.get(nom=nom, business_unit=self.instance.business_unit)
-            else:
-                # le formulaire est utilisé pour créer un processus
+            except AttributeError:
+                # si le formulaire est utilisé pour créer un processus
                 Processus.objects.get(nom=nom, business_unit=self.bu)
         except Processus.DoesNotExist:
             return nom
@@ -55,7 +55,7 @@ class CreateProcessForm(forms.ModelForm):
             if Processus.objects.get(nom=nom, business_unit=self.instance.business_unit) == self.instance:
                 return nom
             else:
-                msg = _('Un processus portant ce nom existe déjà')
+                msg = _('Un processus portant ce nom existe déjà.')
                 raise forms.ValidationError(msg)
 
 
@@ -504,3 +504,29 @@ class AssignActiviterisqueForm(AssignRiskform):
 class AssignProcessusrisqueForm(AssignRiskform):
     class Meta(AssignRiskform.Meta):
         model = ProcessusRisque
+
+
+class ChangeReviewDateForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_method = 'post'
+        self.helper.form_class = 'form-horizontal'
+        self.helper.label_class = 'col-md-4'
+        self.helper.field_class = 'col-md-8'
+
+    class Meta:
+       fields = ['date_revue']
+       widgets = {
+           'date_revue': forms.SelectDateWidget()
+       }
+
+
+class ChangeProcessusrisqueReviewDateForm(ChangeReviewDateForm):
+    class Meta(ChangeReviewDateForm.Meta):
+        model = ProcessusRisque
+
+
+class ChangeActiviterisqueReviewDateForm(ChangeReviewDateForm):
+    class Meta(ChangeReviewDateForm.Meta):
+        model = ActiviteRisque

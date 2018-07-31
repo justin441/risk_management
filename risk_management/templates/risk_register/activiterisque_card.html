@@ -1,6 +1,11 @@
-{% load i18n %}
+{% load i18n humanize %}
 <div class="card mb-3">
   <div class="card-header">
+    {% if activiterisque.type_de_risque == 'O' %}
+      <strong class="text-success ml-2 mr-2">{{ activiterisque.get_type_de_risque_display | capfirst }}</strong>
+    {% else %}
+      <strong class="text-danger ml-2 mr-2">{{ activiterisque.get_type_de_risque_display | capfirst }}</strong>
+    {% endif %}
     <strong>{% trans 'Confirmé' %}</strong><strong id="status-risk-{{ activiterisque.pk }}" class="confirm-risk ml-2"
                                                    data-check-url="{% url 'risk_register:ajax-statut-risque' pk=activiterisque.pk %}"
                                                    data-change-url="{% url 'risk_register:ajax-changer-statut-risque' pk=activiterisque.pk %}">
@@ -21,27 +26,28 @@
       {{ activiterisque.risque.nom }}: {{ activiterisque.risque.description|truncatechars:50 }}
     </a><br>
     <div class="row mt-2">
-      <div class="col-md-3 col-sm-12">
+      <div class="col-md-2 col-sm-12">
         <span>{% trans 'Seuil de risque' %}</span>
         <br>
         <a href="{% url 'risk_register:definir_seuil_activiterisque' activiterisque=activiterisque.pk %}"
-           class="text-info fm-create" data-fm-head="{% trans 'Définir le seuil de risque' %}"
+           class="text-info fm-create risk-edit" data-fm-head="{% trans 'Définir le seuil de risque' %}"
            data-fm-callback="reload">
           <span data-feather="sliders" class="mr-2"></span>
         </a>
         <span
           class="{{ activiterisque.seuil_display }}">{{ activiterisque.seuil_de_risque|default_if_none:_('Non defini') }}</span>
       </div>
-      <div class="col-md-3 col-sm-12">
+      <div class="col-md-2 col-sm-12">
         <span>{% trans 'Facteur risque' %}</span><br>
         <a href="{% url 'risk_register:estimer_activiterisque' activiterisque=activiterisque.pk %}"
-           class="text-info fm-create" data-fm-head="{% trans 'Estimer le risque' %}" data-fm-callback="reload">
+           class="text-info fm-create risk-edit" data-fm-head="{% trans 'Estimer le risque' %}"
+           data-fm-callback="reload">
           <span data-feather="sliders" class="mr-2"></span>
         </a>
         <span
           class="{{ activiterisque.facteur_risque_display }}">{{ activiterisque.facteur_risque|default_if_none:_('Non defini') }}</span>
       </div>
-      <div class="col-md-3 col-sm-12">
+      <div class="col-md-2 col-sm-12">
         <span>{% trans 'Statut du risque' %}</span><br>
         <span class="{{ activiterisque.status_display }}">
                   {% blocktrans with status=activiterisque.status|default_if_none:'Inconnu' %}
@@ -49,10 +55,11 @@
                   {% endblocktrans %}
                 </span>
       </div>
-      <div class="col-md-3 col-sm-12">
+      <div class="col-md-2 col-sm-12">
         <span>{% trans 'Propriétaire' %}</span><br>
         {% if activiterisque.facteur_risque %}
-          <a href="{% url 'risk_register:assigner-activiterisque' activiterisque=activiterisque.pk %}" class="text-info fm-update"
+          <a href="{% url 'risk_register:assigner-activiterisque' activiterisque=activiterisque.pk %}"
+             class="text-info fm-update risk-edit"
              data-fm-head="{% trans 'Assigner le risque à:' %}"
              data-fm-callback="reload">
             <span data-feather="user" class="mr-2"></span>
@@ -62,6 +69,19 @@
         {% endif %}
         {{ activiterisque.proprietaire|default_if_none:_('Non assigné') }}
       </div>
+      <div class="col-md-2 col-sm-12">
+        <span>{% trans 'Date de revue' %}</span><br>
+        <a href="{% url 'risk_register:revue-activiterisque' activiterisque=activiterisque.pk %}"
+           class="text-info fm-update risk-edit"
+           data-fm-head="{% trans 'Définir la date de revue du risque:' %}"
+           data-fm-callback="reload"> <span data-feather="calendar" class="mr-2"></span>
+        </a>
+
+        {{ activiterisque.date_revue | naturaltime  | default_if_none:_('Non défini ') }}
+        {% if activiterisque.est_obsolete %}
+          <span class="mr-2 text-danger">{% trans 'Le risque est obsolète' %}</span>
+        {% endif %}
+      </div>
     </div>
   </div>
   <div id="risk-{{ activiterisque.pk }}" class="collapse">
@@ -70,7 +90,7 @@
       {% for controle in activiterisque.controles.all %}
         <div class="card card-body ml-4 p-1 mb-1">
           <a href="#"
-             class="h6 card-link ml-2">{{ controle.nom }}</a></li>
+             class="h6 card-link ml-2">{{ controle.nom }}</a>
         </div>
       {% endfor %}
     {% else %}
