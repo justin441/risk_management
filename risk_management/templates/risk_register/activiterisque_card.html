@@ -15,8 +15,8 @@
        data-fm-head="{% trans 'Supprimer un risque' %}">
       <span data-feather="x" class="float-right text-danger ml-3"></span>
     </a>
-    <a class="card-link float-right" data-toggle="collapse" href="#risk-{{ activiterisque.pk }}">
-      <span data-feather="more-horizontal" class="text-info"></span>
+    <a class="card-link float-right text-info" data-toggle="collapse" href="#risk-{{ activiterisque.pk }}">
+      {% trans 'Contrôles' %} <span data-feather="chevrons-down"></span>
     </a>
   </div>
   <div class="card-body">
@@ -30,7 +30,7 @@
         <span>{% trans 'Seuil de risque' %}</span>
         <br>
         <a href="{% url 'risk_register:definir_seuil_activiterisque' activiterisque=activiterisque.pk %}"
-           class="text-info fm-create risk-edit" data-fm-head="{% trans 'Définir le seuil de risque' %}"
+           class="text-info fm-create" style="text-decoration: none;" data-fm-head="{% trans 'Définir le seuil de risque' %}"
            data-fm-callback="reload">
           <span data-feather="sliders" class="mr-2"></span>
         </a>
@@ -40,7 +40,7 @@
       <div class="col-md-2 col-sm-12">
         <span>{% trans 'Facteur risque' %}</span><br>
         <a href="{% url 'risk_register:estimer_activiterisque' activiterisque=activiterisque.pk %}"
-           class="text-info fm-create risk-edit" data-fm-head="{% trans 'Estimer le risque' %}"
+           class="text-info fm-create" style="text-decoration: none;" data-fm-head="{% trans 'Estimer le risque' %}"
            data-fm-callback="reload">
           <span data-feather="sliders" class="mr-2"></span>
         </a>
@@ -59,7 +59,7 @@
         <span>{% trans 'Propriétaire' %}</span><br>
         {% if activiterisque.facteur_risque %}
           <a href="{% url 'risk_register:assigner-activiterisque' activiterisque=activiterisque.pk %}"
-             class="text-info fm-update risk-edit"
+             class="text-info fm-update" style="text-decoration: none;"
              data-fm-head="{% trans 'Assigner le risque à:' %}"
              data-fm-callback="reload">
             <span data-feather="user" class="mr-2"></span>
@@ -72,7 +72,7 @@
       <div class="col-md-2 col-sm-12">
         <span>{% trans 'Date de revue' %}</span><br>
         <a href="{% url 'risk_register:revue-activiterisque' activiterisque=activiterisque.pk %}"
-           class="text-info fm-update risk-edit"
+           class="text-info fm-update" style="text-decoration: none;"
            data-fm-head="{% trans 'Définir la date de revue du risque:' %}"
            data-fm-callback="reload"> <span data-feather="calendar" class="mr-2"></span>
         </a>

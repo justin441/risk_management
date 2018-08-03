@@ -281,11 +281,15 @@ class IdentificationRisque(TimeStampedModel):
         seuil = self.seuil_de_risque()
         if facteur_risque and seuil:
             if facteur_risque <= seuil:
-                return 'acceptable'
-
+                if self.type_de_risque == 'M':
+                    return 'inacceptable'
+                elif self.type_de_risque == 'O':
+                    return 'inacceptable'
             else:
-                return 'inacceptable'
-
+                if self.type_de_risque == 'M':
+                    return 'inacceptable'
+                elif self.type_de_risque == 'O':
+                    return 'inacceptable'
         return 'inconnu'
 
     def status_display(self):
@@ -302,6 +306,9 @@ class IdentificationRisque(TimeStampedModel):
     # le risque est-il assigné
     def est_assigne(self):
             return self.proprietaire is not None
+
+    def get_class(self):
+        return self.__class__.__name__
 
     @property
     def est_obsolete(self):
@@ -358,10 +365,6 @@ class ProcessusRisque(IdentificationRisque):
 
     def __str__(self):
         return '%s/%s' % (self.processus.nom, self.risque.nom)
-
-    def save(self, *args, **kwargs):
-        self.suivi_par.add(self.soumis_par)
-        super().save(*args, *kwargs)
 
     class Meta(IdentificationRisque.Meta):
         verbose_name = _('risque du processus')

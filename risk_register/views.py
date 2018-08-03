@@ -169,11 +169,11 @@ class NewRiskForProcessView(AjaxCreateView):
         self.object.cree_par = self.request.user
 
     def post_save(self):
-        self.pr = ProcessusRisque.objects.create(
+        self.pr = self.request.user.processusrisques_suivis.create(
             type_de_risque=self.tr,
             risque=self.object,
             processus=get_object_or_404(Processus, pk=self.kwargs['processus']),
-            soumis_par=self.request.user
+            soumis_par=self.request.user,
         )
 
     def form_valid(self, form):
@@ -230,7 +230,7 @@ class NewRiskForActivityView(AjaxCreateView):
         self.object.cree_par = self.request.user
 
     def post_save(self):
-        self.ar = ActiviteRisque.objects.create(
+        self.ar = self.request.user.activiterisques_suivis.create(
             type_de_risque=self.tr,
             risque=self.object,
             activite=get_object_or_404(Activite, pk=self.kwargs['activite']),

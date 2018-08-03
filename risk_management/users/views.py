@@ -1,3 +1,4 @@
+from itertools import chain
 from dal import autocomplete
 
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -8,6 +9,7 @@ from django.db.models import Q
 
 from .models import User
 from .forms import UserUpdateForm
+from .utils import ecart_seuil_de_risque
 from risk_register.models import ActiviteRisque, ProcessusRisque
 
 
@@ -17,6 +19,20 @@ class UserDetailView(LoginRequiredMixin, DetailView):
     slug_field = "username"
     slug_url_kwarg = "username"
     context_object_name = 'employe'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        user = self.get_object()
+        pr = user.processusrisques_manages.all()
+        ar = user.activiterisques_manages.all()
+        # risques assignés à l'utilisateur trier par priorité croissant
+        user_risks = sorted(
+            chain(pr, ar),
+            key=ecart_seuil_de_risque,
+            reverse=True
+        )
+        context['my_risks'] = user_risks
+        return context
 
 
 class UserRedirectView(LoginRequiredMixin, RedirectView):

@@ -1,11 +1,11 @@
 {% load i18n humanize %}
 <div class="card mb-3">
   <div class="card-header">
-      {% if processusrisque.type_de_risque == 'O' %}
-        <strong class="text-success ml-2 mr-2">{{ processusrisque.get_type_de_risque_display | capfirst }}</strong>
-      {% else %}
-        <strong class="text-danger ml-2 mr-2">{{ processusrisque.get_type_de_risque_display | capfirst }}</strong>
-      {% endif %}
+    {% if processusrisque.type_de_risque == 'O' %}
+      <strong class="text-success ml-2 mr-2">{{ processusrisque.get_type_de_risque_display | capfirst }}</strong>
+    {% else %}
+      <strong class="text-danger ml-2 mr-2">{{ processusrisque.get_type_de_risque_display | capfirst }}</strong>
+    {% endif %}
     <strong>{% trans 'Confirmé' %}</strong><strong id="status-risk-{{ processusrisque.pk }}" class="confirm-risk ml-2"
                                                    data-check-url="{% url 'risk_register:ajax-statut-risque' pk=processusrisque.pk %}"
                                                    data-change-url="{% url 'risk_register:ajax-changer-statut-risque' pk=processusrisque.pk %}">
@@ -15,8 +15,8 @@
        data-fm-head="{% trans 'Supprimer un risque' %}">
       <span data-feather="x" class="float-right text-danger ml-3"></span>
     </a>
-    <a class="card-link float-right" data-toggle="collapse" href="#risk-{{ processusrisque.pk }}">
-      <span data-feather="more-horizontal" class="text-info"></span>
+    <a class="card-link float-right text-info" data-toggle="collapse" href="#risk-{{ processusrisque.pk }}">
+      {% trans 'Contrôles' %} <span data-feather="chevrons-down"></span>
     </a>
   </div>
   <div class="card-body">
@@ -27,7 +27,8 @@
       <div class="col-sm-12 col-md-2">
         <span>{% trans 'Seuil de risque' %}</span><br>
         <a href="{% url 'risk_register:definir_seuil_processusrisque' processusrisque=processusrisque.pk %}"
-           class="text-info fm-create risk-edit" data-fm-head="{% trans 'Définir le seuil de risque' %}"
+           class="text-info fm-create" style="text-decoration: none;"
+           data-fm-head="{% trans 'Définir le seuil de risque' %}"
            data-fm-callback="reload">
           <span data-feather="sliders" class="mr-2"></span>
         </a>
@@ -38,7 +39,7 @@
       <div class="col-sm-12 col-md-2">
         <span>{% trans 'Facteur risque' %}</span><br>
         <a href="{% url 'risk_register:estimer_processusrisque' processusrisque=processusrisque.pk %}"
-           class="text-info fm-create risk-edit"
+           class="text-info fm-create" style="text-decoration: none;"
            data-fm-head="{% trans 'Estimer le risque' %}" data-fm-callback="reload">
           <span data-feather="sliders" class="mr-2"></span>
         </a>
@@ -58,7 +59,7 @@
         <span>{% trans 'Propriétaire' %}</span><br>
         {% if processusrisque.facteur_risque %}
           <a href="{% url 'risk_register:assigner-processusrisque' processusrisque=processusrisque.pk %}"
-             class="text-info fm-update risk-edit"
+             class="text-info fm-update" style="text-decoration: none;"
              data-fm-head="{% trans 'Assigner le risque à:' %}"
              data-fm-callback="reload"> <span data-feather="user" class="mr-2"></span>
           </a>
@@ -70,7 +71,7 @@
       <div class="col-md-2 col-sm-12">
         <span>{% trans 'Date de revue' %}</span><br>
         <a href="{% url 'risk_register:revue-processusrisque' processusrisque=processusrisque.pk %}"
-           class="text-info fm-update risk-edit"
+           class="text-info fm-update" style="text-decoration: none;"
            data-fm-head="{% trans 'Définir la date de revue du risque:' %}"
            data-fm-callback="reload"> <span data-feather="calendar" class="mr-2"></span>
         </a>
