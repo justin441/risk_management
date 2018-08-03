@@ -169,12 +169,13 @@ class NewRiskForProcessView(AjaxCreateView):
         self.object.cree_par = self.request.user
 
     def post_save(self):
-        self.pr = self.request.user.processusrisques_suivis.create(
+        processus = get_object_or_404(Processus, pk=self.kwargs['processus'])
+        pr = processus.processusrisque_set.create(
             type_de_risque=self.tr,
             risque=self.object,
-            processus=get_object_or_404(Processus, pk=self.kwargs['processus']),
             soumis_par=self.request.user,
         )
+        pr.suivi_par.add(self.request.user)
 
     def form_valid(self, form):
         self.tr = form.data.get('type_de_risque')
@@ -194,6 +195,9 @@ class AddProcessusrisqueView(AjaxCreateView):
     def pre_save(self):
         self.object.processus = get_object_or_404(Processus, pk=self.kwargs['processus'])
         self.object.soumis_par = self.request.user
+
+    def post_save(self):
+        self.object.suivi_par.add(self.request.user)
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
@@ -230,12 +234,13 @@ class NewRiskForActivityView(AjaxCreateView):
         self.object.cree_par = self.request.user
 
     def post_save(self):
-        self.ar = self.request.user.activiterisques_suivis.create(
+        activite = get_object_or_404(Activite, pk=self.kwargs['activite'])
+        ar = activite.activiterisque_set.create(
             type_de_risque=self.tr,
             risque=self.object,
-            activite=get_object_or_404(Activite, pk=self.kwargs['activite']),
             soumis_par=self.request.user
         )
+        ar.suivi_par.add(self.request.user)
 
     def form_valid(self, form):
         self.tr = form.data.get('type_de_risque')
@@ -249,6 +254,9 @@ class AddActiviterisqueView(AjaxCreateView):
     def pre_save(self):
         self.object.activite = get_object_or_404(Activite, pk=self.kwargs['activite'])
         self.object.soumis_par = self.request.user
+
+    def post_save(self):
+        self.object.suivi_par.add(self.request.user)
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()

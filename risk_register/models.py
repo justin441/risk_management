@@ -337,11 +337,7 @@ class ActiviteRisque(IdentificationRisque):
     controles = GenericRelation('Controle', related_query_name='activiterisque')
 
     def __str__(self):
-        return "%s/%s" % (self.activite.nom, self.risque.nom)
-
-    def save(self, *args, **kwargs):
-        self.suivi_par.add(self.soumis_par)
-        super().save(*args, *kwargs)
+        return "%s/%s (%s)" % (self.activite.nom, self.risque.nom, self.type_de_risque)
 
     class Meta(IdentificationRisque.Meta):
         verbose_name = _('risque de l\'activité')
@@ -364,7 +360,7 @@ class ProcessusRisque(IdentificationRisque):
     controles = GenericRelation('Controle', related_query_name='processusrisque')
 
     def __str__(self):
-        return '%s/%s' % (self.processus.nom, self.risque.nom)
+        return '%s/%s (%s)' % (self.processus.nom, self.risque.nom, self.type_de_risque)
 
     class Meta(IdentificationRisque.Meta):
         verbose_name = _('risque du processus')

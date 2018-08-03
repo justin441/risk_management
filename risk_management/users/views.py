@@ -9,8 +9,8 @@ from django.db.models import Q
 
 from .models import User
 from .forms import UserUpdateForm
-from .utils import ecart_seuil_de_risque
-from risk_register.models import ActiviteRisque, ProcessusRisque
+from .utils import ecart_seuil_de_risque, followed_risks
+
 
 
 class UserDetailView(LoginRequiredMixin, DetailView):
@@ -32,6 +32,7 @@ class UserDetailView(LoginRequiredMixin, DetailView):
             reverse=True
         )
         context['my_risks'] = user_risks
+        context['followed_risks'] = followed_risks(self.request.user)
         return context
 
 

@@ -108,24 +108,6 @@
                 </span>
                 </div>
                 <div class="col-md-2 col-sm-12">
-                  <span>{% trans 'Propriétaire' %}</span><br>
-                  {% if identified_risk.facteur_risque %}
-                    <a href="
-                   {% if identified_risk.get_class == 'ProcessusRisque' %}
-                     {% url 'risk_register:assigner-processusrisque' processusrisque=identified_risk.pk %}
-                   {% else %}
-                     {% url 'risk_register:assigner-activiterisque' activiterisque=identified_risk.pk %}
-                   {% endif %}"
-                       class="text-info fm-update" style="text-decoration: none;"
-                       data-fm-head="{% trans 'Assigner le risque à:' %}"
-                       data-fm-callback="reload"> <span data-feather="user" class="mr-2"></span>
-                    </a>
-                  {% else %}
-                    <span data-feather="user" class="mr-2"></span>
-                  {% endif %}
-                  {{ identified_risk.proprietaire|default_if_none:_('Non assigné') }}
-                </div>
-                <div class="col-md-2 col-sm-12">
                   <span>{% trans 'Date de revue' %}</span><br>
                   <a href="
                    {% if identified_risk.get_class == 'ProcessusRisque' %}
@@ -174,8 +156,9 @@
         {% endfor %}
 
       </div>
-      <div class="tab-pane mt-3" role="tabpanel" id="my-risks"></div>
-      <div class="tab-pane mt-3" role="tabpanel" id="followed-risks"></div>
+      <div class="tab-pane mt-3" role="tabpanel" id="followed-risks">
+
+      </div>
       <div class="tab-pane mt-3" role="tabpanel" id="my-controls"></div>
       <div class="tab-pane mt-3" role="tabpanel" id="my-processes"></div>
       <div class="tab-pane m-t3" role="tabpanel" id="my-activities"></div>

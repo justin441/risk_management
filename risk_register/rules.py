@@ -207,7 +207,7 @@ rules.add_perm('risk_register.delete_activiterisque', is_activity_risk_superviso
 rules.add_perm('risk_register.set_seuil_process_risk', is_process_risk_monitor | is_process_risk_upper_mgt)
 rules.add_perm('risk_register.set_review_date_process_risk', is_process_risk_upper_mgt | is_process_risk_monitor)
 rules.add_perm('risk_register.add_control_process_risk', is_process_risk_owner | is_process_risk_monitor |
-               is_process_risk_upper_mgt | is_activity_risk_reporter)
+               is_process_risk_upper_mgt | is_process_risk_reporter)
 rules.add_perm('risk_register.assign_process_risk', is_process_risk_monitor | is_process_risk_upper_mgt)
 rules.add_perm('risk_register.estimate_process_risk', is_process_risk_upper_mgt | is_process_risk_monitor |
                is_process_risk_owner | is_process_risk_reporter)

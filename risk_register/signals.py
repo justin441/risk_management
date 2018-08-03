@@ -1,4 +1,4 @@
-from django.db.models.signals import m2m_changed, post_save
+from django.db.models.signals import m2m_changed, pre_save
 from django.dispatch import receiver
 from .models import Processus, ProcessData
 
@@ -13,7 +13,7 @@ def change_input_data(sender, **kwargs):
     if isinstance(instance, Processus) and kwargs['model'] == ProcessData:
         if action == 'pre_add':
             for data in kwargs['pk_set'].copy():
-                if (ProcessData.objects.get(pk=data).origine == instance) \
-                   or (not ProcessData.objects.get(pk=data).origine.business_unit == instance.business_unit):
+                if (ProcessData.objects.get(pk=data).origine == instance) or \
+                   (not ProcessData.objects.get(pk=data).origine.business_unit == instance.business_unit):
                     kwargs['pk_set'].remove(data)
 
