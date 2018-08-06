@@ -46,12 +46,12 @@
                 <strong
                   class="text-danger ml-2 mr-2">{{ identified_risk.get_type_de_risque_display | capfirst }}</strong>
               {% endif %}
-              <strong>{% trans 'Confirmé' %}</strong><strong id="status-risk-{{ identified_risk.pk }}"
+              <strong>{% trans 'Confirmé' %}</strong><strong id="status-risk-{{ identified_risk.pk }}-0"
                                                              class="confirm-risk ml-2"
                                                              data-check-url="{% url 'risk_register:ajax-statut-risque' pk=identified_risk.pk %}"
                                                              data-change-url="{% url 'risk_register:ajax-changer-statut-risque' pk=identified_risk.pk %}">
               {% csrf_token %}{% trans 'Inconnu' %}</strong>
-              <a class="card-link float-right text-info" data-toggle="collapse" href="#controles-{{ identified_risk.pk }}">
+              <a class="card-link float-right text-info" data-toggle="collapse" href="#controles-{{ identified_risk.pk }}-0">
                 {% trans 'Contrôles' %} <span data-feather="chevrons-down"></span>
               </a>
             </div>
@@ -127,7 +127,7 @@
                 </div>
               </div>
             </div>
-            <div id="controles-{{ identified_risk.pk }}" class="collapse">
+            <div id="controles-{{ identified_risk.pk }}-0" class="collapse">
 
               <h5 class="ml-4">{% trans 'Contrôles' %}</h5>
               {% for controle in identified_risk.controles.all %}
@@ -152,16 +152,50 @@
               </div>
             </div>
           </div>
-
+        {% empty %}
+          <span class="empty"></span>
         {% endfor %}
 
       </div>
       <div class="tab-pane mt-3" role="tabpanel" id="followed-risks">
+        {% for followed_risk in followed_risks %}
+          {% if followed_risk.get_class == 'ProcessusRisque' %}
+            {% include 'risk_register/processusrisque_card.html' with processusrisque=followed_risk %}
+          {% elif followed_risk.get_class == 'ActiviteRisque' %}
+            {% include 'risk_register/activiterisque_card.html' with activiterisque=followed_risk %}
+          {% endif %}
+        {% empty %}
+          <span class="empty"></span>
+        {% endfor %}
 
       </div>
-      <div class="tab-pane mt-3" role="tabpanel" id="my-controls"></div>
-      <div class="tab-pane mt-3" role="tabpanel" id="my-processes"></div>
-      <div class="tab-pane m-t3" role="tabpanel" id="my-activities"></div>
+      <div class="tab-pane mt-3" role="tabpanel" id="my-controls">
+        <ul>
+          {% for traitement in employe.traitements_assignes.all %}
+          <li>
+          {{ forloop.counter }}<a href="">{{ traitement.nom }}</a>
+          </li>
+        {% empty %}
+          <span class="empty"></span>
+        {% endfor %}
+        </ul>
+      </div>
+      <div class="tab-pane mt-3" role="tabpanel" id="my-processes">
+        {% for processus in employe.processus_manages.all %}
+          {% include 'risk_register/process_card.html' %}
+        {% empty %}
+          <span class="empty"></span>
+        {% endfor %}
+
+      </div>
+      <div class="tab-pane m-t3" role="tabpanel" id="my-activities">
+        {% for activite in employe.activites.all %}
+          {% include 'risk_register/activity_card.html' %}
+        {% empty %}
+          <span class="empty"></span>
+        {% endfor %}
+
+      </div>
     </div>
 
   {% endblock %}

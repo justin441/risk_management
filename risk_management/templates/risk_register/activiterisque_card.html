@@ -88,15 +88,12 @@
     <h5 class="ml-4">{% trans 'Contrôles' %}</h5>
     {% if activiterisque.controles.all %}
       {% for controle in activiterisque.controles.all %}
-        <div class="card card-body ml-4 p-1 mb-1">
-          <a href="#"
-             class="h6 card-link ml-2">{{ controle.nom }}</a>
-        </div>
+        {% include 'risk_register/controle_card.html' %}
       {% endfor %}
     {% else %}
       <p class="lead ml-4">{% trans 'Ce risque ne comporte aucun contrôle' %}</p>
     {% endif %}
-    <div class="card card-body ml-4 mb-2 p-1 ">
+    <div class="m-4 mb-2 mt-2 p-1 ">
       <a href="{% url 'risk_register:ajout_controle_activiterisque' activiterisque=activiterisque.pk %}"
          class="text-info card-link fm-create"
          data-fm-head="{% trans 'Ajouter un contrôle' %}" data-fm-callback="reload">

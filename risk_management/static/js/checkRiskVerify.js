@@ -13,6 +13,8 @@ function getRiskStatus(element) {
             }
             if (data.verifie) {
                 el.attr('data-status', data.verifie);
+                console.log(riskId)
+                console.log(el.attr('data-status'))
                 if (data.verifie === "pending") {
                     el.html(
                         "<i class='fa fa-times-circle text-danger'></i>"

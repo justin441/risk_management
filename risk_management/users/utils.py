@@ -1,8 +1,6 @@
 from itertools import chain
 from operator import attrgetter
 
-from risk_register.models import ProcessusRisque, ActiviteRisque
-
 
 def ecart_seuil_de_risque(risque):
     """
@@ -34,7 +32,7 @@ def followed_risks(user):
         for activite in user.activites.all():
             user_activiterisques = user_activiterisques.union(activite.activiterisque_set.all())
 
-    user_followed_risk = sorted(
+    user_followed_risks = sorted(
         chain(
             user_processusrisques,
             user_activiterisques,
@@ -42,5 +40,5 @@ def followed_risks(user):
         key=attrgetter('created'),
         reverse=True
     )
-    return user_followed_risk
+    return user_followed_risks
 

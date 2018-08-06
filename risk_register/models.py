@@ -446,7 +446,7 @@ class Controle(TimeFramedModel, TimeStampedModel, RiskMixin):
     # ajouté a la liste des contrôles à mettre en eouvre
     est_approuve = models.BooleanField(verbose_name=_('approuvé'), default=False)
     # validé l'exécution du contrôle
-    est_validide = models.BooleanField(verbose_name=_('validé'), default=False)
+    est_valide = models.BooleanField(verbose_name=_('validé'), default=False)
     status = StatusField()
     acheve_le = MonitorField(monitor='status', when=['achevé'])
 
@@ -461,7 +461,6 @@ class Controle(TimeFramedModel, TimeStampedModel, RiskMixin):
             raise FieldError(
                 'la date de fin ne peut pas précédée celle du début. Veuillez corriger le champ "debut".'
             )
-        # todo inclure les exceptions présent ici dans les vues
         if self.content_object and not self.content_object.estimations.all():
             raise RiskDataError(
                 {self.content_type.name: _(' le risque n\'a pas encore été estimé')}
