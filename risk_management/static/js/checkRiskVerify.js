@@ -1,20 +1,18 @@
 function getRiskStatus(element) {
-    var risk = $(element);
-    var riskId = (risk.attr('id'));
-    var riskUrl = risk.attr('data-check-url');
+    let  risk = $(element);
+    let  riskId = (risk.attr('id'));
+    let  riskUrl = risk.attr('data-check-url');
     $.ajax({
         url: riskUrl,
         type: 'GET',
         dataType: 'json',
         success: function (data) {
-            var el = $('#' + riskId);
+            let  el = $('#' + riskId);
             if (data.error_message) {
                 return false
             }
             if (data.verifie) {
                 el.attr('data-status', data.verifie);
-                console.log(riskId)
-                console.log(el.attr('data-status'))
                 if (data.verifie === "pending") {
                     el.html(
                         "<i class='fa fa-times-circle text-danger'></i>"
@@ -31,20 +29,51 @@ function getRiskStatus(element) {
     });
 }
 
+function getControlStatus(el){
+    let statusEl = $(el);
+    let StatusID = statusEl.attr('id');
+    let controlStatusUrl = statusEl.attr('data-check-url');
+    $.ajax({
+        url: controlStatusUrl,
+        type: 'GET',
+        dataType: 'json',
+        success: function (data) {
+            let el = $('#' + StatusID);
+            if(data.result === 'Failure'){
+                return false;
+            }
+            if(data.result === 'Success'){
+                if(data.control_status === 'in_progress'){
+                    el.html('<strong class="text-secondary">' + data.status_display +' <i class="ml-2 fa fa-check-circle"></i></strong>' );
+                    el.attr('data-status', data.control_status );
+                }
+                if(data.control_status === 'completed'){
+                     el.html('<strong class="text-success">' + data.status_display +' <i class="ml-2 fa fa-check-circle"></i></strong>' );
+                     el.attr('data-status', data.control_status);
+                }
+            }
+        }
+
+    });
+}
+
 
 $(document).ready(function () {
     $('.confirm-risk').each(function () {
-        getRiskStatus(this)
+        getRiskStatus(this);
+    });
+    $('.controle-status').each(function () {
+        getControlStatus(this);
     });
 });
 
 function getCookie(name){
-    var cookieValue = null;
+    let cookieValue = null;
 
     if (document.cookie && document.cookie!==''){
-        var cookies = document.cookie.split(';');
-        for(var i=0; i<cookies.length; i++){
-            var cookie = jQuery.trim(cookies[i]);
+        let cookies = document.cookie.split(';');
+        for(let i=0; i<cookies.length; i++){
+            let cookie = jQuery.trim(cookies[i]);
 
             if (cookie.substring(0, name.length+1) === (name+"=")){
                 cookieValue = decodeURIComponent(cookie.substring(name.length+1));
@@ -55,7 +84,7 @@ function getCookie(name){
     return cookieValue
 }
 
-var csrftoken = getCookie('csrftoken');
+let csrftoken = getCookie('csrftoken');
 
 function csrfSafeMethod(method) {
     // these HTTP methods do not require CSRF protection
@@ -71,9 +100,9 @@ $.ajaxSetup({
 
 $(document).ready(function () {
     $('.confirm-risk').on('click', function () {
-        var risk = $(this)
-        var url = $(this).attr('data-change-url');
-        var status = $(this).attr('data-status');
+        let risk = $(this);
+        let url = $(this).attr('data-change-url');
+        let status = $(this).attr('data-status');
         $.ajax({
              type: 'POST',
             url: url,
@@ -87,6 +116,21 @@ $(document).ready(function () {
         })
 
 
+    });
+    $('.controle-status').on('click', 'i', function () {
+        let controlStatus = $(this).closest('.controle-status');
+        let changeUrl = controlStatus.attr('data-change-url');
+        let status = controlStatus.attr('data-status');
+        $.ajax({
+            type: 'POST',
+            url: changeUrl,
+            data: {'status': status},
+            success: function (data) {
+                if(data.result === 'success'){
+                    getControlStatus(controlStatus);
+                }
+            }
+        });
     });
 });
 

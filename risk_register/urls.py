@@ -46,10 +46,13 @@ urlpatterns = [
          name='assigner-activiterisque'),
     path('<uuid:processusrisque>/assign-process-risk/', views.AssignerProcessusrisqueView.as_view(),
          name='assigner-processusrisque'),
-    path('<uuid:processusrisque>/set-processusrisque-review-date', views.SetProcessusrisqueReviewDate.as_view(),
+    path('<uuid:processusrisque>/set-processusrisque-review-date/', views.SetProcessusrisqueReviewDate.as_view(),
          name='revue-processusrisque'),
-    path('<uuid:activiterisque>/set-activiterisque-review-date', views.SetActiviterisqueReviewDate.as_view(),
+    path('<uuid:activiterisque>/set-activiterisque-review-date/', views.SetActiviterisqueReviewDate.as_view(),
          name='revue-activiterisque'),
-    path('ajax-risk-verification-status/<uuid:pk>', views.checkriskstatus, name='ajax-statut-risque'),
-    path('ajax-risk-verification-status-change/<uuid:pk>', views.changeriskstatus, name='ajax-changer-statut-risque'),
+    path('ajax-risk-verification-status/<uuid:pk>/', views.check_risk_status, name='ajax-statut-risque'),
+    path('ajax-control-completion-status/<uuid:pk>/', views.check_control_status, name='ajax-status-controle'),
+    path('ajax-risk-verification-status-change/<uuid:pk>', views.change_risk_status, name='ajax-changer-statut-risque'),
+    path('ajax-control-completion-status-change/<uuid:pk>/', views.change_control_status,
+         name='ajax-changer-statut-controle')
 ]

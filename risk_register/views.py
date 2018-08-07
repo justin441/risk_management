@@ -7,7 +7,8 @@ from django.http import JsonResponse
 from django.utils.translation import ugettext_lazy as _
 
 from risk_management.users.models import BusinessUnit
-from .models import (ActiviteRisque, ProcessusRisque, Processus, Activite, Risque, Estimation)
+from .models import (ActiviteRisque, ProcessusRisque, Processus, Activite, Risque, Estimation,
+                     Controle)
 from .forms import (CreateProcessForm, CreateActivityForm, CreateProcessOutputDataForm, AddInputDataForm,
                     AddProcessusrisqueForm, CreateRiskForm, UpdateProcessusrisqueForm, AddActiviterisqueForm,
                     UpdateActiviterisqueForm, AddControleForm, CritereRisqueForm, AssignActiviterisqueForm, AssignProcessusrisqueForm,
@@ -421,7 +422,7 @@ class SetActiviterisqueReviewDate(AjaxUpdateView):
         self.object.modifie_par = self.request.user
 
 
-def checkriskstatus(request, pk):
+def check_risk_status(request, pk):
     if request.is_ajax():
         data = {}
         try:
@@ -443,7 +444,50 @@ def checkriskstatus(request, pk):
         return JsonResponse(data)
 
 
-def changeriskstatus(request, pk):
+def check_control_status(request, pk):
+    if request.is_ajax():
+        data = {}
+        try:
+            controle = Controle.objects.get(pk=pk)
+        except Controle.DoesNotExist:
+            data['error_message'] = _('Contrôle inexistant')
+            data['result'] = 'Failure'
+        else:
+            data['result'] = 'Success'
+            data['status_display'] = controle.get_status_display() if controle.status == 'completed' else _('Terminer')
+            data['control_status'] = controle.status
+
+        return JsonResponse(data)
+
+
+def change_control_status(request, pk):
+    if request.method == 'POST' and request.is_ajax():
+        data = {}
+
+        try:
+            controle = Controle.objects.get(pk=pk)
+        except Controle.DoesNotExist:
+            data['error_message'] = _('Contrôle inexistant')
+            data['result'] = 'Failure'
+        else:
+            if controle.status != request.POST.get('status'):
+                data['result'] = 'Failure'
+                data['error_message'] = _('statut du contrôle désynchronisé.')
+            elif controle.status == 'in_progress':
+                controle.status = 'completed'
+                controle.save()
+                data['result'] = 'success'
+            elif controle.status == 'completed':
+                controle.status = 'in_progress'
+                controle.save()
+                data['result'] = 'success'
+            else:
+                data['error_message'] = _('statut inconnu')
+                data['result'] = 'Failure'
+    return JsonResponse(data)
+
+
+def change_risk_status(request, pk):
     if request.method == 'POST' and request.is_ajax():
         data = {}
         try:

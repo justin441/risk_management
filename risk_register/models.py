@@ -448,7 +448,7 @@ class Controle(TimeFramedModel, TimeStampedModel, RiskMixin):
     # validé l'exécution du contrôle
     est_valide = models.BooleanField(verbose_name=_('validé'), default=False)
     status = StatusField()
-    acheve_le = MonitorField(monitor='status', when=['achevé'])
+    acheve_le = MonitorField(monitor='status', when=['completed'])
 
     def clean(self):
         if (self.start and self.end) and (self.start > self.end):
@@ -470,6 +470,16 @@ class Controle(TimeFramedModel, TimeStampedModel, RiskMixin):
             raise RiskDataError(
                 _('Les donneés du risque ont besoins d\'une mise à jour'))
         super().save(*args, **kwargs)
+
+    def est_en_retard(self):
+        if self.end and (self.status == 'in_progress' and self.end < now()):
+            return True
+        return False
+
+    def status_display(self):
+        if self.est_en_retard():
+            return 'text-danger h5'
+        return 'text-muted'
 
     def __str__(self):
         return self.nom

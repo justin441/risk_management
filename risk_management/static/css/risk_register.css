@@ -122,7 +122,7 @@ body {
 .border-top { border-top: 1px solid #e5e5e5; }
 .border-bottom { border-bottom: 1px solid #e5e5e5; }
 
-.confirm-risk > strong {
+strong.confirm-risk, .controle-status i {
   -webkit-transition: font-size 300ms, text-shadow 300ms;
   -moz-transition: font-size 300ms, text-shadow 300ms;
   -ms-transition: font-size 300ms, text-shadow 300ms;
@@ -130,7 +130,7 @@ body {
   transition: font-size 300ms, text-shadow 300ms;
 }
 
-.confirm-risk:hover {
+.confirm-risk:hover, .controle-status i:hover {
   cursor: pointer;
   font-size: 105%;
   text-shadow: 0px 0px 2px gainsboro;
