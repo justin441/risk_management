@@ -15,12 +15,12 @@ function getRiskStatus(element) {
                 el.attr('data-status', data.verifie);
                 if (data.verifie === "pending") {
                     el.html(
-                        "<i class='fa fa-times-circle text-danger'></i>"
+                        "<i class='fa fa-times-circle text-danger' style='font-size: 130%;'></i>"
                     );
                 }
                 if (data.verifie === 'verified') {
                     el.html(
-                        "<i class='fa fa-check-circle text-success' style='font-size: 110%'></i>"
+                        "<i class='fa fa-check-circle text-success' style='font-size: 150%;'></i>"
                     );
                 }
             }
@@ -44,11 +44,11 @@ function getControlStatus(el){
             }
             if(data.result === 'Success'){
                 if(data.control_status === 'in_progress'){
-                    el.html('<strong class="text-secondary">' + data.status_display +' <i class="ml-2 fa fa-check-circle"></i></strong>' );
+                    el.html('<strong class="text-muted">' + data.status_display +' <i class="ml-2 fa fa-check-circle" style="font-size: 130%;"></i></strong>' );
                     el.attr('data-status', data.control_status );
                 }
                 if(data.control_status === 'completed'){
-                     el.html('<strong class="text-success">' + data.status_display +' <i class="ml-2 fa fa-check-circle"></i></strong>' );
+                     el.html('<strong class="text-success">' + data.status_display +' <i class="ml-2 fa fa-check-circle" style="font-size: 150%;"></i></strong>' );
                      el.attr('data-status', data.control_status);
                 }
             }
