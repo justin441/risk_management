@@ -2,9 +2,9 @@
 
 <div class="text-center">
   <form role="form" method="post">
-  <h4>{% blocktrans with nom_risque=activiterisque.risque.nom nom_activite=activiterisque.activite.nom %}
+  <h5>{% blocktrans with nom_risque=activiterisque.risque.nom nom_activite=activiterisque.activite.nom %}
   Vous allez supprimer le "{{ nom_risque }}" de l'activité {{ nom_activite}}
-{% endblocktrans %}</h4>
+{% endblocktrans %}</h5>
 
   {% if activiterisque.controles.all %}
     {% blocktrans count nb_controle=activiterisque.controles.count  %}

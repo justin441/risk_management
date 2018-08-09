@@ -44,11 +44,12 @@ function getControlStatus(el){
             }
             if(data.result === 'Success'){
                 if(data.control_status === 'in_progress'){
-                    el.html('<strong class="text-muted">' + data.status_display +' <i class="ml-2 fa fa-check-circle" style="font-size: 130%;"></i></strong>' );
+                    el.html(data.status_display + '<strong style="font-size: 130%;"> <i class="ml-2 fa fa-check-circle"></i></strong>' );
                     el.attr('data-status', data.control_status );
+
                 }
                 if(data.control_status === 'completed'){
-                     el.html('<strong class="text-success">' + data.status_display +' <i class="ml-2 fa fa-check-circle" style="font-size: 150%;"></i></strong>' );
+                     el.html(data.status_display + '<strong class="text-success" style="font-size: 150%;"><i class="ml-2 fa fa-check-circle"></i></strong>' );
                      el.attr('data-status', data.control_status);
                 }
             }

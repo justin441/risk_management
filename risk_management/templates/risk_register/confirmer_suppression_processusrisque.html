@@ -2,9 +2,9 @@
 
 <div class="text-center">
   <form role="form" method="post">
-  <h4>{% blocktrans with nom_risque=processusrisque.risque.nom nom_processus=processusrisque.processus.nom %}
+  <h5>{% blocktrans with nom_risque=processusrisque.risque.nom nom_processus=processusrisque.processus.nom %}
   Vous allez supprimer le "{{ nom_risque }}" du processus {{ nom_processus }}
-{% endblocktrans %}</h4>
+{% endblocktrans %}</h5>
 
   {% if processusrisque.controles.all %}
     {% blocktrans count nb_controle=processusrisque.controles.count  %}

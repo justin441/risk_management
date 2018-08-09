@@ -12,7 +12,7 @@ from .models import (ActiviteRisque, ProcessusRisque, Processus, Activite, Risqu
 from .forms import (CreateProcessForm, CreateActivityForm, CreateProcessOutputDataForm, AddInputDataForm,
                     AddProcessusrisqueForm, CreateRiskForm, UpdateProcessusrisqueForm, AddActiviterisqueForm,
                     UpdateActiviterisqueForm, AddControleForm, CritereRisqueForm, AssignActiviterisqueForm, AssignProcessusrisqueForm,
-                    ChangeActiviterisqueReviewDateForm, ChangeProcessusrisqueReviewDateForm)
+                    ChangeActiviterisqueReviewDateForm, ChangeProcessusrisqueReviewDateForm, AssignControlform)
 
 
 # Create your views here.
@@ -314,6 +314,31 @@ class AddActiviterisqueControle(AddControlMixin):
         self.object.content_object = get_object_or_404(ActiviteRisque, pk=self.kwargs['activiterisque'])
 
 
+class EditRiskControl(AjaxUpdateView):
+    model = Controle
+    form_class = AddControleForm
+    pk_url_kwarg = 'controle'
+
+    def pre_save(self):
+        self.object.modifie_par = self.request.user
+
+
+class DeleteRiskControl(AjaxDeleteView):
+    model = Controle
+    pk_url_kwarg = 'controle'
+    context_object_name = 'controle'
+    template_name = 'risk_register/confirmer_suppression_controle.html'
+
+
+class AssignerControleView(AjaxUpdateView):
+    model = Controle
+    form_class = AssignControlform
+    pk_url_kwarg = 'controle'
+
+    def pre_save(self):
+        self.object.modifie_par = self.request.user
+
+
 class SetSeuilProcessusrisqueView(AjaxCreateView):
     form_class = CritereRisqueForm
     pk_url_kwarg = 'processusrisque'
@@ -484,7 +509,7 @@ def change_control_status(request, pk):
             else:
                 data['error_message'] = _('statut inconnu')
                 data['result'] = 'Failure'
-    return JsonResponse(data)
+        return JsonResponse(data)
 
 
 def change_risk_status(request, pk):
@@ -518,8 +543,9 @@ def change_risk_status(request, pk):
         return JsonResponse(data)
 
 
+def approve_controle(request, pk):
+    pass
 
 
-
-
-
+def validate_controle(request, pk):
+    pass

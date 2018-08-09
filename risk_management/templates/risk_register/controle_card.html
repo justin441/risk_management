@@ -1,9 +1,9 @@
 {% load i18n humanize %}
 <div class="card m-4 mt-2">
   <div class="card-header">
-     <a href="" class="fm-delete"
+     <a href="{% url 'risk_register:effacer_controle' controle=controle.pk %}" class="fm-delete"
        data-fm-callback="reload"
-       data-fm-head="{% trans 'Supprimer un risque' %}">
+       data-fm-head="{% trans 'Supprimer un contrôle' %}">
       <span data-feather="x" class="float-right text-danger ml-3"></span>
     </a>
     <strong class="ml-2 mr-2">{{ controle.nom }}, </strong>
@@ -12,27 +12,27 @@
   <div class="card-body">
     <span class="text-muted text-sm-left">{% trans 'ajouté' %} {{ controle.created | naturaltime }} {% trans 'par' %} {{ controle.cree_par }}</span><br>
     {% if controle.modifie_par %}
-    <span class="text-muted text-sm-left">{% trans 'modifié' %}{{ controle.modified | naturaltime }} {% trans 'par' %} {{ controle.modifie_par }}</span><br>
+    <span class="text-muted text-sm-left">{% trans 'modifié' %} {{ controle.modified | naturaltime }} {% trans 'par' %} {{ controle.modifie_par }}</span><br>
     {% endif %}
     <p class="text-justify lead">{{ controle.description | default_if_none:'' | truncatewords:25}}</p>
   
     <div class="row">
       <div class="col-md-3">
         <h6 class="mb-0">{% trans 'Debut' %}:</h6>
-        <h6 class="text-muted">{{ controle.start | naturalday }}</h6>
+        <span class="text-muted">{{ controle.start | naturalday }}</span>
       </div>
       <div class="col-md-3">
         <h6 class="mb-0">{% trans 'Fin' %}:</h6>
-        <h6 class="{{ controle.status_display }}">{{ controle.end | naturalday }}</h6>
+        <span class="{{ controle.status_display }}">{{ controle.end | naturalday }}</span>
       </div>
       <div class="col-md-3">
         <h6 class="mb-0">{% trans 'Statut' %}:</h6>
-        <h6 class="{{ controle.status_display }} controle-status"
+        <span class="{{ controle.status_display }} controle-status"
             id="status-{{ controle.pk }}"
             data-check-url="{% url 'risk_register:ajax-status-controle' pk=controle.pk %}"
             data-change-url="{% url 'risk_register:ajax-changer-statut-controle' pk=controle.pk %}">
           {% csrf_token %}
-        </h6>
+        </span>
       </div>
       {% if controle.assigne_a %}
         <div class="col-md-3">
@@ -45,9 +45,21 @@
       <span data-feather="more-horizontal"></span>
     </a>
     <div class="dropdown-menu" aria-labelledby="controle-menu">
-      <a href="" class="dropdown-item">{% trans 'Modifier' %}</a>
-      <a href="" class="dropdown-item">{% trans 'Assigner' %}</a>
-      <a href="" class="dropdown-item">{% trans 'Approuver' %}</a>
+      <a href="{% url 'risk_register:modifier_controle' controle=controle.pk %}"
+         class="dropdown-item fm-update"
+         data-fm-callback="reload"
+         data-fm-head="{% trans 'Modifier un contrôle' %}">
+        {% trans 'Modifier' %}
+      </a>
+      <a href="{% url 'risk_register:assigner_controle' controle=controle.pk %}"
+         class="dropdown-item fm-update"
+         data-fm-callback="reload"
+         data-fm-head="{% trans 'Assigner un contrôle' %}">
+        {% trans 'Assigner' %}
+      </a>
+      <a href="" class="dropdown-item">
+        {% trans 'Approuver' %}
+      </a>
       <a href="" class="dropdown-item">{% trans 'Valider' %}</a>
     </div>
   </div>

@@ -34,6 +34,9 @@ urlpatterns = [
          name='ajout_controle_processusrique'),
     path('<uuid:activiterisque>/add-control-activity-risk/', views.AddActiviterisqueControle.as_view(),
          name='ajout_controle_activiterisque'),
+    path('<uuid:controle>/edit-control/', views.EditRiskControl.as_view(), name='modifier_controle'),
+    path('<uuid:controle>/assign-contrl/', views.AssignerControleView.as_view(), name='assigner_controle'),
+    path('<uuid:controle>/delete-control/', views.DeleteRiskControl.as_view(), name='effacer_controle'),
     path('<uuid:processusrisque>/set-seuil-processusrisque/', views.SetSeuilProcessusrisqueView.as_view(),
          name='definir_seuil_processusrisque'),
     path('<activiterisque>/set-seuil-activiterisque/', views.SetSeuilActiviterisqueView.as_view(),
@@ -54,5 +57,7 @@ urlpatterns = [
     path('ajax-control-completion-status/<uuid:pk>/', views.check_control_status, name='ajax-status-controle'),
     path('ajax-risk-verification-status-change/<uuid:pk>', views.change_risk_status, name='ajax-changer-statut-risque'),
     path('ajax-control-completion-status-change/<uuid:pk>/', views.change_control_status,
-         name='ajax-changer-statut-controle')
+         name='ajax-changer-statut-controle'),
+    path('ajax-approve-control/<uuid:pk>/', views.approve_controle, name='ajax-approuver-controle'),
+    path('ajax-validate-control/<uuid:pk>/', views.validate_controle, name='ajax-validate-controle')
 ]

@@ -1,0 +1,14 @@
+{% load i18n %}
+
+<div class="text-center">
+  <form role="form" method="post">
+  <h5>{% blocktrans with nom=controle.nom %}
+  Vous allez supprimer le contrôle "{{ nom }}"
+{% endblocktrans %}</h5>
+
+  {% if controle.est_approuve and controle.status == 'in_progress' %}
+  <p class="lead">{% trans "Ce controle est en cours d'implémentation." %}</p>
+  {% endif %}
+<p>{% trans 'Êtes-vous sûr(e) de vouloir supprimer ce contrôle?' %}</p>
+</form>
+</div>

@@ -2,9 +2,9 @@
 
 <div class="text-center">
   <form role="form" method="post">
-  <h4>{% blocktrans with nom=activite.nom %}
+  <h5>{% blocktrans with nom=activite.nom %}
   Vous allez supprimer l'activité "{{ nom }}"
-{% endblocktrans %}</h4>
+{% endblocktrans %}</h5>
 
   {% if activite.status == 'pending' %}
   <p class="lead">{% trans 'Cette activité est en cours' %}</p>

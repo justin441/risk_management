@@ -1,7 +1,7 @@
 from dal import autocomplete
 from datetime import datetime
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, Fieldset, HTML
+from crispy_forms.layout import Layout, Fieldset, HTML, Field
 from crispy_forms.bootstrap import InlineRadios
 
 from django import forms
@@ -530,3 +530,33 @@ class ChangeProcessusrisqueReviewDateForm(ChangeReviewDateForm):
 class ChangeActiviterisqueReviewDateForm(ChangeReviewDateForm):
     class Meta(ChangeReviewDateForm.Meta):
         model = ActiviteRisque
+
+
+class AssignControlform(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_method = 'post'
+        self.helper.form_class = 'form-horizontal'
+        self.helper.label_class = 'col-md-4'
+        self.helper.field_class = 'col-md-8'
+        self.helper.layout = Layout(
+            Field('assigne_a', id='id_proprietaire'),
+            HTML(
+                '<div id="user-info"></div>'
+            )
+        )
+        self.fields['assigne_a'].label = _('Employé')
+
+    class Meta:
+        fields = ['assigne_a']
+        model = Controle
+        widgets = {
+            'proprietaire': autocomplete.ModelSelect2(url='users:user-autocomplete',
+                                                      attrs={
+                                                          'data-placeholder': _('Nom ou prénom'),
+                                                          'data-allow-clear': 'true',
+                                                          'data-width': '100%',
+                                                      }
+                                                      ),
+        }

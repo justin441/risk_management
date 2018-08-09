@@ -122,16 +122,15 @@ body {
 .border-top { border-top: 1px solid #e5e5e5; }
 .border-bottom { border-bottom: 1px solid #e5e5e5; }
 
-strong.confirm-risk, .controle-status i {
+.confirm-risk, .controle-status > strong > i {
   -webkit-transition: font-size 300ms, text-shadow 300ms;
   -moz-transition: font-size 300ms, text-shadow 300ms;
-  -ms-transition: font-size 300ms, text-shadow 300ms;
   -o-transition: font-size 300ms, text-shadow 300ms;
   transition: font-size 300ms, text-shadow 300ms;
 }
 
-.confirm-risk:hover, .controle-status i:hover {
+.confirm-risk:hover, .controle-status > strong :hover {
   cursor: pointer;
   font-size: 150%;
-  text-shadow: 0px 0px 2px gainsboro;
+  text-shadow: 0 0 2px gainsboro;
 }

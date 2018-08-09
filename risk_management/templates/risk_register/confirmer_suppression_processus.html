@@ -2,9 +2,9 @@
 
 <div class="text-center">
   <form role="form" method="post">
-  <h4>{% blocktrans with nom=processus.nom %}
+  <h5>{% blocktrans with nom=processus.nom %}
   Vous allez supprimer le processus "{{ nom }}"
-{% endblocktrans %}</h4>
+{% endblocktrans %}</h5>
 
   {% if activites.all %}
     {% blocktrans count nb_activites=activites.count  %}
