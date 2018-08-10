@@ -457,14 +457,14 @@ def check_risk_status(request, pk):
                 risque = ActiviteRisque.objects.get(pk=pk)
             except ActiviteRisque.DoesNotExist:
                 data['error_message'] = _('Aucun risque trouvé')
-                data['result'] = 'Failure'
+                data['result'] = 'failure'
 
             else:
                 data['verifie'] = risque.verifie
-                data['result'] = 'Success'
+                data['result'] = 'success'
         else:
             data['verifie'] = risque.verifie
-            data['result'] = 'Success'
+            data['result'] = 'success'
 
         return JsonResponse(data)
 
@@ -476,9 +476,9 @@ def check_control_status(request, pk):
             controle = Controle.objects.get(pk=pk)
         except Controle.DoesNotExist:
             data['error_message'] = _('Contrôle inexistant')
-            data['result'] = 'Failure'
+            data['result'] = 'failure'
         else:
-            data['result'] = 'Success'
+            data['result'] = 'success'
             data['status_display'] = controle.get_status_display() if controle.status == 'completed' else _('Terminer')
             data['control_status'] = controle.status
 
@@ -493,10 +493,10 @@ def change_control_status(request, pk):
             controle = Controle.objects.get(pk=pk)
         except Controle.DoesNotExist:
             data['error_message'] = _('Contrôle inexistant')
-            data['result'] = 'Failure'
+            data['result'] = 'failure'
         else:
             if controle.status != request.POST.get('status'):
-                data['result'] = 'Failure'
+                data['result'] = 'failure'
                 data['error_message'] = _('statut du contrôle désynchronisé.')
             elif controle.status == 'in_progress':
                 controle.status = 'completed'
@@ -508,7 +508,7 @@ def change_control_status(request, pk):
                 data['result'] = 'success'
             else:
                 data['error_message'] = _('statut inconnu')
-                data['result'] = 'Failure'
+                data['result'] = 'failure'
         return JsonResponse(data)
 
 
@@ -523,10 +523,10 @@ def change_risk_status(request, pk):
             except ActiviteRisque.DoesNotExist:
                 risque = None
                 data['error_message'] = _('Aucun risque trouvé')
-                data['result'] = 'Failure'
+                data['result'] = 'failure'
         if risque:
             if risque.verifie != request.POST.get('verifie'):
-                data['result'] = 'Failure'
+                data['result'] = 'failure'
                 data['error_message'] = _('statut du risque désynchronisé.')
             elif request.POST.get('verifie') == 'pending':
                 risque.verifie = 'verified'
@@ -537,15 +537,83 @@ def change_risk_status(request, pk):
                 risque.save()
                 data['result'] = 'success'
             else:
-                data['result'] = 'Failure'
+                data['result'] = 'failure'
                 data['error_message'] = _('status du risque inconnu')
 
         return JsonResponse(data)
 
 
 def approve_controle(request, pk):
-    pass
+    if request.method == 'POST' and request.is_ajax():
+        data = {}
+        try:
+            controle = Controle.objects.get(pk=pk)
+        except Controle.DoesNotExist:
+            data['result'] = 'failure'
+            data['error_message'] = _('Contrôle inexistant')
+        else:
+            print(request.POST.get('est_approuve'))
+            print(str(controle.est_approuve).lower())
+            print(str(controle.est_approuve).lower() == request.POST.get('est_approuve'))
+            if str(controle.est_approuve).lower() == request.POST.get('est_approuve'):
+                print(controle.est_approuve)
+                if controle.est_approuve:
+                    controle.est_approuve = False
+                else:
+                    controle.est_approuve = True
+                controle.save()
+                data['result'] = 'success'
+            else:
+                data['result'] = 'failure'
+                data['error_message'] = _('Données du contrôle désynchronisées')
+        return JsonResponse(data)
 
 
 def validate_controle(request, pk):
-    pass
+    if request.method == 'POST' and request.is_ajax():
+        data = {}
+        try:
+            controle = Controle.objects.get(pk=pk)
+        except Controle.DoesNotExist:
+            data['result'] = 'failure'
+            data['error_message'] = _('Contrôle inexistant')
+        else:
+            if str(controle.est_valide).lower() == request.POST.get('est_valide'):
+                if controle.est_valide:
+                    controle.est_valide = False
+                else:
+                    controle.est_valide = True
+                controle.save()
+                data['result'] = 'success'
+            else:
+                data['result'] = 'failure'
+                data['error_message'] = _('Données du contrôle désynchronisées')
+        return JsonResponse(data)
+
+
+def get_controle_est_valide(request, pk):
+    if request.is_ajax():
+        data = {}
+        try:
+            controle = Controle.objects.get(pk=pk)
+        except Controle.DoesNotExist:
+            data['result'] = 'failure'
+            data['error_message'] = _('Contrôle inexistant')
+        else:
+            data['result'] = 'success'
+            data['checked'] = controle.est_valide
+        return JsonResponse(data)
+
+
+def get_controle_est_approuve(request, pk):
+    if request.is_ajax():
+        data = {}
+        try:
+            controle = Controle.objects.get(pk=pk)
+        except Controle.DoesNotExist:
+            data['result'] = 'failure'
+            data['error_message'] = _('Contrôle inexistant')
+        else:
+            data['result'] = 'success'
+            data['checked'] = controle.est_approuve
+        return JsonResponse(data)

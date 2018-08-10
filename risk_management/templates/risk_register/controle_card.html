@@ -1,21 +1,25 @@
 {% load i18n humanize %}
 <div class="card m-4 mt-2">
   <div class="card-header">
-     <a href="{% url 'risk_register:effacer_controle' controle=controle.pk %}" class="fm-delete"
+    <a href="{% url 'risk_register:effacer_controle' controle=controle.pk %}" class="fm-delete"
        data-fm-callback="reload"
        data-fm-head="{% trans 'Supprimer un contrôle' %}">
       <span data-feather="x" class="float-right text-danger ml-3"></span>
     </a>
     <strong class="ml-2 mr-2">{{ controle.nom }}, </strong>
-    <strong class="ml-2 nowrap">{% trans 'Cible' %}: <span class="text-capitalize text-primary">{{ controle.get_critere_cible_display }}</span></strong>
+    <strong class="ml-2 nowrap">{% trans 'Cible' %}: <span
+      class="text-capitalize text-primary">{{ controle.get_critere_cible_display }}</span></strong>
   </div>
   <div class="card-body">
-    <span class="text-muted text-sm-left">{% trans 'ajouté' %} {{ controle.created | naturaltime }} {% trans 'par' %} {{ controle.cree_par }}</span><br>
+    <span
+      class="text-muted text-sm-left">{% trans 'ajouté' %} {{ controle.created | naturaltime }} {% trans 'par' %} {{ controle.cree_par }}</span><br>
     {% if controle.modifie_par %}
-    <span class="text-muted text-sm-left">{% trans 'modifié' %} {{ controle.modified | naturaltime }} {% trans 'par' %} {{ controle.modifie_par }}</span><br>
+      <span
+        class="text-muted text-sm-left">{% trans 'modifié' %} {{ controle.modified | naturaltime }} {% trans 'par' %} {{ controle.modifie_par }}</span>
+      <br>
     {% endif %}
-    <p class="text-justify lead">{{ controle.description | default_if_none:'' | truncatewords:25}}</p>
-  
+    <p class="text-justify lead">{{ controle.description | default_if_none:'' | truncatewords:25 }}</p>
+
     <div class="row">
       <div class="col-md-3">
         <h6 class="mb-0">{% trans 'Debut' %}:</h6>
@@ -28,20 +32,21 @@
       <div class="col-md-3">
         <h6 class="mb-0">{% trans 'Statut' %}:</h6>
         <span class="{{ controle.status_display }} controle-status"
-            id="status-{{ controle.pk }}"
-            data-check-url="{% url 'risk_register:ajax-status-controle' pk=controle.pk %}"
-            data-change-url="{% url 'risk_register:ajax-changer-statut-controle' pk=controle.pk %}">
+              id="status-{{ controle.pk }}"
+              data-check-url="{% url 'risk_register:ajax-status-controle' pk=controle.pk %}"
+              data-change-url="{% url 'risk_register:ajax-changer-statut-controle' pk=controle.pk %}">
           {% csrf_token %}
         </span>
       </div>
       {% if controle.assigne_a %}
         <div class="col-md-3">
-        <h6 class="mb-0">{% trans 'Propriétaire' %}</h6>
-        <h6 class="text-muted">{{ controle.assigne_a }}</h6>
+          <h6 class="mb-0">{% trans 'Propriétaire' %}</h6>
+          <h6 class="text-muted">{{ controle.assigne_a }}</h6>
         </div>
       {% endif %}
     </div>
-    <a href="" class="float-right text-info" id="controle-menu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="text-decoration: none;">
+    <a href="" class="float-right text-info" id="controle-menu-{{ controle.pk }}" data-toggle="dropdown"
+       aria-haspopup="true" aria-expanded="false" style="text-decoration: none;">
       <span data-feather="more-horizontal"></span>
     </a>
     <div class="dropdown-menu" aria-labelledby="controle-menu">
@@ -57,10 +62,20 @@
          data-fm-head="{% trans 'Assigner un contrôle' %}">
         {% trans 'Assigner' %}
       </a>
-      <a href="" class="dropdown-item">
-        {% trans 'Approuver' %}
+      <a href="" class="dropdown-item approve" id="approve-link-{{ controle.pk }}"
+         data-check-url="{% url 'risk_register:ajax-get-controle-approuve' pk=controle.pk %}"
+         data-change-url="{% url 'risk_register:ajax-approuver-controle' pk=controle.pk %}">
+        {% csrf_token %}
+        {% trans 'Approuvé' %}
       </a>
-      <a href="" class="dropdown-item">{% trans 'Valider' %}</a>
+      {% if controle.est_approuve %}
+        <a href="" class="dropdown-item validate" id="validate-link-{{ controle.pk }}"
+           data-check-url="{% url 'risk_register:ajax-get-controle-valide' pk=controle.pk %}"
+           data-change-url="{% url 'risk_register:ajax-validate-controle' pk=controle.pk %}">
+        {% csrf_token %}
+          {% trans 'Validé' %}
+        </a>
+      {% endif %}
     </div>
   </div>
 </div>

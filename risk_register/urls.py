@@ -59,5 +59,7 @@ urlpatterns = [
     path('ajax-control-completion-status-change/<uuid:pk>/', views.change_control_status,
          name='ajax-changer-statut-controle'),
     path('ajax-approve-control/<uuid:pk>/', views.approve_controle, name='ajax-approuver-controle'),
-    path('ajax-validate-control/<uuid:pk>/', views.validate_controle, name='ajax-validate-controle')
+    path('ajax-validate-control/<uuid:pk>/', views.validate_controle, name='ajax-validate-controle'),
+    path('ajax-get-controle-validated/<uuid:pk>/', views.get_controle_est_valide, name='ajax-get-controle-valide'),
+    path('ajax-get-controle-approved/<uuid:pk>/', views.get_controle_est_approuve, name='ajax-get-controle-approuve')
 ]
