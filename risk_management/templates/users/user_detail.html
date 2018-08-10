@@ -131,14 +131,11 @@
 
               <h5 class="ml-4">{% trans 'Contrôles' %}</h5>
               {% for controle in identified_risk.controles.all %}
-                <div class="card card-body ml-4 p-1 mb-1">
-                  <a href="#"
-                     class="h6 card-link ml-2">{{ controle.nom }}: {{ activite.description|truncatechars:50 }}</a>
-                </div>
+                {% include 'risk_register/controle_card.html' %}
               {% empty %}
                 <p class="lead ml-4">{% trans 'Ce risque ne comporte aucun contrôle' %}</p>
               {% endfor %}
-              <div class="card card-body ml-4 mb-2 p-1 ">
+              <div>
                 <a href="
                    {% if identified_risk.get_class == 'ProcessusRisque' %}
                      {% url 'risk_register:ajout_controle_processusrique' processusrisque=identified_risk.pk %}
