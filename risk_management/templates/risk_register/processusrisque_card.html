@@ -1,27 +1,36 @@
 {% load i18n humanize %}
 <div class="card mb-3">
   <div class="card-header">
+    <a href="{% url 'risk_register:effacer_processusrisque' processusrisque=processusrisque.pk %}" class="fm-delete"
+       data-fm-callback="reload"
+       data-fm-head="{% trans 'Supprimer un risque' %}">
+      <span data-feather="x" class="float-right text-danger ml-3"></span>
+    </a>
+    <a class="card-link float-right text-info" data-toggle="collapse" href="#risk-{{ processusrisque.pk }}">
+      {% trans 'Contrôles' %} <span data-feather="chevrons-down"></span>
+    </a>
     {% if processusrisque.type_de_risque == 'O' %}
       <strong class="text-success ml-2 mr-2">{{ processusrisque.get_type_de_risque_display | capfirst }}</strong>
     {% else %}
       <strong class="text-danger ml-2 mr-2">{{ processusrisque.get_type_de_risque_display | capfirst }}</strong>
     {% endif %}
-    <strong>{% trans 'Confirmé' %}</strong><strong id="status-risk-{{ processusrisque.pk }}" class="confirm-risk ml-2"
-                                                   data-check-url="{% url 'risk_register:ajax-statut-risque' pk=processusrisque.pk %}"
-                                                   data-change-url="{% url 'risk_register:ajax-changer-statut-risque' pk=processusrisque.pk %}">
-    {% csrf_token %}{% trans 'Inconnu' %}</strong>
+    <strong id="status-risk-{{ processusrisque.pk }}" class="confirm-risk ml-2"
+            data-check-url="{% url 'risk_register:ajax-statut-risque' pk=processusrisque.pk %}"
+            data-change-url="{% url 'risk_register:ajax-changer-statut-risque' pk=processusrisque.pk %}">
+      {% csrf_token %}{% trans 'Confirmé' %}</strong>
 
-    <a class="card-link float-right text-info" data-toggle="collapse" href="#risk-{{ processusrisque.pk }}">
-      {% trans 'Contrôles' %} <span data-feather="chevrons-down"></span>
-    </a>
+
   </div>
   <div class="card-body">
     <a href="{% url 'risk_register:modifier_processusrisque' processusrisque=processusrisque.pk %}"
-       class="fm-update card-title h6" data-fm-head="{% trans 'Modifier un risque de processus' %}"
-       data-fm-callback="reload">{{ processusrisque.risque.nom }}: {{ processusrisque.risque.description|truncatechars:50 }}</a><br>
+       class="fm-update card-title h5" data-fm-head="{% trans 'Modifier un risque de processus' %}"
+       data-fm-callback="reload">{{ processusrisque.risque.nom }}</a><br>
+    <span class="text-muted">{% trans 'Ajouté' %} {{ processusrisque.created | naturaltime }} {% trans 'par' %} {{ processusrisque.soumis_par }}</span>
+  <p>{{ processusrisque.risque.description|truncatechars:150 }}</p>
+
     <div class="row mt-2">
       <div class="col-sm-12 col-md-2">
-        <span>{% trans 'Seuil de risque' %}</span><br>
+        <h6 class="mb-0">{% trans 'Seuil de risque' %}</h6>
         <a href="{% url 'risk_register:definir_seuil_processusrisque' processusrisque=processusrisque.pk %}"
            class="text-info fm-create" style="text-decoration: none;"
            data-fm-head="{% trans 'Définir le seuil de risque' %}"
@@ -33,7 +42,7 @@
         </span>
       </div>
       <div class="col-sm-12 col-md-2">
-        <span>{% trans 'Facteur risque' %}</span><br>
+        <h6 class="mb-0">{% trans 'Facteur risque' %}</h6>
         <a href="{% url 'risk_register:estimer_processusrisque' processusrisque=processusrisque.pk %}"
            class="text-info fm-create" style="text-decoration: none;"
            data-fm-head="{% trans 'Estimer le risque' %}" data-fm-callback="reload">
@@ -44,7 +53,7 @@
         </span>
       </div>
       <div class="col-sm-12 col-md-2">
-        <span>{% trans 'Statut du risque' %}</span><br>
+        <h6 class="mb-0">{% trans 'Statut du risque' %}</h6>
         <span class="{{ processusrisque.status_display }}">
                   {% blocktrans with status=processusrisque.status|default_if_none:'Inconnu' %}
                     <span data-feather="thermometer" class="mr-2"></span>{{ status }}
@@ -52,7 +61,7 @@
                 </span>
       </div>
       <div class="col-md-2 col-sm-12">
-        <span>{% trans 'Propriétaire' %}</span><br>
+        <h6 class="mb-0">{% trans 'Propriétaire' %}</h6>
         {% if processusrisque.facteur_risque %}
           <a href="{% url 'risk_register:assigner-processusrisque' processusrisque=processusrisque.pk %}"
              class="text-info fm-update" style="text-decoration: none;"
@@ -65,7 +74,7 @@
         {{ processusrisque.proprietaire|default_if_none:_('Non assigné') }}
       </div>
       <div class="col-md-2 col-sm-12">
-        <span>{% trans 'Date de revue' %}</span><br>
+        <h6 class="mb-0">{% trans 'Date de revue' %}</h6>
         <a href="{% url 'risk_register:revue-processusrisque' processusrisque=processusrisque.pk %}"
            class="text-info fm-update" style="text-decoration: none;"
            data-fm-head="{% trans 'Définir la date de revue du risque:' %}"

@@ -36,13 +36,13 @@ function getRiskStatus(element) {
             if (data.verifie) {
                 el.attr('data-status', data.verifie);
                 if (data.verifie === "pending") {
-                    el.html(
-                        "<i class='fa fa-times-circle text-danger' style='font-size: 130%;'></i>"
+                    el.append(
+                        "<i class='fa fa-times-circle text-danger ml-2' style='font-size: 130%;'></i>"
                     );
                 }
                 if (data.verifie === 'verified') {
-                    el.html(
-                        "<i class='fa fa-check-circle text-success' style='font-size: 150%;'></i>"
+                    el.append(
+                        "<i class='fa fa-check-circle text-success ml-2' style='font-size: 150%;'></i>"
                     );
                 }
             }
@@ -61,12 +61,12 @@ function getControlStatus(el){
         dataType: 'json',
         success: function (data) {
             let el = $('#' + StatusID);
-            if(data.result === 'success'){
+            if(data.result === 'failure'){
                 return false;
             }
             if(data.result === 'success'){
                 if(data.control_status === 'in_progress'){
-                    el.html(data.status_display + '<strong style="font-size: 130%;"> <i class="ml-2 fa fa-check-circle"></i></strong>' );
+                    el.html('<span>' + data.status_display + '</span><br>' + '<strong style="font-size: 130%;"> <i class="ml-2 fa fa-check-circle"></i></strong>' );
                     el.attr('data-status', data.control_status );
 
                 }

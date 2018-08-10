@@ -1,16 +1,7 @@
 {% load i18n humanize %}
 <div class="card mb-3">
   <div class="card-header">
-    {% if activiterisque.type_de_risque == 'O' %}
-      <strong class="text-success ml-2 mr-2">{{ activiterisque.get_type_de_risque_display | capfirst }}</strong>
-    {% else %}
-      <strong class="text-danger ml-2 mr-2">{{ activiterisque.get_type_de_risque_display | capfirst }}</strong>
-    {% endif %}
-    <strong>{% trans 'Confirmé' %}</strong><strong id="status-risk-{{ activiterisque.pk }}" class="confirm-risk ml-2"
-                                                   data-check-url="{% url 'risk_register:ajax-statut-risque' pk=activiterisque.pk %}"
-                                                   data-change-url="{% url 'risk_register:ajax-changer-statut-risque' pk=activiterisque.pk %}">
-    {% csrf_token %}{% trans 'Inconnu' %}</strong>
-    <a href="{% url 'risk_register:effacer_activiterisque' activiterisque=activiterisque.pk %}" class="fm-delete"
+  <a href="{% url 'risk_register:effacer_activiterisque' activiterisque=activiterisque.pk %}" class="fm-delete"
        data-fm-callback="reload"
        data-fm-head="{% trans 'Supprimer un risque' %}">
       <span data-feather="x" class="float-right text-danger ml-3"></span>
@@ -18,17 +9,31 @@
     <a class="card-link float-right text-info" data-toggle="collapse" href="#risk-{{ activiterisque.pk }}">
       {% trans 'Contrôles' %} <span data-feather="chevrons-down"></span>
     </a>
+
+    {% if activiterisque.type_de_risque == 'O' %}
+      <strong class="text-success ml-2 mr-2">{{ activiterisque.get_type_de_risque_display | capfirst }}</strong>
+    {% else %}
+      <strong class="text-danger ml-2 mr-2">{{ activiterisque.get_type_de_risque_display | capfirst }}</strong>
+    {% endif %}
+    <strong id="status-risk-{{ activiterisque.pk }}" class="confirm-risk ml-2 nowrap"
+                                                   data-check-url="{% url 'risk_register:ajax-statut-risque' pk=activiterisque.pk %}"
+                                                   data-change-url="{% url 'risk_register:ajax-changer-statut-risque' pk=activiterisque.pk %}">
+    {% csrf_token %}{% trans 'Confirmé' %}</strong>
+
   </div>
   <div class="card-body">
     <a href="{% url 'risk_register:modifier_activiterisque' activiterisque=activiterisque.pk %}"
-       class="fm-update card-title h6" data-fm-head="{% trans "Modifier un risque d'activité" %}"
+       class="fm-update card-title h5" data-fm-head="{% trans "Modifier un risque d'activité" %}"
        data-fm-callback="reload">
-      {{ activiterisque.risque.nom }}: {{ activiterisque.risque.description|truncatechars:50 }}
+      {{ activiterisque.risque.nom }}
     </a><br>
+  <span class="text-muted">{% trans 'Ajouté' %} {{ activiterisque.created | naturaltime }} {% trans 'par' %} {{ activiterisque.soumis_par }}</span>
+  <p>
+    {{ activiterisque.risque.description|truncatechars:150 }}
+  </p>
     <div class="row mt-2">
       <div class="col-md-2 col-sm-12">
-        <span>{% trans 'Seuil de risque' %}</span>
-        <br>
+        <h6 class="mb-0">{% trans 'Seuil de risque' %}</h6>
         <a href="{% url 'risk_register:definir_seuil_activiterisque' activiterisque=activiterisque.pk %}"
            class="text-info fm-create" style="text-decoration: none;" data-fm-head="{% trans 'Définir le seuil de risque' %}"
            data-fm-callback="reload">
@@ -38,7 +43,7 @@
           class="{{ activiterisque.seuil_display }}">{{ activiterisque.seuil_de_risque|default_if_none:_('Non defini') }}</span>
       </div>
       <div class="col-md-2 col-sm-12">
-        <span>{% trans 'Facteur risque' %}</span><br>
+        <h6 class="mb-0">{% trans 'Facteur risque' %}</h6>
         <a href="{% url 'risk_register:estimer_activiterisque' activiterisque=activiterisque.pk %}"
            class="text-info fm-create" style="text-decoration: none;" data-fm-head="{% trans 'Estimer le risque' %}"
            data-fm-callback="reload">
@@ -48,7 +53,7 @@
           class="{{ activiterisque.facteur_risque_display }}">{{ activiterisque.facteur_risque|default_if_none:_('Non defini') }}</span>
       </div>
       <div class="col-md-2 col-sm-12">
-        <span>{% trans 'Statut du risque' %}</span><br>
+        <h6 class="mb-0">{% trans 'Statut du risque' %}</h6>
         <span class="{{ activiterisque.status_display }}">
                   {% blocktrans with status=activiterisque.status|default_if_none:'Inconnu' %}
                     <span data-feather="thermometer" class="mr-2"></span>{{ status }}
@@ -56,7 +61,7 @@
                 </span>
       </div>
       <div class="col-md-2 col-sm-12">
-        <span>{% trans 'Propriétaire' %}</span><br>
+        <h6 class="mb-0">{% trans 'Propriétaire' %}</h6>
         {% if activiterisque.facteur_risque %}
           <a href="{% url 'risk_register:assigner-activiterisque' activiterisque=activiterisque.pk %}"
              class="text-info fm-update" style="text-decoration: none;"
@@ -70,14 +75,12 @@
         {{ activiterisque.proprietaire|default_if_none:_('Non assigné') }}
       </div>
       <div class="col-md-2 col-sm-12">
-        <span>{% trans 'Date de revue' %}</span><br>
+        <h6 class="mb-0">{% trans 'Date de revue' %}</h6>
         <a href="{% url 'risk_register:revue-activiterisque' activiterisque=activiterisque.pk %}"
            class="text-info fm-update" style="text-decoration: none;"
            data-fm-head="{% trans 'Définir la date de revue du risque:' %}"
            data-fm-callback="reload"> <span data-feather="calendar" class="mr-2"></span>
-        </a>
-
-        {{ activiterisque.date_revue | naturaltime  | default_if_none:_('Non défini ') }}
+        </a> {{ activiterisque.date_revue | naturaltime  | default_if_none:_('Non défini ') }}
         {% if activiterisque.est_obsolete %}
           <span class="mr-2 text-danger">{% trans 'Le risque est obsolète' %}</span>
         {% endif %}
