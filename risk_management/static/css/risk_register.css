@@ -131,6 +131,6 @@ body {
 
 .confirm-risk:hover, .controle-status > strong :hover {
   cursor: pointer;
-  font-size: 150%;
+  font-size: 130%;
   text-shadow: 0 0 2px gainsboro;
 }

@@ -34,11 +34,14 @@
   </ul>
   {% block data %}
     <div class="tab-content">
-      <div class="tab-pane mt3 active" role="tabpanel" id="my-risks">
+      <div class="tab-pane mt-3 active" role="tabpanel" id="my-risks">
         {% for identified_risk in my_risks %}
           <div class="card mb-3">
             <div class="card-header">
-              <strong><a href="" class="ml-2 mr-2">{{ identified_risk.risque.nom }}</a></strong>
+              <a class="card-link float-right text-info" data-toggle="collapse"
+                 href="#controles-{{ identified_risk.pk }}-0">
+                {% trans 'Contrôles' %} <span data-feather="chevrons-down"></span>
+              </a>
               {% if identified_risk.type_de_risque == 'O' %}
                 <strong
                   class="text-success ml-2 mr-2">{{ identified_risk.get_type_de_risque_display | capfirst }}</strong>
@@ -46,14 +49,14 @@
                 <strong
                   class="text-danger ml-2 mr-2">{{ identified_risk.get_type_de_risque_display | capfirst }}</strong>
               {% endif %}
-              <strong>{% trans 'Confirmé' %}</strong><strong id="status-risk-{{ identified_risk.pk }}-0"
-                                                             class="confirm-risk ml-2"
-                                                             data-check-url="{% url 'risk_register:ajax-statut-risque' pk=identified_risk.pk %}"
-                                                             data-change-url="{% url 'risk_register:ajax-changer-statut-risque' pk=identified_risk.pk %}">
-              {% csrf_token %}{% trans 'Inconnu' %}</strong>
-              <a class="card-link float-right text-info" data-toggle="collapse" href="#controles-{{ identified_risk.pk }}-0">
-                {% trans 'Contrôles' %} <span data-feather="chevrons-down"></span>
-              </a>
+              <span style="white-space: nowrap;">
+                <strong id="status-risk-{{ identified_risk.pk }}-0"
+                      class="confirm-risk d-inline-block"
+                      data-check-url="{% url 'risk_register:ajax-statut-risque' pk=identified_risk.pk %}"
+                      data-change-url="{% url 'risk_register:ajax-changer-statut-risque' pk=identified_risk.pk %}">
+              {% csrf_token %}</strong>
+              </span>
+
             </div>
             <div class="card-body">
               <a href="
@@ -62,12 +65,13 @@
                    {% else %}
                      {% url 'risk_register:modifier_activiterisque' activiterisque=identified_risk.pk %}
                    {% endif %}"
-                 class="fm-update card-title h6" data-fm-head="{% trans 'Modifier un risque' %}"
-                 data-fm-callback="reload">{{ identified_risk.risque.description|truncatechars:50 }}</a><br>
-                  <h6 class="text-muted">{% trans 'Ajouté' %} {{ identified_risk.created | naturaltime }}</h6>
+                 class="fm-update card-title h5" data-fm-head="{% trans 'Modifier un risque' %}"
+                 data-fm-callback="reload">{{ identified_risk.risque.nom }}</a><br>
+              <span class="text-muted">{% trans 'Ajouté' %} {{ identified_risk.created | naturaltime }} {% trans 'par' %} {{ identified_risk.soumis_par }}</span>
+              <p>{{ identified_risk.risque.description|truncatechars:150 }}</p>
               <div class="row mt-2">
                 <div class="col-sm-12 col-md-2">
-                  <span>{% trans 'Seuil de risque' %}</span><br>
+                  <h6 class="mb-0">{% trans 'Seuil de risque' %}</h6>
                   <a href="
                    {% if identified_risk.get_class == 'ProcessusRisque' %}
                      {% url 'risk_register:definir_seuil_processusrisque' processusrisque=identified_risk.pk %}
@@ -84,7 +88,7 @@
         </span>
                 </div>
                 <div class="col-sm-12 col-md-2">
-                  <span>{% trans 'Facteur risque' %}</span><br>
+                  <h6 class="mb-0">{% trans 'Facteur risque' %}</h6>
                   <a href="
                    {% if identified_risk.get_class == 'ProcessusRisque' %}
                      {% url 'risk_register:estimer_processusrisque' processusrisque=identified_risk.pk %}
@@ -100,7 +104,7 @@
         </span>
                 </div>
                 <div class="col-sm-12 col-md-2">
-                  <span>{% trans 'Statut du risque' %}</span><br>
+                  <h6 class="mb-0">{% trans 'Statut du risque' %}</h6>
                   <span class="{{ identified_risk.status_display }}">
                   {% blocktrans with status=identified_risk.status|default_if_none:'Inconnu' %}
                     <span data-feather="thermometer" class="mr-2"></span>{{ status }}
@@ -108,7 +112,7 @@
                 </span>
                 </div>
                 <div class="col-md-2 col-sm-12">
-                  <span>{% trans 'Date de revue' %}</span><br>
+                  <h6 class="mb-0">{% trans 'Date de revue' %}</h6>
                   <a href="
                    {% if identified_risk.get_class == 'ProcessusRisque' %}
                      {% url 'risk_register:revue-processusrisque' processusrisque=identified_risk.pk %}
@@ -135,7 +139,7 @@
               {% empty %}
                 <p class="lead ml-4">{% trans 'Ce risque ne comporte aucun contrôle' %}</p>
               {% endfor %}
-              <div>
+              <div class="m-4 mb-2 mt-2 p-1 ">
                 <a href="
                    {% if identified_risk.get_class == 'ProcessusRisque' %}
                      {% url 'risk_register:ajout_controle_processusrique' processusrisque=identified_risk.pk %}
@@ -169,12 +173,12 @@
       <div class="tab-pane mt-3" role="tabpanel" id="my-controls">
         <ul>
           {% for traitement in employe.traitements_assignes.all %}
-          <li>
-          {{ forloop.counter }}<a href="">{{ traitement.nom }}</a>
-          </li>
-        {% empty %}
-          <span class="empty"></span>
-        {% endfor %}
+            <li>
+              {{ forloop.counter }}<a href="">{{ traitement.nom }}</a>
+            </li>
+          {% empty %}
+            <span class="empty"></span>
+          {% endfor %}
         </ul>
       </div>
       <div class="tab-pane mt-3" role="tabpanel" id="my-processes">

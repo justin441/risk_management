@@ -21,29 +21,31 @@ Issues with the above approach:
 $('.form-group').removeClass('row');
 
 function getRiskStatus(element) {
-    let  risk = $(element);
-    let  riskId = (risk.attr('id'));
-    let  riskUrl = risk.attr('data-check-url');
+    let risk = $(element);
+    let riskId = (risk.attr('id'));
+    let riskUrl = risk.attr('data-check-url');
     $.ajax({
         url: riskUrl,
         type: 'GET',
         dataType: 'json',
         success: function (data) {
-            let  el = $('#' + riskId);
+            let el = $('#' + riskId);
             if (data.error_message) {
                 return false
             }
             if (data.verifie) {
                 el.attr('data-status', data.verifie);
                 if (data.verifie === "pending") {
-                    el.append(
-                        "<i class='fa fa-times-circle text-danger ml-2' style='font-size: 130%;'></i>"
-                    );
+                    el.before("<strong class='d-inline-block'>" + gettext('Confirmer') + "</strong>");
+                    el.html(
+                        "<i class='fa fa-times-circle text-danger ml-2' style='font-size: 120%;' data-toggle='tooltip' data-placement='right'></i>"
+                    ).find('i').attr('title', gettext('Confirmer le risque'));
                 }
                 if (data.verifie === 'verified') {
-                    el.append(
-                        "<i class='fa fa-check-circle text-success ml-2' style='font-size: 150%;'></i>"
-                    );
+                    el.before("<strong class='d-inline-block'>" + gettext('Confirmé') + "</strong>")
+                    el.html(
+                        "<i class='fa fa-check-circle text-success ml-2' style='font-size: 130%;' data-toggle='tooltip' data-placement='right'></i>"
+                    ).find('i').attr('title', gettext('Annuler'));
                 }
             }
 
@@ -51,7 +53,7 @@ function getRiskStatus(element) {
     });
 }
 
-function getControlStatus(el){
+function getControlStatus(el) {
     let statusEl = $(el);
     let StatusID = statusEl.attr('id');
     let controlStatusUrl = statusEl.attr('data-check-url');
@@ -61,18 +63,20 @@ function getControlStatus(el){
         dataType: 'json',
         success: function (data) {
             let el = $('#' + StatusID);
-            if(data.result === 'failure'){
+            if (data.result === 'failure') {
                 return false;
             }
-            if(data.result === 'success'){
-                if(data.control_status === 'in_progress'){
-                    el.html('<span>' + data.status_display + '</span><br>' + '<strong style="font-size: 130%;"> <i class="ml-2 fa fa-check-circle"></i></strong>' );
-                    el.attr('data-status', data.control_status );
+            if (data.result === 'success') {
+                if (data.control_status === 'in_progress') {
+                    el.html(data.status_display + '<strong style="font-size: 130%;"> <i class="ml-2 fa fa-check-circle" data-toggle="tooltip" data-placement="right"></i></strong>')
+                        .find('i').attr('title', gettext('Terminer'));
+                    el.attr('data-status', data.control_status);
 
                 }
-                if(data.control_status === 'completed'){
-                     el.html(data.status_display + '<strong class="text-success" style="font-size: 150%;"><i class="ml-2 fa fa-check-circle"></i></strong>' );
-                     el.attr('data-status', data.control_status);
+                if (data.control_status === 'completed') {
+                    el.html(data.status_display + '<strong class="text-success" style="font-size: 150%;"><i class="ml-2 fa fa-check-circle" data-toggle="tooltip" data-placement="right"></i></strong>')
+                        .find('i').attr('title', gettext('Reinitialiser'));
+                    el.attr('data-status', data.control_status);
                 }
             }
         }
@@ -80,7 +84,7 @@ function getControlStatus(el){
     });
 }
 
-function ControlApprovedValidated(el){
+function ControlApprovedValidated(el) {
     let link = $(el);
     let linkID = link.attr('id');
     let url = link.attr('data-check-url');
@@ -90,13 +94,19 @@ function ControlApprovedValidated(el){
         dataType: 'json',
         success: function (data) {
             let element = $("#" + linkID);
-            if(data.result === 'success'){
+            if (data.result === 'success') {
                 element.attr('data-checked', data.checked);
-                if(data.checked === true){
+                if (data.checked === true) {
+                    element.find('i').remove();
+                    element.next().toggle(true);
                     element.append('<i class="ml-2 fa fa-check-circle text-success"></i>');
+                    element.attr('title', gettext('Non'));
                 }
                 else {
+                    element.find('i').remove();
+                    element.next().toggle(false);
                     element.append('<i class="ml-2 fa fa-times-circle text-muted"></i>');
+                    element.attr('title', gettext('Oui'));
                 }
             }
             else {
@@ -107,30 +117,19 @@ function ControlApprovedValidated(el){
 }
 
 $(document).ready(function () {
-    $('.confirm-risk').each(function () {
-        getRiskStatus(this);
-    });
-    $('.controle-status').each(function () {
-        getControlStatus(this);
-    });
-    $('.validate').each(function () {
-        ControlApprovedValidated(this);
-    });
-    $('.approve').each(function () {
-        ControlApprovedValidated(this);
-    });
+
 });
 
-function getCookie(name){
+function getCookie(name) {
     let cookieValue = null;
 
-    if (document.cookie && document.cookie!==''){
+    if (document.cookie && document.cookie !== '') {
         let cookies = document.cookie.split(';');
-        for(let i=0; i<cookies.length; i++){
+        for (let i = 0; i < cookies.length; i++) {
             let cookie = jQuery.trim(cookies[i]);
 
-            if (cookie.substring(0, name.length+1) === (name+"=")){
-                cookieValue = decodeURIComponent(cookie.substring(name.length+1));
+            if (cookie.substring(0, name.length + 1) === (name + "=")) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
                 break;
             }
         }
@@ -144,8 +143,9 @@ function csrfSafeMethod(method) {
     // these HTTP methods do not require CSRF protection
     return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
 }
+
 $.ajaxSetup({
-    beforeSend: function(xhr, settings) {
+    beforeSend: function (xhr, settings) {
         if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
             xhr.setRequestHeader("X-CSRFToken", csrftoken);
         }
@@ -153,16 +153,33 @@ $.ajaxSetup({
 });
 
 $(document).ready(function () {
-    $('.confirm-risk').on('click', function () {
+    let riskConfirm = $('.confirm-risk');
+    let controlStatus = $('.controle-status');
+    let validateLink = $('.validate');
+    let approveLink = $('.approve');
+    riskConfirm.each(function () {
+        getRiskStatus(this);
+    });
+    controlStatus.each(function () {
+        getControlStatus(this);
+    });
+    validateLink.each(function () {
+        ControlApprovedValidated(this);
+    });
+    approveLink.each(function () {
+        ControlApprovedValidated(this);
+    });
+    riskConfirm.on('click', function () {
         let risk = $(this);
         let url = $(this).attr('data-change-url');
         let status = $(this).attr('data-status');
         $.ajax({
-             type: 'POST',
+            type: 'POST',
             url: url,
             data: {'verifie': status},
             success: function (data) {
-                if(data.result === 'success'){
+                if (data.result === 'success') {
+                    risk.prev().remove();
                     getRiskStatus(risk);
                 }
             }
@@ -171,7 +188,7 @@ $(document).ready(function () {
 
 
     });
-    $('.controle-status').on('click', 'i', function () {
+    controlStatus.on('click', 'i', function () {
         let controlStatus = $(this).closest('.controle-status');
         let changeUrl = controlStatus.attr('data-change-url');
         let status = controlStatus.attr('data-status');
@@ -180,24 +197,27 @@ $(document).ready(function () {
             url: changeUrl,
             data: {'status': status},
             success: function (data) {
-                if(data.result === 'success'){
+                if (data.result === 'success') {
                     getControlStatus(controlStatus);
                 }
             }
         });
     });
-    $('.approve').on('click', function (e) {
+    approveLink.on('click', function (e) {
+        $(this).parent().is(".show") && e.stopPropagation();
+        e.preventDefault();
         let element = $(this);
         let url = element.attr('data-change-url');
         let approved = element.attr('data-checked');
+        element.parent().toggle(true);
         $.ajax({
             type: 'POST',
             url: url,
             data: {'est_approuve': approved},
             success: function (data) {
-                if(data.result === 'success'){
-                    element.children()[1].remove();
+                if (data.result === 'success') {
                     ControlApprovedValidated(element);
+                    ControlApprovedValidated(element.next());
                 }
                 else {
                     console.log(data.error_message);
@@ -206,17 +226,18 @@ $(document).ready(function () {
             }
         });
     });
-    $('.validate').on('click', function (e) {
+    validateLink.on('click', function (e) {
+        e.preventDefault();
         let element = $(this);
         let url = element.attr('data-change-url');
         let validated = element.attr('data-checked');
         $.ajax({
             type: 'POST',
             url: url,
-            data:{'est_valide': validated},
+            data: {'est_valide': validated},
             success: function (data) {
-                if(data.result === 'success'){
-                    element.children()[1].remove();
+                if (data.result === 'success') {
+                    ControlApprovedValidated(element.prev())
                     ControlApprovedValidated(element);
                 }
                 else {
@@ -226,7 +247,7 @@ $(document).ready(function () {
             }
 
         })
-    })
+    });
 });
 
 

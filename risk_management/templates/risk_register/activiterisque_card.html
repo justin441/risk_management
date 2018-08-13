@@ -1,7 +1,7 @@
 {% load i18n humanize %}
 <div class="card mb-3">
   <div class="card-header">
-  <a href="{% url 'risk_register:effacer_activiterisque' activiterisque=activiterisque.pk %}" class="fm-delete"
+    <a href="{% url 'risk_register:effacer_activiterisque' activiterisque=activiterisque.pk %}" class="fm-delete"
        data-fm-callback="reload"
        data-fm-head="{% trans 'Supprimer un risque' %}">
       <span data-feather="x" class="float-right text-danger ml-3"></span>
@@ -15,10 +15,12 @@
     {% else %}
       <strong class="text-danger ml-2 mr-2">{{ activiterisque.get_type_de_risque_display | capfirst }}</strong>
     {% endif %}
-    <strong id="status-risk-{{ activiterisque.pk }}" class="confirm-risk ml-2 nowrap"
-                                                   data-check-url="{% url 'risk_register:ajax-statut-risque' pk=activiterisque.pk %}"
-                                                   data-change-url="{% url 'risk_register:ajax-changer-statut-risque' pk=activiterisque.pk %}">
-    {% csrf_token %}{% trans 'Confirmé' %}</strong>
+    <span style="white-space: nowrap;">
+      <strong id="status-risk-{{ activiterisque.pk }}" class="confirm-risk d-inline-block"
+              data-check-url="{% url 'risk_register:ajax-statut-risque' pk=activiterisque.pk %}"
+              data-change-url="{% url 'risk_register:ajax-changer-statut-risque' pk=activiterisque.pk %}">
+    {% csrf_token %}</strong>
+    </span>
 
   </div>
   <div class="card-body">
@@ -27,15 +29,17 @@
        data-fm-callback="reload">
       {{ activiterisque.risque.nom }}
     </a><br>
-  <span class="text-muted">{% trans 'Ajouté' %} {{ activiterisque.created | naturaltime }} {% trans 'par' %} {{ activiterisque.soumis_par }}</span>
-  <p>
-    {{ activiterisque.risque.description|truncatechars:150 }}
-  </p>
+    <span
+      class="text-muted">{% trans 'Ajouté' %} {{ activiterisque.created | naturaltime }} {% trans 'par' %} {{ activiterisque.soumis_par }}</span>
+    <p>
+      {{ activiterisque.risque.description|truncatechars:150 }}
+    </p>
     <div class="row mt-2">
       <div class="col-md-2 col-sm-12">
         <h6 class="mb-0">{% trans 'Seuil de risque' %}</h6>
         <a href="{% url 'risk_register:definir_seuil_activiterisque' activiterisque=activiterisque.pk %}"
-           class="text-info fm-create" style="text-decoration: none;" data-fm-head="{% trans 'Définir le seuil de risque' %}"
+           class="text-info fm-create" style="text-decoration: none;"
+           data-fm-head="{% trans 'Définir le seuil de risque' %}"
            data-fm-callback="reload">
           <span data-feather="sliders" class="mr-2"></span>
         </a>

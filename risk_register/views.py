@@ -481,8 +481,6 @@ def check_control_status(request, pk):
             data['result'] = 'success'
             data['status_display'] = controle.get_status_display()
             data['control_status'] = controle.status
-            if controle.status == 'in_progress':
-                data['setter'] = _('Terminer')
 
         return JsonResponse(data)
 

@@ -5,8 +5,10 @@ from django.contrib import admin
 from django.views.generic import TemplateView
 from django.views import defaults as default_views
 from risk_management.users.admin import risk_management_admin_site
+from django.views.i18n import JavaScriptCatalog
 
 urlpatterns = [
+    path('jsi18n/', JavaScriptCatalog.as_view(), name='javascript-catalog'),
     path("", TemplateView.as_view(template_name="pages/home.html"), name="home"),
     path(
         "about/",

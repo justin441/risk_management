@@ -29,15 +29,17 @@
         <h6 class="mb-0">{% trans 'Fin' %}:</h6>
         <span class="{{ controle.status_display }}">{{ controle.end | naturalday }}</span>
       </div>
-      <div class="col-md-3">
-        <h6 class="mb-0">{% trans 'Statut' %}:</h6>
-        <span class="{{ controle.status_display }} controle-status"
-              id="status-{{ controle.pk }}"
-              data-check-url="{% url 'risk_register:ajax-status-controle' pk=controle.pk %}"
-              data-change-url="{% url 'risk_register:ajax-changer-statut-controle' pk=controle.pk %}">
+      {% if controle.est_approve %}
+        <div class="col-md-3">
+          <h6 class="mb-0">{% trans 'Statut' %}:</h6>
+          <span class="{{ controle.status_display }} controle-status"
+                id="status-{{ controle.pk }}"
+                data-check-url="{% url 'risk_register:ajax-status-controle' pk=controle.pk %}"
+                data-change-url="{% url 'risk_register:ajax-changer-statut-controle' pk=controle.pk %}">
           {% csrf_token %}
         </span>
-      </div>
+        </div>
+      {% endif %}
       {% if controle.assigne_a %}
         <div class="col-md-3">
           <h6 class="mb-0">{% trans 'Propriétaire' %}</h6>
@@ -49,7 +51,7 @@
        aria-haspopup="true" aria-expanded="false" style="text-decoration: none;">
       <span data-feather="more-horizontal"></span>
     </a>
-    <div class="dropdown-menu" aria-labelledby="controle-menu">
+    <div class="dropdown-menu" aria-labelledby="controle-menu-{{ controle.pk }}">
       <a href="{% url 'risk_register:modifier_controle' controle=controle.pk %}"
          class="dropdown-item fm-update"
          data-fm-callback="reload"
@@ -64,15 +66,16 @@
       </a>
       <a href="" class="dropdown-item approve" id="approve-link-{{ controle.pk }}"
          data-check-url="{% url 'risk_register:ajax-get-controle-approuve' pk=controle.pk %}"
-         data-change-url="{% url 'risk_register:ajax-approuver-controle' pk=controle.pk %}">
+         data-change-url="{% url 'risk_register:ajax-approuver-controle' pk=controle.pk %}" data-toggle="tooltip"
+         data-placement="bottom">
         {% csrf_token %}
         {% trans 'Approuvé' %}
       </a>
-      {% if controle.est_approuve %}
+      {% if controle.status == 'completed' %}
         <a href="" class="dropdown-item validate" id="validate-link-{{ controle.pk }}"
            data-check-url="{% url 'risk_register:ajax-get-controle-valide' pk=controle.pk %}"
-           data-change-url="{% url 'risk_register:ajax-validate-controle' pk=controle.pk %}">
-        {% csrf_token %}
+           data-change-url="{% url 'risk_register:ajax-validate-controle' pk=controle.pk %}" style="display: none">
+          {% csrf_token %}
           {% trans 'Validé' %}
         </a>
       {% endif %}
