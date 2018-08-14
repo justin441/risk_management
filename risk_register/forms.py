@@ -394,8 +394,7 @@ class AddControleForm(forms.ModelForm):
         self.processusrisque = kwargs.pop('processusrisque', None)
         self.activiterisque = kwargs.pop('activiterisque', None)
         super().__init__(*args, **kwargs)
-        self.fields['start'].label = _('début')
-        self.fields['end'].label = _('fin')
+        self.fields['description'].required = True
         self.helper = FormHelper
         self.helper.form_method = 'post'
         self.helper.form_class = 'form-horizontal'
@@ -404,18 +403,14 @@ class AddControleForm(forms.ModelForm):
         self.helper.layout = Layout(
             InlineRadios('critere_cible'),
             'nom',
-            'start',
-            'end',
             'description'
         )
 
     class Meta:
         model = Controle
-        fields = ['critere_cible', 'nom', 'start', 'end', 'description']
+        fields = ['critere_cible', 'nom', 'description']
         widgets = {
-            'start': forms.SelectDateWidget,
-            'end': forms.SelectDateWidget,
-            'description': forms.Textarea(attrs={'rows': 3, 'style': 'resize: none;'})
+            'description': forms.Textarea(attrs={'rows': 5, 'style': 'resize: none;'})
         }
 
     def clean(self):
@@ -433,6 +428,39 @@ class AddControleForm(forms.ModelForm):
             elif self.activiterisque.estimations.latest().est_obsolete or self.activiterisque.est_obsolete:
                 msg = _('Les données du risque sont obsolètes; impossible d\'y ajouter un contrôle')
                 self.add_error(None, msg)
+        cleaned_data = super().clean()
+        return cleaned_data
+
+
+class EditControleForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['start'].label = _('Début')
+        self.fields['end'].label = _('Fin')
+        self.fields['description'].required = True
+        self.helper = FormHelper
+        self.helper.form_method = 'post'
+        self.helper.form_class = 'form-horizontal'
+        self.helper.label_class = 'col-md-4'
+        self.helper.field_class = 'col-md-8'
+        self.helper.layout = Layout(
+            InlineRadios('critere_cible'),
+            'nom',
+            'description',
+            'start',
+            'end'
+        )
+
+    class Meta:
+        model = Controle
+        fields = ['critere_cible', 'nom', 'start', 'end', 'description']
+        widgets = {
+            'start': forms.SelectDateWidget,
+            'end': forms.SelectDateWidget,
+            'description': forms.Textarea(attrs={'rows': 5, 'style': 'resize: none;'})
+        }
+
+    def clean(self):
         cleaned_data = super().clean()
         debut = cleaned_data.get('start', '')
         fin = cleaned_data.get('end', '')

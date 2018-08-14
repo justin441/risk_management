@@ -457,7 +457,7 @@ class Controle(TimeFramedModel, TimeStampedModel, RiskMixin):
             )
 
     def save(self, *args, **kwargs):
-        if self.start > self.end:
+        if (self.start and self.end) and (self.start > self.end):
             raise FieldError(
                 'la date de fin ne peut pas précédée celle du début. Veuillez corriger le champ "debut".'
             )

@@ -1,24 +1,37 @@
 {% load i18n humanize %}
-<div class="card m-4 mt-2">
+<div class="card m-4 mt-2 border-0">
   <div class="card-header">
     <a href="{% url 'risk_register:effacer_controle' controle=controle.pk %}" class="fm-delete"
        data-fm-callback="reload"
        data-fm-head="{% trans 'Supprimer un contrôle' %}">
       <span data-feather="x" class="float-right text-danger ml-3"></span>
     </a>
-    <strong class="ml-2 mr-2">{{ controle.nom }}, </strong>
+    <a class="card-link float-right text-info" data-toggle="collapse" href="#controle-{{ controle.pk }}">
+      {% trans 'Détails' %} <span data-feather="more-horizontal"></span>
+    </a>
+    <a href="{% url 'risk_register:modifier_controle' controle=controle.pk %}"
+       class="fm-update card-title h5"
+       data-fm-callback="reload"
+       data-fm-head="{% trans 'Modifier un contrôle' %}">
+      {{ controle.nom }}
+    </a>
     <strong class="ml-2 nowrap">{% trans 'Cible' %}: <span
       class="text-capitalize text-primary">{{ controle.get_critere_cible_display }}</span></strong>
-  </div>
-  <div class="card-body">
-    <span
-      class="text-muted text-sm-left">{% trans 'ajouté' %} {{ controle.created | naturaltime }} {% trans 'par' %} {{ controle.cree_par }}</span><br>
-    {% if controle.modifie_par %}
+    <div style="font-size: 90%">
       <span
-        class="text-muted text-sm-left">{% trans 'modifié' %} {{ controle.modified | naturaltime }} {% trans 'par' %} {{ controle.modifie_par }}</span>
-      <br>
-    {% endif %}
-    <p class="text-justify lead">{{ controle.description | default_if_none:'' | truncatewords:25 }}</p>
+        class="text-muted">{% trans 'Ajouté' %} {{ controle.created | naturaltime }} {% trans 'par' %} {{ controle.cree_par }}</span><br>
+      {% if controle.modifie_par %}
+        <span
+          class="text-muted">{% trans 'Modifié' %} {{ controle.modified | naturaltime }} {% trans 'par' %} {{ controle.modifie_par }}</span>
+        <br>
+      {% endif %}
+    </div>
+
+  </div>
+  <div id="controle-{{ controle.pk }}" class="collapse">
+  <div class="card-body">
+
+    <p class="text-justify">{{ controle.description | default_if_none:'' | truncatewords:25 }}</p>
 
     <div class="row">
       <div class="col-md-3">
@@ -29,7 +42,7 @@
         <h6 class="mb-0">{% trans 'Fin' %}:</h6>
         <span class="{{ controle.status_display }}">{{ controle.end | naturalday }}</span>
       </div>
-      {% if controle.est_approve %}
+      {% if controle.est_approuve %}
         <div class="col-md-3">
           <h6 class="mb-0">{% trans 'Statut' %}:</h6>
           <span class="{{ controle.status_display }} controle-status"
@@ -80,5 +93,6 @@
         </a>
       {% endif %}
     </div>
+  </div>
   </div>
 </div>

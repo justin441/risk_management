@@ -171,15 +171,11 @@
 
       </div>
       <div class="tab-pane mt-3" role="tabpanel" id="my-controls">
-        <ul>
           {% for traitement in employe.traitements_assignes.all %}
-            <li>
-              {{ forloop.counter }}<a href="">{{ traitement.nom }}</a>
-            </li>
+            {% include 'risk_register/controle_card.html' with controle=traitement %}
           {% empty %}
             <span class="empty"></span>
           {% endfor %}
-        </ul>
       </div>
       <div class="tab-pane mt-3" role="tabpanel" id="my-processes">
         {% for processus in employe.processus_manages.all %}

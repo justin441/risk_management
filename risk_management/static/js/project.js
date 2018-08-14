@@ -204,8 +204,6 @@ $(document).ready(function () {
         });
     });
     approveLink.on('click', function (e) {
-        $(this).parent().is(".show") && e.stopPropagation();
-        e.preventDefault();
         let element = $(this);
         let url = element.attr('data-change-url');
         let approved = element.attr('data-checked');
@@ -227,7 +225,6 @@ $(document).ready(function () {
         });
     });
     validateLink.on('click', function (e) {
-        e.preventDefault();
         let element = $(this);
         let url = element.attr('data-change-url');
         let validated = element.attr('data-checked');

@@ -11,7 +11,8 @@ from .models import (ActiviteRisque, ProcessusRisque, Processus, Activite, Risqu
                      Controle)
 from .forms import (CreateProcessForm, CreateActivityForm, CreateProcessOutputDataForm, AddInputDataForm,
                     AddProcessusrisqueForm, CreateRiskForm, UpdateProcessusrisqueForm, AddActiviterisqueForm,
-                    UpdateActiviterisqueForm, AddControleForm, CritereRisqueForm, AssignActiviterisqueForm, AssignProcessusrisqueForm,
+                    UpdateActiviterisqueForm, AddControleForm, CritereRisqueForm, AssignActiviterisqueForm,
+                    AssignProcessusrisqueForm, EditControleForm,
                     ChangeActiviterisqueReviewDateForm, ChangeProcessusrisqueReviewDateForm, AssignControlform)
 
 
@@ -316,7 +317,7 @@ class AddActiviterisqueControle(AddControlMixin):
 
 class EditRiskControl(AjaxUpdateView):
     model = Controle
-    form_class = AddControleForm
+    form_class = EditControleForm
     pk_url_kwarg = 'controle'
 
     def pre_save(self):
