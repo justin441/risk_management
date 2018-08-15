@@ -171,8 +171,10 @@
 
       </div>
       <div class="tab-pane mt-3" role="tabpanel" id="my-controls">
-          {% for traitement in employe.traitements_assignes.all %}
-            {% include 'risk_register/controle_card.html' with controle=traitement %}
+          {% for controle in employe.traitements_assignes.all %}
+           {% if controle.est_approuve %}
+            {% include 'users/user_control_card.html' %}
+           {% endif %}
           {% empty %}
             <span class="empty"></span>
           {% endfor %}

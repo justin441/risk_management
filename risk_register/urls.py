@@ -35,7 +35,7 @@ urlpatterns = [
     path('<uuid:activiterisque>/add-control-activity-risk/', views.AddActiviterisqueControle.as_view(),
          name='ajout_controle_activiterisque'),
     path('<uuid:controle>/edit-control/', views.EditRiskControl.as_view(), name='modifier_controle'),
-    path('<uuid:controle>/assign-contrl/', views.AssignerControleView.as_view(), name='assigner_controle'),
+    path('<uuid:controle>/assign-control/', views.AssignerControleView.as_view(), name='assigner_controle'),
     path('<uuid:controle>/delete-control/', views.DeleteRiskControl.as_view(), name='effacer_controle'),
     path('<uuid:processusrisque>/set-seuil-processusrisque/', views.SetSeuilProcessusrisqueView.as_view(),
          name='definir_seuil_processusrisque'),

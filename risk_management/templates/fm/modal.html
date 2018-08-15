@@ -41,7 +41,10 @@
   $('#fm-modal').on('shown.bs.modal', function () {
     var risque = $('#id_risque');
     var user = $('#id_proprietaire');
-    if(risque){
+    if(user.length === 0){
+      user = $('#id_assigne_a');
+    }
+    if(risque.length){
       if(risque.val()){
       var url = '/risk-register/risk-detail/' + risque.val() + '/';
       $.get(url, function (data, status) {
@@ -55,7 +58,7 @@
     }
     risque.on('change', function (e) {
        if(risque.val().length){
-         var url = '/risk-register/risk-detail/' + risque.val() + '/';
+         let url = '/risk-register/risk-detail/' + risque.val() + '/';
          $.get(url, function (data, status){
            if(status==='success'){
               $('#detail-risque').html(data);
@@ -71,9 +74,9 @@
     });
     }
 
-    if (user){
+    if (user.length){
       if (user.val()){
-        var infoUrl = '/users/user-info/' + user.val() + '/';
+        let infoUrl = '/users/user-info/' + user.val() + '/';
         $.get(infoUrl, function (data, status) {
           if (status==='success'){
             $('#user-info').html(data);
@@ -85,7 +88,7 @@
       }
       user.on('change', function (e) {
         if (user.val()){
-          var info = '/users/user-info/' + user.val() + '/';
+          let info = '/users/user-info/' + user.val() + '/';
           $.get(info, function (data, status) {
           if (status==='success'){
             $('#user-info').html(data);

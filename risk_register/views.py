@@ -553,11 +553,7 @@ def approve_controle(request, pk):
             data['result'] = 'failure'
             data['error_message'] = _('Contrôle inexistant')
         else:
-            print(request.POST.get('est_approuve'))
-            print(str(controle.est_approuve).lower())
-            print(str(controle.est_approuve).lower() == request.POST.get('est_approuve'))
             if str(controle.est_approuve).lower() == request.POST.get('est_approuve'):
-                print(controle.est_approuve)
                 if controle.est_approuve:
                     controle.est_approuve = False
                 else:

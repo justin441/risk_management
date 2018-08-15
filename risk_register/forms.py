@@ -9,7 +9,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.utils.timezone import now
 
 from .models import (Processus, Activite, ProcessData, ProcessusRisque, ClasseDeRisques,
-                     Risque, ActiviteRisque, Controle, CritereDuRisque, Estimation)
+                     Risque, ActiviteRisque, Controle, CritereDuRisque)
 
 
 class CreateProcessForm(forms.ModelForm):
@@ -544,10 +544,10 @@ class ChangeReviewDateForm(forms.ModelForm):
         self.helper.field_class = 'col-md-8'
 
     class Meta:
-       fields = ['date_revue']
-       widgets = {
-           'date_revue': forms.SelectDateWidget()
-       }
+        fields = ['date_revue']
+        widgets = {
+            'date_revue': forms.SelectDateWidget()
+        }
 
 
 class ChangeProcessusrisqueReviewDateForm(ChangeReviewDateForm):
@@ -569,7 +569,7 @@ class AssignControlform(forms.ModelForm):
         self.helper.label_class = 'col-md-4'
         self.helper.field_class = 'col-md-8'
         self.helper.layout = Layout(
-            Field('assigne_a', id='id_proprietaire'),
+            Field('assigne_a'),
             HTML(
                 '<div id="user-info"></div>'
             )
@@ -580,11 +580,17 @@ class AssignControlform(forms.ModelForm):
         fields = ['assigne_a']
         model = Controle
         widgets = {
-            'proprietaire': autocomplete.ModelSelect2(url='users:user-autocomplete',
-                                                      attrs={
-                                                          'data-placeholder': _('Nom ou prénom'),
-                                                          'data-allow-clear': 'true',
-                                                          'data-width': '100%',
-                                                      }
-                                                      ),
+            'assigne_a': autocomplete.ModelSelect2(url='users:user-autocomplete',
+                                                   attrs={
+                                                       'data-placeholder': _('Nom ou prénom'),
+                                                       'data-allow-clear': 'true',
+                                                       'data-width': '100%',
+                                                   }
+                                                   ),
         }
+
+    def clean(self):
+        if not self.instance.est_approuve:
+            msg = _('Vous ne pouvez pas assigner un contrôle non approuvé')
+            self.add_error(None, msg)
+        return super().clean()

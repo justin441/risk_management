@@ -1,0 +1,34 @@
+{% load i18n humanize %}
+<div class="card m-4 mt-2">
+  <div class="card-body">
+    <h5 class="card-title">
+      {% if controle.est_valide %}
+        <del>
+      {% endif %}
+      {{ controle.nom }}
+      {% if controle.est_valide %}
+        </del>
+      {% endif %}
+    </h5>
+    <p>{{ controle.description }}</p>
+    <div class="row">
+      <div class="col-md-3">
+        <h6 class="mb-0">{% trans 'Debut' %}:</h6>
+        <span class="text-muted">{{ controle.start | naturalday }}</span>
+      </div>
+      <div class="col-md-3">
+        <h6 class="mb-0">{% trans 'Fin' %}:</h6>
+        <span class="{{ controle.status_display }}">{{ controle.end | naturalday }}</span>
+      </div>
+      <div class="col-md-3">
+        <h6 class="mb-0">{% trans 'Status' %}</h6>
+        <span class="{{ controle.status_display }} owner-controle-status"
+                  id="owner-{{ controle.pk }}-status"
+                  data-check-url="{% url 'risk_register:ajax-status-controle' pk=controle.pk %}"
+                  data-change-url="{% url 'risk_register:ajax-changer-statut-controle' pk=controle.pk %}">
+          {% csrf_token %}
+        </span>
+      </div>
+    </div>
+  </div>
+</div>

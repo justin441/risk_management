@@ -84,7 +84,7 @@ function getControlStatus(el) {
     });
 }
 
-function ControlApprovedValidated(el) {
+function ControlCheckApproved(el) {
     let link = $(el);
     let linkID = link.attr('id');
     let url = link.attr('data-check-url');
@@ -97,16 +97,39 @@ function ControlApprovedValidated(el) {
             if (data.result === 'success') {
                 element.attr('data-checked', data.checked);
                 if (data.checked === true) {
-                    element.find('i').remove();
-                    element.next().toggle(true);
-                    element.append('<i class="ml-2 fa fa-check-circle text-success"></i>');
-                    element.attr('title', gettext('Non'));
+                    element.attr('title', gettext('Annuler')).removeClass('text-muted').addClass('text-success');
+                    element.html('<span style="white-space: nowrap">' + gettext("Approuvé") + "<i class='fa fa-check-circle ml-2'></i></span>");
                 }
                 else {
-                    element.find('i').remove();
-                    element.next().toggle(false);
-                    element.append('<i class="ml-2 fa fa-times-circle text-muted"></i>');
-                    element.attr('title', gettext('Oui'));
+                    element.attr('title', gettext('Approuvé')).removeClass( 'text-success').addClass('text-muted');
+                    element.text(gettext("Approuver"));
+                }
+            }
+            else {
+                return false;
+            }
+        }
+    });
+}
+function ControlCheckValidated(el) {
+    let link = $(el);
+    let linkID = link.attr('id');
+    let url = link.attr('data-check-url');
+    $.ajax({
+        url: url,
+        type: 'GET',
+        dataType: 'json',
+        success: function (data) {
+            let element = $("#" + linkID);
+            if (data.result === 'success') {
+                element.attr('data-checked', data.checked);
+                if (data.checked === true) {
+                    element.attr('title', gettext('Invalidé')).removeClass('text-muted').addClass('text-success');
+                    element.html('<span style="white-space: nowrap;">' + gettext("Validé") + "<i class='fa fa-check-circle ml-2'></i></span>");
+                }
+                else {
+                    element.attr('title', gettext('Validé')).removeClass( 'text-success').addClass('text-muted');
+                    element.text(gettext("Valider"));
                 }
             }
             else {
@@ -157,17 +180,21 @@ $(document).ready(function () {
     let controlStatus = $('.controle-status');
     let validateLink = $('.validate');
     let approveLink = $('.approve');
+    let ownerControlStatus = $('.owner-controle-status');
     riskConfirm.each(function () {
         getRiskStatus(this);
     });
     controlStatus.each(function () {
         getControlStatus(this);
     });
+    ownerControlStatus.each(function () {
+        getControlStatus(this);
+    });
     validateLink.each(function () {
-        ControlApprovedValidated(this);
+        ControlCheckValidated(this);
     });
     approveLink.each(function () {
-        ControlApprovedValidated(this);
+        ControlCheckApproved(this);
     });
     riskConfirm.on('click', function () {
         let risk = $(this);
@@ -199,23 +226,39 @@ $(document).ready(function () {
             success: function (data) {
                 if (data.result === 'success') {
                     getControlStatus(controlStatus);
+                    location.reload();
+                }
+            }
+        });
+    });
+    ownerControlStatus.on('click', 'i', function f() {
+        let controlStatus = $(this).closest('.owner-controle-status');
+        let changeUrl = controlStatus.attr('data-change-url');
+        let status = controlStatus.attr('data-status');
+        $.ajax({
+            type: 'POST',
+            url: changeUrl,
+            data: {'status': status},
+            success: function (data) {
+                if (data.result === 'success') {
+                    getControlStatus(controlStatus);
+                    location.reload();
                 }
             }
         });
     });
     approveLink.on('click', function (e) {
+        e.preventDefault();
         let element = $(this);
         let url = element.attr('data-change-url');
         let approved = element.attr('data-checked');
-        element.parent().toggle(true);
         $.ajax({
             type: 'POST',
             url: url,
             data: {'est_approuve': approved},
             success: function (data) {
                 if (data.result === 'success') {
-                    ControlApprovedValidated(element);
-                    ControlApprovedValidated(element.next());
+                    ControlCheckApproved(element);
                 }
                 else {
                     console.log(data.error_message);
@@ -225,6 +268,7 @@ $(document).ready(function () {
         });
     });
     validateLink.on('click', function (e) {
+        e.preventDefault();
         let element = $(this);
         let url = element.attr('data-change-url');
         let validated = element.attr('data-checked');
@@ -234,8 +278,7 @@ $(document).ready(function () {
             data: {'est_valide': validated},
             success: function (data) {
                 if (data.result === 'success') {
-                    ControlApprovedValidated(element.prev())
-                    ControlApprovedValidated(element);
+                   ControlCheckValidated(element);
                 }
                 else {
                     console.log(data.error_message);
