@@ -4,9 +4,8 @@ from django.contrib.contenttypes.admin import GenericStackedInline
 from django.utils.translation import gettext_lazy as _
 from django.db import models
 from risk_management.users.admin import risk_management_admin_site
+from risk_management.users.utils import get_changes_between_2_objects
 
-# Register your models here.
-from .helpers import get_changes_between_2_objects
 from .models import (Processus, ProcessData, Activite, Risque, ClasseDeRisques, ActiviteRisque, Estimation,
                      Controle, ProcessusRisque, CritereDuRisque)
 

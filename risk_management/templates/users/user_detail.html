@@ -10,7 +10,7 @@
   <ul class="nav nav-tabs nav-justified">
     {% if employe.activiterisques_manages.all or employe.processusrisques_manages.all %}
       <li class="nav-item">
-        <a href="#my-risks" class="nav-link" role="tab" data-toggle="tab">{% trans 'Risques assignés' %}</a>
+        <a href="#my-risks" class="nav-link active show" role="tab" data-toggle="tab">{% trans 'Risques assignés' %}</a>
       </li>
     {% endif %}
     {% if employe.traitements_assignes.all %}
