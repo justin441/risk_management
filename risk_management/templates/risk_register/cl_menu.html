@@ -1,10 +1,15 @@
+{% load i18n %}
 {% for classe in classes %}
   {% if li %}
     <li class="{{ li_class }}">
-    <a href="#" class="{{ a_class }}">{{ classe }}</a>
+    <a href="{% url 'risk_register:liste_risques' classe=classe %}" class="{{ a_class }}">
+      {% blocktrans %}{{ classe }}{% endblocktrans %}
+    </a>
   </li>
     {% else %}
-    <a href="#" class="{{ a_class }}">{{ classe }}</a>
+    <a href="{% url 'risk_register:liste_risques' classe=classe %}" class="{{ a_class }}">
+      {% blocktrans %}{{ classe }}{% endblocktrans %}
+    </a>
   {% endif %}
 {% endfor %}
 

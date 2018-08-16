@@ -1,5 +1,46 @@
 {% extends 'risk_register/base.html' %}
+{% load i18n %}
 
 {% block title %}
+  {{ class_name }}
+{% endblock %}
 
+{% block content %}
+  {% block header %}
+    <h2>{{ class_name }}</h2>
+  {% endblock %}
+
+  {% block data %}
+    <div class="table-responsive">
+      <table class="table table-striped">
+        <thead>
+        <tr>
+          <th style="width:15%;">{% trans 'Nom' %}</th>
+          <th style="width:60%;">{% trans 'Description' %}</th>
+          <th style="width:15%;">{% trans 'Créé par' %}</th>
+          <th style="width:10%;">{% trans 'Occurrences' %}</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for risk in risks_list %}
+          <tr>
+            <td style="min-width:175px;">{{ risk.nom }}</td>
+            <td style="min-width: 400px;">{{ risk.description }}</td>
+            <td style="min-width: 175px">{{ risk.cree_par|default_if_none:_('inconnu') }}</td>
+            <td style="min-width: 150px;">
+              <a href="">
+                {% if risk.processusrisque_set.count|add:risk.activiterisque_set.count <= 1 %}
+                  {{ risk.processusrisque_set.count|add:risk.activiterisque_set.count }} {% trans 'occurrence' %}
+                {% else %}
+                  {{ risk.processusrisque_set.count|add:risk.activiterisque_set.count }} {% trans 'occurrences' %}
+                {% endif %}
+              </a>
+            </td>
+          </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+  {% endblock %}
 {% endblock %}

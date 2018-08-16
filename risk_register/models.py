@@ -150,12 +150,12 @@ class Risque(models.Model):
                                  on_delete=models.SET_NULL, verbose_name=_('Crée par'))
 
     def __str__(self):
-        return '%s...' % self.description[:100]
+        return self.nom
 
     class Meta:
         verbose_name = _('risque')
         verbose_name_plural = _('risques')
-        ordering = ('description',)
+        ordering = ('nom', 'description')
         unique_together = (('nom', 'description'),)
 
 

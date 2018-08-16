@@ -1,10 +1,11 @@
 from fm.views import AjaxCreateView, AjaxUpdateView, AjaxDeleteView
 from dal import autocomplete
 
-from django.views.generic import DetailView
+from django.views.generic import DetailView, ListView
 from django.shortcuts import get_object_or_404
 from django.http import JsonResponse
 from django.utils.translation import ugettext_lazy as _
+from django.db.models import Count
 
 from risk_management.users.models import BusinessUnit
 from .models import (ActiviteRisque, ProcessusRisque, Processus, Activite, Risque, Estimation,
@@ -17,6 +18,19 @@ from .forms import (CreateProcessForm, CreateActivityForm, CreateProcessOutputDa
 
 
 # Create your views here.
+
+class RiskClassView(ListView):
+    paginate_by = 50
+    context_object_name = 'risks_list'
+    template_name = 'risk_register/liste_risques.html'
+
+    def get_queryset(self):
+        return Risque.objects.filter(classe__nom=self.kwargs['classe'])
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['class_name'] = self.kwargs['classe']
+        return context
 
 
 class BusinessUnitRiskRegisterView(DetailView):
