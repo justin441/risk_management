@@ -204,6 +204,10 @@ class RiskDetailView(DetailView):
     context_object_name = 'risque'
 
 
+class UpdateRiskView(AjaxUpdateView):
+    pass
+
+
 class AddProcessusrisqueView(AjaxCreateView):
     form_class = AddProcessusrisqueForm
     pk_url_kwarg = 'processus'
@@ -224,6 +228,14 @@ class AddProcessusrisqueView(AjaxCreateView):
         context = super().get_context_data(**kwargs)
         context['processus'] = get_object_or_404(Processus, pk=self.kwargs['processus'])
         return context
+
+
+class ProcessusrisqueDetailview(DetailView):
+    pass
+
+
+class CompleteEditProcessusrisqueView(AjaxUpdateView):
+    pass
 
 
 class EditProcessusrisqueView(AjaxUpdateView):
@@ -283,6 +295,14 @@ class AddActiviterisqueView(AjaxCreateView):
         context = super().get_context_data(**kwargs)
         context['activite'] = get_object_or_404(Activite, pk=self.kwargs['activite'])
         return context
+
+
+class ActiviterisqueDetailView(DetailView):
+    pass
+
+
+class CompleteEditActiviterisqueView(AjaxUpdateView):
+    pass
 
 
 class EditActiviterisqueView(AjaxUpdateView):
