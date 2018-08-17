@@ -290,6 +290,68 @@ class CreateRiskForm(forms.ModelForm):
         }
 
 
+class UpdateRiskForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_method = 'post'
+        self.helper.form_class = 'form-horizontal'
+        self.helper.label_class = 'col-md-4'
+        self.helper.field_class = 'col-md-8'
+        self.helper.layout = Layout(
+            Fieldset(
+                _('Risque'),
+                'classe',
+                'nom',
+                'description',
+                'cause',
+                'consequence'
+            ),
+            Fieldset(
+                _('Aide au management'),
+                'couverture',
+                'pilotage',
+                'note',
+                'aide'
+            )
+        )
+
+    class Meta:
+        model = Risque
+        fields = ['classe', 'nom', 'description', 'cause', 'consequence', 'couverture',
+                  'pilotage', 'note', 'aide']
+        widgets = {
+            'description': forms.Textarea(attrs={
+                'rows': 3,
+                'style': 'resize: none'
+            }),
+            'cause': forms.Textarea(attrs={
+                'rows': 3,
+                'style': 'resize: none'
+            }),
+            'consequence': forms.Textarea(attrs={
+                'rows': 3,
+                'style': 'resize: none'
+            }),
+            'couverture': forms.Textarea(attrs={
+                'rows': 3,
+                'style': 'resize: none'
+            }),
+            'pilotage': forms.Textarea(attrs={
+                'rows': 3,
+                'style': 'resize: none'
+            }),
+            'note': forms.Textarea(attrs={
+                'rows': 3,
+                'style': 'resize: none'
+            }),
+            'aide': forms.Textarea(attrs={
+                'rows': 3,
+                'style': 'resize: none'
+            })
+        }
+
+
 class ActiviterisqueBaseForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

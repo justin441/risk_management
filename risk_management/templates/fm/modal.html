@@ -39,6 +39,7 @@
 <script type="text/javascript" src="{% static "fm/js/fm.js" %}"></script>
 <script>
   $('#fm-modal').on('shown.bs.modal', function () {
+    console.log('modal shown')
     var risque = $('#id_risque');
     var user = $('#id_proprietaire');
     if(user.length === 0){

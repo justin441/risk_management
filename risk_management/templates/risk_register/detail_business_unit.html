@@ -58,55 +58,57 @@
             </tr>
             </thead>
             <tbody>
-            {% if processusrisques %}
-              {% for processusrisque in processusrisques %}
-                <tr>
-                  <td><a href="">{{ forloop.counter }}</a></td>
-                  <td>{{ processusrisque.created|naturaltime }}</td>
-                  <td>{{ processusrisque.processus }}</td>
-                  <td>{{ processusrisque.risque.nom }}</td>
-                  <td>{{ processusrisque.soumis_par }}</td>
-                  <td>
-                    {% if processusrisque.verifie == 'verified' %}
-                      {{ processusrisque.get_verifie_display }}<span data-feather="check" class="text-success"></span>
-                    {% else %}
-                      <span class="text-danger">{{ processusrisque.get_verifie_display }}</span>
-                    {% endif %}
-                  </td>
-                  <td
-                    class="{{ processusrisque.seuil_display }}">{{ processusrisque.seuil_de_risque|default_if_none:_('Non defini') }}</td>
-                  <td
-                    class="{{ processusrisque.facteur_risque_display }}">{{ processusrisque.facteur_risque|default_if_none:_('Non estimé') }}</td>
-                  <td class="{{ processusrisque.status_display }}">
-                    {% blocktrans with status=processusrisque.status|default_if_none:_('inconnu') %}
-                      {{ status }}
-                    {% endblocktrans %}
-                  </td>
-                  <td><a href="#">{{ processusrisque.proprietaire|default_if_none:_('Non assigné') }}</a></td>
-                  {# TODO: ajouter l'url#}
-                  <td>
-                    {% if processusrisque.est_obsolete %}
-                      <span class="text-danger">{% trans passée %} {{ processusrisque.date_revue|naturaltime }}</span>
-                    {% else %}
+            {% for processusrisque in processusrisques %}
+              <tr>
+                <td>
+                  <a href="{% url 'risk_register:detail_processusrisque' pk=processusrisque.pk %}" class="fm-detail" data-fm-head="{{ processusrisque.risque.nom }}">
+                    {{ forloop.counter }}
+                  </a>
+                </td>
+                <td>{{ processusrisque.created|naturaltime }}</td>
+                <td>{{ processusrisque.processus }}</td>
+                <td>{{ processusrisque.risque.nom }}</td>
+                <td>{{ processusrisque.soumis_par }}</td>
+                <td>
+                  {% if processusrisque.verifie == 'verified' %}
+                    {{ processusrisque.get_verifie_display }}<span data-feather="check" class="text-success"></span>
+                  {% else %}
+                    <span class="text-danger">{{ processusrisque.get_verifie_display }}</span>
+                  {% endif %}
+                </td>
+                <td
+                  class="{{ processusrisque.seuil_display }}">{{ processusrisque.seuil_de_risque|default_if_none:_('Non defini') }}</td>
+                <td
+                  class="{{ processusrisque.facteur_risque_display }}">{{ processusrisque.facteur_risque|default_if_none:_('Non estimé') }}</td>
+                <td class="{{ processusrisque.status_display }}">
+                  {% blocktrans with status=processusrisque.status|default_if_none:_('inconnu') %}
+                    {{ status }}
+                  {% endblocktrans %}
+                </td>
+                <td><a href="#">{{ processusrisque.proprietaire|default_if_none:_('Non assigné') }}</a></td>
+                {# TODO: ajouter l'url#}
+                <td>
+                  {% if processusrisque.est_obsolete %}
+                    <span class="text-danger">{% trans passée %} {{ processusrisque.date_revue|naturaltime }}</span>
+                  {% else %}
 
-                      {% if processusrisque.date_revue %}
-                        <span class="text-success">
+                    {% if processusrisque.date_revue %}
+                      <span class="text-success">
                         {{ processusrisque.date_revue|naturaltime }}
                         </span>
-                      {% else %}
-                        <span class="text-danger">????</span>
-                      {% endif %}
-
+                    {% else %}
+                      <span class="text-danger">????</span>
                     {% endif %}
-                  </td>
-                </tr>
-              {% endfor %}
-            {% else %}
+
+                  {% endif %}
+                </td>
+              </tr>
+            {% empty %}
               <tr>
                 <td colspan="10"><h5>{% trans 'Aucun risque identifié pour les processus de ce Business Unit' %}</h5>
                 </td>
               </tr>
-            {% endif %}
+            {% endfor %}
             </tbody>
 
           </table>
@@ -131,10 +133,13 @@
             </tr>
             </thead>
             <tbody>
-            {% if activiterisques %}
               {% for activiterisque in activiterisques %}
                 <tr>
-                  <td><a href="">{{ forloop.counter }}</a></td>
+                  <td>
+                    <a href="{% url 'risk_register:detail_activiterisque' pk=activiterisque.pk %}" class="fm-detail" data-fm-head="{{ activiterisque.risque.nom }}">
+                      {{ forloop.counter }}
+                    </a>
+                  </td>
                   <td>{{ activiterisque.created|naturaltime }}</td>
                   <td>{{ activiterisque.activite }}</td>
                   <td>{{ activiterisque.risque.nom }}</td>
@@ -169,13 +174,12 @@
                     {% endif %}
                   </td>
                 </tr>
-              {% endfor %}
-            {% else %}
-              <tr>
+                {% empty %}
+                <tr>
                 <td colspan="10"><h5>{% trans 'Aucun risque identifié pour les activités de ce Business Unit' %}</h5>
                 </td>
               </tr>
-            {% endif %}
+              {% endfor %}
             </tbody>
 
           </table>

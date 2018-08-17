@@ -24,7 +24,20 @@
         <tbody>
         {% for risk in risks_list %}
           <tr>
-            <td style="min-width:175px;">{{ risk.nom }}</td>
+            <td style="min-width:175px;">
+              {% if risk.cree_par == request.user %}
+                <a href="{% url 'risk_register:modifier_risque' pk=risk.pk %}" class="fm-update"
+                   data-fm-head="{% trans 'Modifier un risque' %}" data-fm-callback="reload">
+                  {{ risk.nom }}
+                </a>
+              {% else %}
+                <a href="{% url 'risk_register:detail_risque' pk=risk.pk %}" class="fm-detail"
+                   data-fm-head="{{ risk.nom }}" data-fm-callback="">
+                  {{ risk.nom }}
+                </a>
+
+              {% endif %}
+            </td>
             <td style="min-width: 400px;">{{ risk.description }}</td>
             <td style="min-width: 175px">{{ risk.cree_par|default_if_none:_('inconnu') }}</td>
             <td style="min-width: 150px;">

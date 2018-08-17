@@ -13,7 +13,7 @@ from .models import (ActiviteRisque, ProcessusRisque, Processus, Activite, Risqu
 from .forms import (CreateProcessForm, CreateActivityForm, CreateProcessOutputDataForm, AddInputDataForm,
                     AddProcessusrisqueForm, CreateRiskForm, UpdateProcessusrisqueForm, AddActiviterisqueForm,
                     UpdateActiviterisqueForm, AddControleForm, CritereRisqueForm, AssignActiviterisqueForm,
-                    AssignProcessusrisqueForm, EditControleForm,
+                    AssignProcessusrisqueForm, EditControleForm, UpdateRiskForm,
                     ChangeActiviterisqueReviewDateForm, ChangeProcessusrisqueReviewDateForm, AssignControlform)
 
 
@@ -205,7 +205,8 @@ class RiskDetailView(DetailView):
 
 
 class UpdateRiskView(AjaxUpdateView):
-    pass
+    model = Risque
+    form_class = UpdateRiskForm
 
 
 class AddProcessusrisqueView(AjaxCreateView):
@@ -231,7 +232,9 @@ class AddProcessusrisqueView(AjaxCreateView):
 
 
 class ProcessusrisqueDetailview(DetailView):
-    pass
+    model = ProcessusRisque
+    context_object_name = 'risque_identif'
+    template_name = 'risk_register/detail_identification_risque.html'
 
 
 class CompleteEditProcessusrisqueView(AjaxUpdateView):
@@ -298,7 +301,9 @@ class AddActiviterisqueView(AjaxCreateView):
 
 
 class ActiviterisqueDetailView(DetailView):
-    pass
+    model = ActiviteRisque
+    context_object_name = 'risque_identif'
+    template_name = 'risk_register/detail_identification_risque.html'
 
 
 class CompleteEditActiviterisqueView(AjaxUpdateView):

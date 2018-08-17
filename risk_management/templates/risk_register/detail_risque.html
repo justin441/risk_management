@@ -1,9 +1,17 @@
 {% load i18n %}
 <dl class="row">
-  <dt class="col-sm-4">{% trans 'Description' %}</dt>
+  <dt class="col-sm-4">{% trans 'Description:' %}</dt>
   <dd class="col-sm-8 text-justify">{{ risque.description }}</dd>
   <dt class="col-sm-4">{% trans 'Cause' %}</dt>
   <dd class="col-sm-8 text-justify">{{ risque.cause }}</dd>
-  <dt class="col-sm-4">{% trans 'Conséquence' %}</dt>
+  <dt class="col-sm-4">{% trans 'Conséquence:' %}</dt>
   <dd class="col-sm-8 text-justify">{{ risque.consequence }}</dd>
+  <dt class="col-sm-4">{% trans "Actions / Couverture:" %}</dt>
+  <dd class="col-sm-8 text-justify">{{ risque.couverture | default:'-----------' }}</dd>
+  <dt class="col-sm-4">{% trans "Pilotage / suivi:" %}</dt>
+  <dd class="col-sm-8 text-justify">{{ risque.pilotage | default:'-----------' }}</dd>
+  <dt class="col-sm-4">{% trans "Réflexion à considérer à la lecture du risque:" %}</dt>
+  <dd class="col-sm-8 text-justify">{{ risque.note | default:'-----------' }}</dd>
+  <dt class="col-sm-4">{% trans 'Sommes-nous concernés:' %}</dt>
+  <dd class="col-sm-8 text-justify">{{ risque.aide | default:'-----------' }}</dd>
 </dl>
