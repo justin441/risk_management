@@ -237,10 +237,6 @@ class ProcessusrisqueDetailview(DetailView):
     template_name = 'risk_register/detail_identification_risque.html'
 
 
-class CompleteEditProcessusrisqueView(AjaxUpdateView):
-    pass
-
-
 class EditProcessusrisqueView(AjaxUpdateView):
     model = ProcessusRisque
     form_class = UpdateProcessusrisqueForm
@@ -304,10 +300,6 @@ class ActiviterisqueDetailView(DetailView):
     model = ActiviteRisque
     context_object_name = 'risque_identif'
     template_name = 'risk_register/detail_identification_risque.html'
-
-
-class CompleteEditActiviterisqueView(AjaxUpdateView):
-    pass
 
 
 class EditActiviterisqueView(AjaxUpdateView):
