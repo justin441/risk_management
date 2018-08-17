@@ -33,7 +33,7 @@
         {% for activite in processus.activites.all %}
           <div class="card mb-2">
             <div class="card-body">
-              <a href="" class="card-link float-right"><span data-feather="settings" class="text-info"></span></a>
+              <a href="" class="card-link float-right"><i class="text-info fa fa-cogs"></i></a>
               <a href="{% url 'risk_register:detail_activite' pk=activite.code_activite %}"
                  class="h6 card-title">{{ activite.nom }}: {{ activite.description|truncatechars:50 }}</a>
               <div class="row mt-2">
@@ -55,7 +55,7 @@
           <a href="{% url 'risk_register:creer_activite' processus=processus.pk %}"
              class="text-info card-link fm-create"
              data-fm-head="{% trans 'Nouvelle activité' %}" data-fm-callback="insertProcess" data-fm-target="#">
-            <span data-feather="plus-circle"></span> {% trans 'Nouvelle activité' %}
+            <i class="fa fa-plus"></i> {% trans 'Nouvelle activité' %}
           </a>
         </div>
       </div>
@@ -69,7 +69,7 @@
           <a href="{% url 'risk_register:ajout_processusrisque' processus=processus.pk %}"
              class="text-info card-link fm-create" data-fm-head="{% trans 'Identification du risque' %}"
              data-fm-callback="reload">
-            <span data-feather="plus-circle"></span> {% trans 'Nouveau risque' %}
+            <i class="fa fa-plus"></i> {% trans 'Nouveau risque' %}
           </a>
         </div>
 
@@ -101,7 +101,7 @@
                   <td>{{ activiterisque.soumis_par }}</td>
                   <td>
                     {% if activiterisque.verifie == 'verified' %}
-                      {{ activiterisque.get_verifie_display }} <span data-feather="check" class="text-success"></span>
+                      {{ activiterisque.get_verifie_display }} <i class="text-success fa fa-check"></i>
                     {% else %}
                       <span class="text-danger">{{ activiterisque.get_verifie_display }}</span>
                     {% endif %}
@@ -165,7 +165,7 @@
             <a href="{% url 'risk_register:ajout_entree' processus=processus.pk %}" class="fm-update text-info"
                data-fm-head="{% trans "Ajouteer une donnée d'entrée" %}"
                data-fm-callback="reload">
-              <span data-feather="plus"></span>{% trans 'Ajouter' %}
+              <i class="fa fa-plus mr-2"></i>{% trans 'Ajouter' %}
             </a>
           </div>
           <div class="col">
@@ -189,7 +189,7 @@
             <a href="{% url 'risk_register:ajout_sortie' processus=processus.pk %}" class="fm-create text-info"
                data-fm-head="{% trans 'Ajouter une donnée de sortie' %}"
                data-fm-callback="append" data-fm-target="#outputData">
-              <span data-feather="plus"></span>{% trans 'Ajouter' %}
+              <i class="fa fa-plus mr-2"></i>{% trans 'Ajouter' %}
             </a>
           </div>
         </div>

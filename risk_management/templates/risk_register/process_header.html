@@ -18,17 +18,17 @@
     <a href="{% url 'risk_register:effacer_processus' pk=processus.pk %}" class="fm-delete" data-fm-callback="redirect"
        data-fm-head="{% trans 'Supprimer un processus' %}"
        data-fm-target="{% url 'risk_register:detail_business_unit' pk=processus.business_unit.pk %}">
-      <span data-feather="trash-2" class="float-sm-right text-white ml-2"></span>
+      <i class="fa fa-trash-o float-sm-right text-white ml-2"></i>
     </a>
     <a href="{% url 'risk_register:modifier_processus' pk=processus.pk %}" class="fm-update" data-fm-callback="reload"
        data-fm-head={% trans "Modifier un processus" %}>
-      <span data-feather="edit-3" class="float-sm-right text-white"></span>
+      <i class="float-sm-right text-white fa fa-edit"></i>
     </a>
     <h4 class="card-title">
       {{ processus.nom }}
     </h4>
     <p class="lead">{{ processus.description }}</p>
-    <a href="#detail" data-toggle="collapse"><span data-feather="more-horizontal" class="text-white float-right"></span></a>
+    <a href="#detail" data-toggle="collapse"><i class="text-white float-right fa fa-ellipsis-h"></i></a>
   </div>
   <div class="card-footer collapse" id="detail">
 

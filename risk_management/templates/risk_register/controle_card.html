@@ -4,10 +4,10 @@
     <a href="{% url 'risk_register:effacer_controle' controle=controle.pk %}" class="fm-delete"
        data-fm-callback="reload"
        data-fm-head="{% trans 'Supprimer un contrôle' %}">
-      <span data-feather="x" class="float-right text-danger ml-3"></span>
+      <i class="float-right text-danger ml-3 fa fa-times"></i>
     </a>
     <a class="card-link float-right text-info" data-toggle="collapse" href="#controle-{{ controle.pk }}">
-      {% trans 'Détails' %} <span data-feather="more-horizontal"></span>
+      {% trans 'Détails' %} <i class="fa fa-ellipsis-h"></i>
     </a>
     <a href="{% url 'risk_register:modifier_controle' controle=controle.pk %}"
        class="fm-update card-title h5"

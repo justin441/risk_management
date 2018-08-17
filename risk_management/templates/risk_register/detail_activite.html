@@ -18,7 +18,7 @@
     <div id="create">
           <a href="{% url 'risk_register:ajout_activiterisque' activite=activite.pk %}" class="fm-create text-info card-link"
              data-fm-head="{% trans "Nouveau risque d'activité"  %}" data-fm-callback="reload">
-            <span data-feather="plus-circle"></span> {% trans 'Ajouter un risque' %}
+            <i class="fa fa-plus"></i> {% trans 'Ajouter un risque' %}
           </a>
         </div>
   {% endblock %}

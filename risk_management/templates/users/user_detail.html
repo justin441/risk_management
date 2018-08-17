@@ -40,7 +40,7 @@
             <div class="card-header">
               <a class="card-link float-right text-info" data-toggle="collapse"
                  href="#controles-{{ identified_risk.pk }}-0">
-                {% trans 'Contrôles' %} <span data-feather="chevrons-down"></span>
+                {% trans 'Contrôles' %} <i class="fa fa-ellipsis-h"></i>
               </a>
               {% if identified_risk.type_de_risque == 'O' %}
                 <strong
@@ -81,7 +81,7 @@
                      class="text-info fm-create" style="text-decoration: none;"
                      data-fm-head="{% trans 'Définir le seuil de risque' %}"
                      data-fm-callback="reload">
-                    <span data-feather="sliders" class="mr-2"></span>
+                    <i class="mr-2 fa fa-sliders"></i>
                   </a>
                   <span class="{{ identified_risk.seuil_display }}">
            {{ identified_risk.seuil_de_risque|default_if_none:_('Non defini') }}
@@ -97,7 +97,7 @@
                    {% endif %}"
                      class="text-info fm-create" style="text-decoration: none;"
                      data-fm-head="{% trans 'Estimer le risque' %}" data-fm-callback="reload">
-                    <span data-feather="sliders" class="mr-2"></span>
+                    <i class="mr-2 fa fa-sliders"></i>
                   </a>
                   <span class="{{ identified_risk.facteur_risque_display }}">
           {{ identified_risk.facteur_risque|default_if_none:_('Non defini') }}
@@ -107,7 +107,7 @@
                   <h6 class="mb-0">{% trans 'Statut du risque' %}</h6>
                   <span class="{{ identified_risk.status_display }}">
                   {% blocktrans with status=identified_risk.status|default_if_none:'Inconnu' %}
-                    <span data-feather="thermometer" class="mr-2"></span>{{ status }}
+                    <i class="mr-2 fa fa-thermometer"></i>{{ status }}
                   {% endblocktrans %}
                 </span>
                 </div>
@@ -121,7 +121,7 @@
                    {% endif %}"
                      class="text-info fm-update" style="text-decoration: none;"
                      data-fm-head="{% trans 'Définir la date de revue du risque:' %}"
-                     data-fm-callback="reload"> <span data-feather="calendar" class="mr-2"></span>
+                     data-fm-callback="reload"> <i class="mr-2 fa fa-calendar"></i>
                   </a>
 
                   {{ identified_risk.date_revue | naturaltime  | default_if_none:_('Non défini ') }}
@@ -148,7 +148,7 @@
                    {% endif %}"
                    class="text-info card-link fm-create"
                    data-fm-head="{% trans 'Ajouter un contrôle' %}" data-fm-callback="reload">
-                  <span data-feather="plus-circle"></span> {% trans 'Nouveau contrôle' %}
+                  <i class="fa fa-plus"></i> {% trans 'Nouveau contrôle' %}
                 </a>
               </div>
             </div>

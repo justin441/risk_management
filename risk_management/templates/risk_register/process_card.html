@@ -2,7 +2,7 @@
 <div class="card mt-3">
   <div class="card-header">
     <a class="card-link float-right" data-toggle="collapse" href="#{{ processus.pk }}-activities">
-      <span data-feather="more-horizontal" class="text-info"></span>
+      <i class="fa fa-ellipsis-h text-info"></i>
     </a>
     <a href="{% url 'risk_register:detail_processus' pk=processus.code_processus %}"
        class="card-link h5">{{ processus.nom }}: {{ processus.description|truncatechars:50 }}</a>
@@ -18,7 +18,7 @@
     <div class="card card-body ml-4 mt-4 mb-2 p-1 border-0" id="create-activity-2">
       <a href="{% url 'risk_register:creer_activite' processus=processus.pk %}" class="text-info card-link fm-create"
          data-fm-head="{% trans 'Nouvelle activité' %}" data-fm-callback="insertProcess" data-fm-target="#">
-        <span data-feather="plus-circle"></span> {% trans 'Nouvelle activité' %}
+        <i class="fa fa-plus"></i> {% trans 'Nouvelle activité' %}
       </a>
     </div>
   </div>

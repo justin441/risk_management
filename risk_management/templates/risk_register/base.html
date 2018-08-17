@@ -48,7 +48,7 @@
           <li class="nav-item dropdown">
             <a href="" class="nav-link dropdown-toggle text-nowrap" id="navbarDropdownMenuLink" data-toggle="dropdown"
                aria-haspopup="true" aria-expanded="false">
-              <span data-feather="user" class="mr-2"></span>{{ user.get_short_name }}
+              <i class="fa fa-user mr-2"></i>{{ user.get_short_name }}
             </a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
               <a class="dropdown-item"
@@ -115,7 +115,7 @@
         <ul class=" nav flex-column mb-2">
           {% bu_menu %}
           <li class="nav-item">
-            <a href="" class="nav-link"><span data-feather="plus"></span></a>
+            <a href="" class="nav-link"><i class="fa fa-plus"></i></a>
           </li>
         </ul>
         <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
@@ -124,7 +124,7 @@
         <ul class=" nav flex-column mb-2">
           {% project_menu %}
           <li class="nav-item">
-            <a href="" class="nav-link"><span data-feather="plus"></span></a>
+            <a href="" class="nav-link"><i class="fa fa-plus"></i></a>
           </li>
         </ul>
         <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
@@ -166,10 +166,6 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"
         integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T"
         crossorigin="anonymous"></script>
-<script src="https://unpkg.com/feather-icons/dist/feather.min.js"></script>
-<script type="text/javascript">
-  feather.replace();
-</script>
 {% block modal %}
   {% include 'fm/modal.html' %}
 {% endblock %}

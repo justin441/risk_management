@@ -11,18 +11,17 @@
     <a href="{% url 'risk_register:effacer_activite' pk=activite.pk %}" class="fm-delete" data-fm-callback="redirect"
        data-fm-head="{% trans 'Supprimer une activité' %}"
        data-fm-target="{% url 'risk_register:detail_processus' pk=activite.processus.pk %}">
-      <span data-feather="trash-2" class="float-sm-right text-white ml-2"></span>
+      <i class="float-sm-right text-white ml-2 fa fa-trash-o"></i>
     </a>
     <a href="{% url 'risk_register:modifier_activite' pk=activite.pk %}" class="fm-update" data-fm-callback="reload"
        data-fm-head="{% trans 'Modifier une activité' %}">
-      <span data-feather="edit-3" class="float-sm-right text-white"></span>
+      <i class="float-sm-right text-white fa fa-edit"></i>
     </a>
     <h4 class="card-title">
       {{ activite.nom}}
     </h4>
     <p class="lead">{{ activite.description }}</p>
-    <a href="#detail" data-toggle="collapse" class="float-right"><span data-feather="more-horizontal"
-                                                                        class="text-white"></span></a>
+    <a href="#detail" data-toggle="collapse" class="float-right"><i class="text-white fa fa-ellipsis-h"></i></a>
   </div>
   <div class="card-footer collapse" id="detail">
       <dl class="row">

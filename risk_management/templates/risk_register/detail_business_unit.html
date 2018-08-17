@@ -34,7 +34,7 @@
           <a href="{% url 'risk_register:creer_processus' business_unit=bu.denomination %}"
              class="fm-create text-info card-link"
              data-fm-head="{% trans 'Nouveau Processus' %}" data-fm-callback="insertProcess" data-fm-target="#create">
-            <span data-feather="plus-circle"></span> {% trans 'Nouveau processus' %}
+            <i class="fa fa-plus"></i> {% trans 'Nouveau processus' %}
           </a>
         </div>
       </div>
@@ -71,7 +71,7 @@
                 <td>{{ processusrisque.soumis_par }}</td>
                 <td>
                   {% if processusrisque.verifie == 'verified' %}
-                    {{ processusrisque.get_verifie_display }}<span data-feather="check" class="text-success"></span>
+                    {{ processusrisque.get_verifie_display }}<i class="text-success fa fa-check"></i>
                   {% else %}
                     <span class="text-danger">{{ processusrisque.get_verifie_display }}</span>
                   {% endif %}
@@ -146,7 +146,7 @@
                   <td>{{ activiterisque.soumis_par }}</td>
                   <td>
                     {% if activiterisque.verifie == 'verified' %}
-                      {{ activiterisque.get_verifie_display }} <span data-feather="check" class="text-success"></span>
+                      {{ activiterisque.get_verifie_display }} <span class="text-success fa fa-check"></span>
                     {% else %}
                       <span class="text-danger">{{ activiterisque.get_verifie_display }}</span>
                     {% endif %}

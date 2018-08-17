@@ -4,10 +4,10 @@
     <a href="{% url 'risk_register:effacer_activiterisque' activiterisque=activiterisque.pk %}" class="fm-delete"
        data-fm-callback="reload"
        data-fm-head="{% trans 'Supprimer un risque' %}">
-      <span data-feather="x" class="float-right text-danger ml-3"></span>
+      <i class="fa fa-times float-right text-danger ml-3"></i>
     </a>
     <a class="card-link float-right text-info" data-toggle="collapse" href="#risk-{{ activiterisque.pk }}">
-      {% trans 'Contrôles' %} <span data-feather="chevrons-down"></span>
+      {% trans 'Contrôles' %} <i class="fa fa-ellipsis-h"></i>
     </a>
 
     {% if activiterisque.type_de_risque == 'O' %}
@@ -41,7 +41,7 @@
            class="text-info fm-create" style="text-decoration: none;"
            data-fm-head="{% trans 'Définir le seuil de risque' %}"
            data-fm-callback="reload">
-          <span data-feather="sliders" class="mr-2"></span>
+          <i class="mr-2 fa fa-sliders"></i>
         </a>
         <span
           class="{{ activiterisque.seuil_display }}">{{ activiterisque.seuil_de_risque|default_if_none:_('Non defini') }}</span>
@@ -51,7 +51,7 @@
         <a href="{% url 'risk_register:estimer_activiterisque' activiterisque=activiterisque.pk %}"
            class="text-info fm-create" style="text-decoration: none;" data-fm-head="{% trans 'Estimer le risque' %}"
            data-fm-callback="reload">
-          <span data-feather="sliders" class="mr-2"></span>
+          <i class="mr-2 fa fa-sliders"></i>
         </a>
         <span
           class="{{ activiterisque.facteur_risque_display }}">{{ activiterisque.facteur_risque|default_if_none:_('Non defini') }}</span>
@@ -60,7 +60,7 @@
         <h6 class="mb-0">{% trans 'Statut du risque' %}</h6>
         <span class="{{ activiterisque.status_display }}">
                   {% blocktrans with status=activiterisque.status|default_if_none:'Inconnu' %}
-                    <span data-feather="thermometer" class="mr-2"></span>{{ status }}
+                    <i class="mr-2 fa fa-thermometer"></i>{{ status }}
                   {% endblocktrans %}
                 </span>
       </div>
@@ -71,10 +71,10 @@
              class="text-info fm-update" style="text-decoration: none;"
              data-fm-head="{% trans 'Assigner le risque à:' %}"
              data-fm-callback="reload">
-            <span data-feather="user" class="mr-2"></span>
+            <i class="mr-2 fa fa-user"></i>
           </a>
         {% else %}
-          <span data-feather="user" class="mr-2"></span>
+          <i class="mr-2 fa fa-user"></i>
         {% endif %}
         {{ activiterisque.proprietaire|default_if_none:_('Non assigné') }}
       </div>
@@ -83,7 +83,7 @@
         <a href="{% url 'risk_register:revue-activiterisque' activiterisque=activiterisque.pk %}"
            class="text-info fm-update" style="text-decoration: none;"
            data-fm-head="{% trans 'Définir la date de revue du risque:' %}"
-           data-fm-callback="reload"> <span data-feather="calendar" class="mr-2"></span>
+           data-fm-callback="reload"> <i class="mr-2 fa fa-calendar"></i>
         </a> {{ activiterisque.date_revue | naturaltime  | default_if_none:_('Non défini ') }}
         {% if activiterisque.est_obsolete %}
           <span class="mr-2 text-danger">{% trans 'Le risque est obsolète' %}</span>
@@ -104,7 +104,7 @@
       <a href="{% url 'risk_register:ajout_controle_activiterisque' activiterisque=activiterisque.pk %}"
          class="text-info card-link fm-create"
          data-fm-head="{% trans 'Ajouter un contrôle' %}" data-fm-callback="reload">
-        <span data-feather="plus-circle"></span> {% trans 'Nouveau contrôle' %}
+        <i class="fa fa-plus"></i> {% trans 'Nouveau contrôle' %}
       </a>
     </div>
   </div>
