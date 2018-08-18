@@ -450,6 +450,19 @@ class UpdateActiviterisqueForm(ActiviterisqueBaseForm):
     class Meta(ActiviterisqueBaseForm.Meta):
         fields = ['risque', 'type_de_risque']
 
+    def clean(self):
+        cleaned_data = super().clean()
+        risque = cleaned_data.get('risque')
+        type_de_risque = cleaned_data.get('type_de_risque')
+        activite = self.instance.activite
+        try:
+            ActiviteRisque.objects.get(risque=risque, type_de_risque=type_de_risque, activite=activite)
+        except ActiviteRisque.DoesNotExist:
+            return cleaned_data
+        else:
+            msg = _('Cette %s existe déjà dans cette activité' % self.instance.get_type_de_risque_display())
+            self.add_error(None, msg)
+
 
 class AddControleForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
