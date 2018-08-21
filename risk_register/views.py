@@ -13,7 +13,7 @@ from .models import (ActiviteRisque, ProcessusRisque, Processus, Activite, Risqu
 from .forms import (CreateProcessForm, CreateActivityForm, CreateProcessOutputDataForm, AddInputDataForm,
                     AddProcessusrisqueForm, CreateRiskForm, UpdateProcessusrisqueForm, AddActiviterisqueForm,
                     UpdateActiviterisqueForm, AddControleForm, CritereRisqueForm, AssignActiviterisqueForm,
-                    AssignProcessusrisqueForm, EditControleForm, UpdateRiskForm,
+                    AssignProcessusrisqueForm, EditControleForm, UpdateRiskForm, CreateInputDataForm,
                     ChangeActiviterisqueReviewDateForm, ChangeProcessusrisqueReviewDateForm, AssignControlform)
 
 
@@ -146,6 +146,19 @@ class CreateProcessOutputView(AjaxCreateView):
 
     def pre_save(self):
         self.object.origine = get_object_or_404(Processus, pk=self.kwargs['processus'])
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['processus'] = get_object_or_404(Processus, pk=self.kwargs['processus'])
+        return kwargs
+
+
+class CreateProcessInputView(AjaxCreateView):
+    form_class = CreateInputDataForm
+
+    def post_save(self):
+        processus = get_object_or_404(Processus, pk=self.kwargs['processus'])
+        processus.input_data.add(self.object)
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()

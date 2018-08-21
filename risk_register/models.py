@@ -29,12 +29,17 @@ class ProcessData(models.Model):
                                 related_name='ouput_data',
                                 help_text=_('Laisser vide si origine externe à l\'entreprise'))
 
-    commentaire = models.CharField(max_length=255, blank=True,
-                                   help_text=_('Veuillez indiquer le nom de l\'origine  externe'),
+    commentaire = models.CharField(max_length=255, blank=True, null=True,
+                                   help_text=_('Veuillez indiquer le nom de l\'origine  externe ou laisser vide si'
+                                               ' origine interne'),
                                    verbose_name=_('fournisseur externe'))
 
     def __str__(self):
-        return _("%s (%s)") % (self.nom, self.origine)
+        if self.origine:
+            bu = self.origine.business_unit
+            return '%s/%s/%s' % (bu, self.origine, self.nom)
+        else:
+            return '%s/%s' % (_('Origine externe'), self.nom)
 
     class Meta:
         ordering = ['nom']
@@ -161,12 +166,12 @@ class Risque(models.Model):
 
 class CritereDuRisque(models.Model):
     DETECTABILITE_CHOIX = (
-        (1, '1-Détection permanente'),
-        (2, '2-Détection élevée'),
-        (3, '3-Moyenne'),
-        (4, '4-Très basse'),
-        (5, '5-Capacité minime'),
-        (6, '6-Incapacité de détection'),
+        (1, 'Détection permanente'),
+        (2, 'Détection élevée'),
+        (3, 'Moyenne'),
+        (4, 'Très basse'),
+        (5, 'Capacité minime'),
+        (6, 'Incapacité de détection'),
     )
     OCCURENCE_CHOIX = (
         (1, '1-Quasi impossible'),
@@ -179,17 +184,17 @@ class CritereDuRisque(models.Model):
     SEVERITE_CHOIX = (
         (1, '1-Faible'),
         (2, '2-Moyenne'),
-        (3, '3-Sérieux'),
-        (4, '4-Grave'),
-        (5, '5-Très Grave'),
-        (6, '6-Catastrophique'),
+        (3, '3-Important'),
+        (4, '4-Elevé'),
+        (5, '5-Très elevé'),
+        (6, '6-Maximal'),
     )
     detectabilite = models.SmallIntegerField(
         choices=DETECTABILITE_CHOIX, verbose_name=_('détectabilité'), default=3)
     occurence = models.SmallIntegerField(
         choices=OCCURENCE_CHOIX, default=3, verbose_name=_('ocurrence'))
     severite = models.SmallIntegerField(
-        choices=SEVERITE_CHOIX, default=3, verbose_name=_('sévérité'))
+        choices=SEVERITE_CHOIX, default=3, verbose_name=_('impact'))
     evalue_par = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, blank=True, null=True,
                                    verbose_name=_('évalué par'))
 
@@ -199,6 +204,14 @@ class CritereDuRisque(models.Model):
     def valeur(self):
         """Renvoie le produit des score des critères"""
         return self.detectabilite * self.severite * self.occurence
+
+    def valeur_si_opportunite(self):
+        """si le risque est une opportunité, inverser la valeur de la détectabilité avant de calculer
+         le produit des scores"""
+        detectabilite_choice = dict((x, y) for x, y in zip(range(1, 7), range(6, 0, -1)))
+        detectabilite = detectabilite_choice.get(self.detectabilite)
+        return detectabilite * self.severite * self.occurence
+
 
     class Meta:
         verbose_name = _('critérisation')
@@ -238,7 +251,10 @@ class IdentificationRisque(TimeStampedModel):
 
     def seuil_de_risque(self):
         if self.criterisation:
-            return self.criterisation.valeur()
+            if self.type_de_risque == 'M':
+                return self.criterisation.valeur()
+            elif self.type_de_risque == 'O':
+                return self.criterisation.valeur_si_opportunite()
 
     seuil_de_risque.short_description = _('seuil de risque')
 
@@ -282,14 +298,14 @@ class IdentificationRisque(TimeStampedModel):
         if facteur_risque and seuil:
             if facteur_risque <= seuil:
                 if self.type_de_risque == 'M':
-                    return 'inacceptable'
+                    return _('acceptable')
                 elif self.type_de_risque == 'O':
-                    return 'inacceptable'
+                    return _('inacceptable')
             else:
                 if self.type_de_risque == 'M':
-                    return 'inacceptable'
+                    return _('inacceptable')
                 elif self.type_de_risque == 'O':
-                    return 'inacceptable'
+                    return _('acceptable')
         return 'inconnu'
 
     def status_display(self):
@@ -392,7 +408,10 @@ class Estimation(TimeStampedModel, RiskMixin):
     def facteur_risque(self):
         """renvoit le facteur risque"""
         if self.criterisation:
-            return self.criterisation.valeur()
+            if self.content_object.type_de_risque == 'M':
+                return self.criterisation.valeur()
+            elif self.content_object.type_de_risque == 'O':
+                return self.criterisation.valeur_si_opportunite()
 
     @property
     def est_obsolete(self):

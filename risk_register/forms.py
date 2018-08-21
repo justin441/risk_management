@@ -77,6 +77,19 @@ class AddInputDataForm(forms.ModelForm):
         processus = self.instance
         q = ProcessData.objects.filter(origine__business_unit=processus.business_unit)
         self.fields['input_data'].queryset = q.exclude(origine=processus)
+        self.helper.layout = Layout(
+            Field('input_data'),
+            HTML(
+                """{% load i18n %}
+                <span class='mr-2 col-md-offset-4 col-md-8'>{% trans 'Nouveau' %}</span>
+                <a href="{% url 'risk_register:creer_entree' processus=object.pk %}"
+                   class='fm-create' data-fm-head="{% trans 'Nouvelle donnée de processus' %}" 
+                   data-fm-callback='reload'>
+                    <i class='fa fa-plus'></i>
+                </a>
+                """
+            )
+        )
 
 
 class CreateActivityForm(forms.ModelForm):
@@ -144,7 +157,47 @@ class CreateProcessOutputDataForm(forms.ModelForm):
                 return nom
             else:
                 msg = _('Une donnée de sortie portant ce nom existe déja')
-                raise forms.ValidationError(msg)
+                self.add_error('nom', msg)
+
+
+class CreateInputDataForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        self.processus = kwargs.pop('processus')
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_method = 'post'
+        self.helper.form_class = 'form-horizontal'
+        self.helper.label_class = 'col-md-4'
+        self.helper.field_class = 'col-md-8'
+        self.fields['origine'].queryset = Processus.objects.filter(business_unit=self.processus.business_unit)
+
+    class Meta:
+        model = ProcessData
+        fields = ['origine', 'nom', 'commentaire']
+
+    def clean_nom(self):
+        nom = self.cleaned_data.get('nom')
+        origine = self.cleaned_data.get('origine')
+        try:
+            ProcessData.objects.get(nom=nom, origine=origine)
+        except ProcessData.DoesNotExist:
+            return nom
+        else:
+            msg = _('Une donnée de sortie portant ce nom existe déja dans le processus d\'origine.')
+            self.add_error('nom', msg)
+
+    def clean(self):
+        clean_data = super().clean()
+        origine = clean_data.get('origine')
+        commentaire = clean_data.get('commentaire')
+        if (not origine and not commentaire) or (origine and commentaire):
+            msg = _('Veuillez renseigner un champ ET SEULEMENT un champs entre "commentaire" et "origine".')
+            self.add_error('origine', msg)
+            self.add_error('commentaire', msg)
+        if origine == self.processus:
+            msg = _('Le fournisseur de la donnée et le client doivent être différent')
+            self.add_error('origine', msg)
+        return clean_data
 
 
 class ProcessusrisqueBaseForm(forms.ModelForm):

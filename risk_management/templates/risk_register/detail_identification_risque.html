@@ -4,25 +4,27 @@
     <p>
       {{ risque_identif.risque.description }}
       <a href="{% url 'risk_register:modifier_risque' pk=risque_identif.risque.pk %}"
-         class="ml-2 fm-update" data-fm-head="{% trans 'Modifier un risque' %}" data-fm-callback="">
+         class="ml-2 fm-update" data-fm-head="{% trans 'Modifier un risque' %}" data-fm-callback="reload">
         {% trans 'modifier' %} <i class="fa fa-edit"></i>
       </a>
     </p>
-    <span class="text-muted">
+    <p class="mb-0">
     {% if risque_identif.get_class == 'ActiviteRisque' %}
       <a href="{% url 'risk_register:detail_activite' pk=risque_identif.activite.pk %}">
-        {% trans 'Activité:' %} {{ risque_identif.activite }}
+        <span class="text-muted">{% trans 'Activité:' %} {{ risque_identif.activite }}</span>
       </a>
     {% elif risque_identif.get_class == 'ProcessusRisque' %}
       <a href="{% url 'risk_register:detail_processus' pk=risque_identif.processus.pk %}">
-      {% trans 'Processus:' %} {{ risque_identif.processus }}
+      <span class="text-muted">{% trans 'Processus:' %} {{ risque_identif.processus }}</span>
       </a>
     {% endif %}
-    </span><br>
-    <span class="text-muted mb-2">
-      {% trans 'Ajouté' %} {{ risque_identif.created|naturaltime }} {% trans 'par' %} {{ risque_identif.soumis_par }}
-    </span>
-    <a href="
+    </p>
+    <p class="text-muted mb-0">
+      {% trans 'Ajouté' %} {{ risque_identif.created|naturaltime }} {% trans 'par' %} {{ risque_identif.soumis_par }}.
+    </p>
+    <p class="text-muted">
+      {% trans 'Type de risque' %}: {{ risque_identif.get_type_de_risque_display|upper }}
+     <a href="
               {% if risque_identif.get_class == 'ProcessusRisque' %}
                 {% url 'risk_register:modifier_processusrisque' processusrisque=risque_identif.pk %}
               {% elif risque_identif.get_class == 'ActiviteRisque' %}
@@ -31,68 +33,13 @@
        class="ml-2 fm-update" data-fm-head="{% trans 'Modifier un risque' %}" data-fm-callback="reload">
       {% trans 'modifier' %} <i class="fa fa-edit"></i>
     </a>
+    </p>
+
     <dl class="row">
       <dt class="col-sm-4">{% trans 'Cause(s)' %}</dt>
       <dd class="col-sm-8 text-justify">{{ risque_identif.risque.cause }}</dd>
       <dt class="col-sm-4">{% trans 'Conséquence(s)' %}</dt>
       <dd class="col-sm-8 text-justify">{{ risque_identif.risque.consequence }}</dd>
-      <dt class="col-sm-4">{% trans 'Seuil de risque' %}</dt>
-      <dd class="col-sm-8 text-justify {{ risque_identif.seuil_display }}">
-        {{ risque_identif.seuil_de_risque }}
-         <a href="
-              {% if risque_identif.get_class == 'ProcessusRisque' %}
-                {% url 'risk_register:definir_seuil_processusrisque' processusrisque=risque_identif.pk %}
-              {% elif risque_identif.get_class == 'ActiviteRisque' %}
-                 {% url 'risk_register:definir_seuil_activiterisque' activiterisque=risque_identif.pk %}
-              {% endif %}"
-       class="ml-2 fm-update" data-fm-head="{% trans 'Modifier un risque' %}" data-fm-callback="reload">
-      {% trans 'modifier' %} <i class="fa fa-edit"></i>
-    </a>
-      </dd>
-      <dt class="col-sm-4">{% trans 'Facteur Risque' %}</dt>
-      <dd
-        class="col-sm-8 text-justify {{ risque_identif.facteur_risque_display }}">
-        {{ risque_identif.facteur_risque }}
-         <a href="
-              {% if risque_identif.get_class == 'ProcessusRisque' %}
-                {% url 'risk_register:estimer_processusrisque' processusrisque=risque_identif.pk %}
-              {% elif risque_identif.get_class == 'ActiviteRisque' %}
-                 {% url 'risk_register:estimer_activiterisque' activiterisque=risque_identif.pk %}
-              {% endif %}"
-       class="ml-2 fm-update" data-fm-head="{% trans 'Modifier un risque' %}" data-fm-callback="reload">
-      {% trans 'modifier' %} <i class="fa fa-edit"></i>
-    </a>
-      </dd>
-      <dt class="col-sm-4">{% trans 'Statut' %}</dt>
-      <dd class="col-sm-8 text-justify {{ risque_identif.status_display }}">{{ risque_identif.status }}</dd>
-      <dt class="col-sm-4">{% trans 'Propriétaire' %}</dt>
-      <dd class="col-sm-8 text-justify">
-        {{ risque_identif.proprietaire | default_if_none:_('Non assigné') }}
-         <a href="
-              {% if risque_identif.get_class == 'ProcessusRisque' %}
-                {% url 'risk_register:assigner-processusrisque' processusrisque=risque_identif.pk %}
-              {% elif risque_identif.get_class == 'ActiviteRisque' %}
-                 {% url 'risk_register:assigner-activiterisque' activiterisque=risque_identif.pk %}
-              {% endif %}"
-       class="ml-2 fm-update" data-fm-head="{% trans 'Modifier un risque' %}" data-fm-callback="reload">
-      {% trans 'modifier' %} <i class="fa fa-edit"></i>
-    </a>
-      </dd>
-      <dt class="col-sm-4">{% trans 'Date de revue' %}</dt>
-      <dd class="col-sm-8 textjustify">
-        {{ risque_identif.date_revue|naturalday }}
-        <a href="
-              {% if risque_identif.get_class == 'ProcessusRisque' %}
-                {% url 'risk_register:revue-processusrisque' processusrisque=risque_identif.pk %}
-              {% elif risque_identif.get_class == 'ActiviteRisque' %}
-                 {% url 'risk_register:revue-activiterisque' activiterisque=risque_identif.pk %}
-              {% endif %}"
-       class="ml-2 fm-update" data-fm-head="{% trans 'Modifier un risque' %}" data-fm-callback="reload">
-      {% trans 'modifier' %} <i class="fa fa-edit"></i>
-    </a>
-      </dd>
-      <dt class="col-sm-4">{% trans 'Verification' %}</dt>
-      <dd class="col-sm-8 textjustify">{{ risque_identif.get_verifie_display }}</dd>
     </dl>
   {% endblock %}
 {% endblock %}

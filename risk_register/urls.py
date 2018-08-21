@@ -11,6 +11,7 @@ urlpatterns = [
     path('activity/<uuid:pk>/', views.ActiviteRiskRegisterView.as_view(), name='detail_activite'),
     path('<str:business_unit>/create-process/', views.CreateProcessView.as_view(), name='creer_processus'),
     path('<uuid:pk>/update-process/', views.UpdateProcessView.as_view(), name='modifier_processus'),
+    path('<uuid:processus>/create-process-input', views.CreateProcessInputView.as_view(), name='creer_entree'),
     path('<uuid:processus>/update-input-list/', views.AddProcessInputView.as_view(), name='ajout_entree'),
     path('<uuid:pk>/delete-process/', views.DeleteProcessView.as_view(), name='effacer_processus'),
     path('<uuid:processus>/add-activity/', views.CreateActiviteView.as_view(), name='creer_activite'),

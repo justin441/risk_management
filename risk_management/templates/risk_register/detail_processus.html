@@ -76,13 +76,12 @@
       </div>
       <div role="tabpanel" class="tab-pane mt-3" id="activiterisques">
         <div class="table-responsive">
-          <table class="table table-striped table-sm" id="activiteRisqueTable">
+          <table class="table table-hover table-sm text-center" id="activiteRisqueTable">
             <thead>
             <tr>
               <th>{% trans 'Ajouté' %}</th>
               <th>{% trans 'Activités' %}</th>
-              <th>{% trans 'Risque' %}</th>
-              <th>{% trans 'Ajouté par' %}</th>
+              <th>{% trans 'Type' %}</th>
               <th>{% trans 'Vérification' %}</th>
               <th>{% trans 'Seuil de risque' %}</th>
               <th>{% trans 'Facteur risque' %}</th>
@@ -92,32 +91,58 @@
             </tr>
             </thead>
             <tbody>
-            {% if activiterisques %}
               {% for activiterisque in activiterisques %}
                 <tr>
-                  <td>{{ activiterisque.created|naturaltime }}</td>
-                  <td>{{ activiterisque.activite }}</td>
-                  <td>{{ activiterisque.risque.nom }}</td>
-                  <td>{{ activiterisque.soumis_par }}</td>
-                  <td>
-                    {% if activiterisque.verifie == 'verified' %}
-                      {{ activiterisque.get_verifie_display }} <i class="text-success fa fa-check"></i>
-                    {% else %}
-                      <span class="text-danger">{{ activiterisque.get_verifie_display }}</span>
-                    {% endif %}
-                  </td>
-                  <td
-                    class="{{ activiterisque.seuil_display }}">{{ activiterisque.seuil_de_risque|default_if_none:_('Non defini') }}</td>
-                  <td
-                    class="{{ activiterisque.facteur_risque_display }}">{{ activiterisque.facteur_risque|default_if_none:_('Non estime') }}</td>
-                  <td class="{{ activiterisque.status_display }}">
-                    {% blocktrans with status=activiterisque.status|default_if_none:_('inconnu') %}
-                      {{ status }}
-                    {% endblocktrans %}
-                  </td>
-                  <td><a href="#">{{ activiterisque.proprietaire|default_if_none:_('Non assigné') }}</a></td>
-                  {# TODO: ajouter l'url#}
-                  <td>
+                <td style="min-width: 140px;">
+                  <a href="{% url 'risk_register:detail_activiterisque' pk=activiterisque.pk %}" class="fm-detail"
+                     data-fm-head="{{ activiterisque.risque.nom }}"
+                     data-toggle="tooltip" data-placement="top" title="{% trans 'Détails du risque' %}">
+                    {{ activiterisque.created|naturaltime }}
+                  </a>
+                </td>
+                <td>
+                  <a href="{% url 'risk_register:detail_activite' pk=activiterisque.activite.pk %}">
+                    {{ activiterisque.activite.nom }}
+                  </a>
+                </td>
+                <td>{{ activiterisque.get_type_de_risque_display }}</td>
+                <td>
+                  {% if activiterisque.verifie == 'verified' %}
+                    {{ activiterisque.get_verifie_display }} <span class="text-success fa fa-check"></span>
+                  {% else %}
+                    <span class="text-danger">{{ activiterisque.get_verifie_display }}</span>
+                  {% endif %}
+                </td>
+                <td class="{{ activiterisque.seuil_display }}">
+                  <a href="{% url 'risk_register:definir_seuil_activiterisque' activiterisque=activiterisque.pk %}"
+                     class="fm-update" data-fm-head="{% trans 'Définir le seuil de risque' %}" data-fm-callback="reload"
+                     data-toggle="tooltip" data-placement="top" title="{% trans 'Définir le seuil de risque' %}">
+                    {{ activiterisque.seuil_de_risque|default_if_none:_('Non defini') }}
+                  </a>
+                </td>
+                <td class="{{ activiterisque.facteur_risque_display }}">
+                  <a href="{% url 'risk_register:estimer_activiterisque' activiterisque=activiterisque.pk %}"
+                     class="fm-update" data-fm-head="{% trans 'Estimer le risque' %}" data-fm-callback="reload"
+                     data-toggle="tooltip" data-placement="top" title="{% trans 'Estimer le risque' %}">
+                    {{ activiterisque.facteur_risque|default_if_none:_('Non estime') }}
+                  </a>
+                </td>
+                <td class="{{ activiterisque.status_display }}">
+                  {% blocktrans with status=activiterisque.status|default_if_none:_('inconnu') %}
+                    {{ status }}
+                  {% endblocktrans %}
+                </td>
+                <td>
+                  <a href="{% url 'risk_register:assigner-activiterisque' activiterisque=activiterisque.pk %}"
+                     class="fm-update" data-fm-head="{% trans 'Assigner le risque' %}" data-fm-callback="reload"
+                     data-toggle="tooltip" data-placement="top" title="{% trans 'Assigner' %}">
+                    {{ activiterisque.proprietaire|default_if_none:_('Non assigné') }}
+                  </a>
+                </td>
+                <td style="min-width: 140px;">
+                  <a href="{% url 'risk_register:revue-activiterisque' activiterisque=activiterisque.pk %}"
+                     class="fm-update" data-fm-head="{% trans 'Date de revue du risque' %}" data-fm-callback="reload"
+                     data-toggle="tooltip" data-placement="top" title="{% trans 'Changer' %}">
                     {% if activiterisque.est_obsolete %}
                       <span class="text-danger">{% trans 'passée' %} {{ activiterisque.date_revue| naturaltime }}</span>
                     {% else %}
@@ -127,16 +152,16 @@
                         <span class="text-danger">????</span>
                       {% endif %}
                     {% endif %}
-                  </td>
-                </tr>
-              {% endfor %}
-            {% else %}
-              <tr>
+                  </a>
+                </td>
+              </tr>
+                {% empty %}
+                <tr>
                 <td class="bg-white" colspan="10">
                   <h5>{% trans 'Aucun risque identifié pour les activités de ce processus' %}</h5>
                 </td>
               </tr>
-            {% endif %}
+              {% endfor %}
             </tbody>
 
           </table>
