@@ -30,7 +30,8 @@
       {{ activiterisque.risque.nom }}
     </a><br>
     <span
-      class="text-muted">{% trans 'Ajouté' %} {{ activiterisque.created | naturaltime }} {% trans 'par' %} {{ activiterisque.soumis_par }}</span>
+      class="text-muted">{% trans 'Ajouté' %} {{ activiterisque.created | naturaltime }} {% trans 'par' %} {{ activiterisque.soumis_par }}</span><br>
+  <span class="text-muted">{% trans 'Activité' %}: {{ activiterisque.activite }}</span>
     <p>
       {{ activiterisque.risque.description|truncatechars:150 }}
     </p>

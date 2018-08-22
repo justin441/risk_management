@@ -26,6 +26,7 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css"
           integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.30.7/css/theme.bootstrap_4.min.css">
     <link rel="stylesheet" href="{% static 'css/css/bootstrap.css' %}">
     <link rel="stylesheet" href="{% static 'css/risk_register.css' %}">
   {% endblock %}
@@ -160,6 +161,8 @@
 <!-- Optional JavaScript -->
 <!-- jQuery first, then Popper.js, then Bootstrap JS -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.30.7/js/jquery.tablesorter.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.30.7/js/jquery.tablesorter.widgets.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
         integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
         crossorigin="anonymous"></script>
@@ -173,10 +176,16 @@
   <script type="text/javascript">
     $(function () {
       $.fm({debug: true});
+      $('.table-sortable').tablesorter({
+        theme : 'bootstrap',
+         widthFixed: true,
+        widgets: ['columns', 'zebra'],
+      });
     });
   </script>
   <script type="text/javascript" src="{% url 'javascript-catalog' %}"></script>
   <script src="{% static 'js/project.js' %}"></script>
+
 {% endblock %}
 
 </body>

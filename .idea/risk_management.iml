@@ -25,6 +25,8 @@
     <orderEntry type="library" name="feather" level="application" />
     <orderEntry type="library" name="jquery-3.3.1" level="application" />
     <orderEntry type="library" name="jquery" level="application" />
+    <orderEntry type="library" name="jquery.tablesorter" level="application" />
+    <orderEntry type="library" name="jquery.tablesorter.widgets" level="application" />
   </component>
   <component name="PackageRequirementsSettings">
     <option name="requirementsPath" value="$MODULE_DIR$/requirements/local.txt" />

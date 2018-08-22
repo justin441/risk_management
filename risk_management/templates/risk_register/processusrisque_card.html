@@ -27,7 +27,8 @@
     <a href="{% url 'risk_register:modifier_processusrisque' processusrisque=processusrisque.pk %}"
        class="fm-update card-title h5" data-fm-head="{% trans 'Modifier un risque de processus' %}"
        data-fm-callback="reload">{{ processusrisque.risque.nom }}</a><br>
-    <span class="text-muted">{% trans 'Ajouté' %} {{ processusrisque.created | naturaltime }} {% trans 'par' %} {{ processusrisque.soumis_par }}</span>
+    <span class="text-muted">{% trans 'Ajouté' %} {{ processusrisque.created | naturaltime }} {% trans 'par' %} {{ processusrisque.soumis_par }}</span><br>
+    <span class="text-muted">{% trans 'Processus' %}: {{ processusrisque.processus }}</span>
   <p>{{ processusrisque.risque.description|truncatechars:150 }}</p>
 
     <div class="row mt-2">
