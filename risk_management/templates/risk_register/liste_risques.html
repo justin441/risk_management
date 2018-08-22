@@ -41,7 +41,7 @@
             <td style="min-width: 400px;">{{ risk.description }}</td>
             <td style="min-width: 175px">{{ risk.cree_par|default_if_none:_('inconnu') }}</td>
             <td style="min-width: 150px;">
-              <a href="">
+              <a href="{% url 'risk_register:occurrences_risque' risque=risk.pk %}">
                 {% if risk.processusrisque_set.count|add:risk.activiterisque_set.count <= 1 %}
                   {{ risk.processusrisque_set.count|add:risk.activiterisque_set.count }} {% trans 'occurrence' %}
                 {% else %}
@@ -54,6 +54,21 @@
         </tbody>
       </table>
     </div>
-
   {% endblock %}
+  <div class="pagination">
+      <span class="step-links">
+        {% if page_obj.has_previous %}
+          <a href="?page=1" class="mr-2">&laquo; {% trans 'premier' %}</a>
+          <a href="?page={{ page_obj.previous_page_number }}">{% trans 'précédent' %}</a>
+        {% endif %}
+        <span class="current mr-5 ml-5">
+           Page {{ page_obj.number }} {% trans 'de' %} {{ page_obj.paginator.num_pages }}.
+         </span>
+
+        {% if page_obj.has_next %}
+          <a href="?page={{ page_obj.next_page_number }}" class="mr-2">{% trans 'Suivant' %}</a>
+          <a href="?page={{ page_obj.paginator.num_pages }}">{% trans 'Dernier' %} &raquo;</a>
+        {% endif %}
+      </span>
+  </div>
 {% endblock %}

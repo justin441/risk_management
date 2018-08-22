@@ -1,0 +1,40 @@
+{% extends 'risk_register/base.html' %}
+{% load i18n humanize %}
+
+{% block title %}
+ {% trans 'Occurrences' %}: {{ risque.nom }}
+{% endblock %}
+
+{% block content %}
+  {% block header %}
+    <h1 class="mb-4">{{ risque.nom | capfirst }}</h1>
+  {% endblock %}
+
+  {% block data %}
+    {% for occurrence in risk_occurrences %}
+      {% if occurrence.get_class == 'ProcessusRisque' %}
+        {% include 'risk_register/processusrisque_card.html' with processusrisque=occurrence %}
+      {% elif occurrence.get_class == 'ActiviteRisque' %}
+        {% include 'risk_register/activiterisque_card.html' with activiterisque=occurrence %}
+      {% endif %}
+    {% empty %}
+      <p class="lead">{% trans "Aucune occurence de ce risque n'est reportée. " %}</p>
+    {% endfor %}
+  {% endblock %}
+  <div class="pagination">
+      <span class="step-links">
+        {% if page_obj.has_previous %}
+          <a href="?page=1" class="mr-2">&laquo; {% trans 'premier' %}</a>
+          <a href="?page={{ page_obj.previous_page_number }}">{% trans 'précédent' %}</a>
+        {% endif %}
+        <span class="current mr-5 ml-5">
+           Page {{ page_obj.number }} {% trans 'de' %} {{ page_obj.paginator.num_pages }}.
+         </span>
+
+        {% if page_obj.has_next %}
+          <a href="?page={{ page_obj.next_page_number }}" class="mr-2">{% trans 'Suivant' %}</a>
+          <a href="?page={{ page_obj.paginator.num_pages }}">{% trans 'Dernier' %} &raquo;</a>
+        {% endif %}
+      </span>
+  </div>
+{% endblock %}

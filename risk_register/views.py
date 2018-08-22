@@ -5,7 +5,6 @@ from django.views.generic import DetailView, ListView
 from django.shortcuts import get_object_or_404
 from django.http import JsonResponse
 from django.utils.translation import ugettext_lazy as _
-from django.db.models import Count
 
 from risk_management.users.models import BusinessUnit
 from .models import (ActiviteRisque, ProcessusRisque, Processus, Activite, Risque, Estimation,
@@ -15,12 +14,13 @@ from .forms import (CreateProcessForm, CreateActivityForm, CreateProcessOutputDa
                     UpdateActiviterisqueForm, AddControleForm, CritereRisqueForm, AssignActiviterisqueForm,
                     AssignProcessusrisqueForm, EditControleForm, UpdateRiskForm, CreateInputDataForm,
                     ChangeActiviterisqueReviewDateForm, ChangeProcessusrisqueReviewDateForm, AssignControlform)
+from risk_management.users.utils import get_risk_occurrences
 
 
 # Create your views here.
 
 class RiskClassView(ListView):
-    paginate_by = 50
+    paginate_by = 10
     context_object_name = 'risks_list'
     template_name = 'risk_register/liste_risques.html'
 
@@ -30,6 +30,21 @@ class RiskClassView(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['class_name'] = self.kwargs['classe']
+        return context
+
+
+class RiskOccurrencesView(ListView):
+    paginate_by = 10
+    context_object_name = 'risk_occurrences'
+    template_name = 'risk_register/risk_occurrences.html'
+
+    def get_queryset(self):
+        risque = get_object_or_404(Risque, pk=self.kwargs['risque'])
+        return get_risk_occurrences(risque)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['risque'] = get_object_or_404(Risque, pk=self.kwargs['risque'])
         return context
 
 

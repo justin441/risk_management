@@ -1,5 +1,6 @@
 from itertools import chain
 from operator import attrgetter
+from risk_register.models import ProcessusRisque, ActiviteRisque
 
 
 def ecart_seuil_de_risque(risque):
@@ -46,6 +47,20 @@ def followed_risks(user):
         reverse=True
     )
     return user_followed_risks
+
+
+def get_risk_occurrences(risque):
+    """
+    :param risque: Objet risque
+    :return: une liste de risques identifiés correspondant à l'objet risque
+    """
+    pr = ProcessusRisque.objects.filter(risque=risque)
+    ar = ActiviteRisque.objects.filter(risque=risque)
+    return sorted(
+        chain(pr, ar),
+        key=attrgetter('created'),
+        reverse=True
+    )
 
 
 def get_changes_between_2_objects(object1, object2, exclude=[]):
