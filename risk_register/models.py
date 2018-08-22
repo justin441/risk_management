@@ -382,8 +382,6 @@ class ProcessusRisque(IdentificationRisque):
         verbose_name = _('risque du processus')
         verbose_name_plural = _('risques des processus')
         unique_together = (('processus', 'risque', 'type_de_risque'),)
-        ordering = ('created', 'processus')
-
 
 class RiskMixin(models.Model):
     LIMIT = models.Q(app_label='risk_register',

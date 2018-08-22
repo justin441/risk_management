@@ -43,7 +43,7 @@
           <table class="table table-hover table-sm text-center table-sortable" id="processusRisqueTable">
             <thead>
             <tr>
-              <th>{% trans 'Ajouté' %}</th>
+              <th class="ajoute">{% trans 'Ajouté' %}</th>
               <th>{% trans 'Processus' %}</th>
               <th>{% trans 'Type' %}</th>
               <th>{% trans 'Vérification' %}</th>
@@ -51,7 +51,7 @@
               <th>{% trans 'Facteur risque' %}</th>
               <th>{% trans 'Statut du risque' %}</th>
               <th>{% trans 'Propriétaire' %}</th>
-              <th>{% trans 'Date de revue' %}</th>
+              <th class="date-revue">{% trans 'Date de revue' %}</th>
             </tr>
             </thead>
             <tbody>
@@ -139,7 +139,7 @@
           <table class="table table-hover table-sm text-center table-sortable" id="activiteRisqueTable">
             <thead>
             <tr>
-              <th>{% trans 'Ajouté' %}</th>
+              <th class="ajoute">{% trans 'Ajouté' %}</th>
               <th>{% trans 'Activités' %}</th>
               <th>{% trans 'Type' %}</th>
               <th>{% trans 'Vérification' %}</th>
@@ -147,7 +147,7 @@
               <th>{% trans 'Facteur risque' %}</th>
               <th>{% trans 'Statut du risque' %}</th>
               <th>{% trans 'Propriétaire' %}</th>
-              <th>{% trans 'Date de revue' %}</th>
+              <th class="date-revue">{% trans 'Date de revue' %}</th>
             </tr>
             </thead>
             <tbody>
@@ -228,18 +228,4 @@
       </div>
     </div>
   {% endblock %}
-{% endblock %}
-{% block javascript %}
-  <script type="text/javascript">
-    $(function () {
-      $.fm({
-        debug: true,
-        custom_callbacks: {
-          "insertProcess": function (data, options) {
-            $(options.modal_target).before(data.message);
-          }
-        }
-      });
-    });
-  </script>
 {% endblock %}

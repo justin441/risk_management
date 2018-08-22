@@ -180,11 +180,28 @@
         theme : 'bootstrap',
          widthFixed: true,
         widgets: ['columns', 'zebra'],
+        headers: {
+          '.ajoute, .date-revue': {
+            sorter: false
+          }
+        }
       });
     });
   </script>
   <script type="text/javascript" src="{% url 'javascript-catalog' %}"></script>
   <script src="{% static 'js/project.js' %}"></script>
+  <script type="text/javascript">
+    $(function () {
+      $.fm({
+        debug: true,
+        custom_callbacks: {
+          "insertProcess": function (data, options) {
+            $(options.modal_target).before(data.message);
+          }
+        }
+      });
+    });
+  </script>
 
 {% endblock %}
 
