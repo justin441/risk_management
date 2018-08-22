@@ -21,16 +21,21 @@ def followed_risks(user):
     :param user: un objet user
     :return: une liste de risques suivis par user
     """
-    user_processusrisques = user.processusrisques_suivis.all()
-    user_activiterisques = user.activiterisques_suivis.all()
+    qs1 = user.processusrisques_manages.all()  # risques de processus assignés à l'utilisateur
+    qs2 = user.activiterisques_manages.all()  # risques d'activité assignés à l'utilisateur
+
+    user_processusrisques = user.processusrisques_suivis.exclude(code_identification__in=qs1)
+    user_activiterisques = user.activiterisques_suivis.exclude(code_identification__in=qs2)
 
     if user.processus_manages.all():
         for processus in user.processus_manages.all():
-            user_processusrisques = user_processusrisques.union(processus.processusrisque_set.all())
+            user_processusrisques = user_processusrisques.union(
+                processus.processusrisque_set.exclude(code_identification__in=qs1))
 
     if user.activites.all():
         for activite in user.activites.all():
-            user_activiterisques = user_activiterisques.union(activite.activiterisque_set.all())
+            user_activiterisques = user_activiterisques.union(
+                activite.activiterisque_set.exclude(code_identification__in=qs2))
 
     user_followed_risks = sorted(
         chain(

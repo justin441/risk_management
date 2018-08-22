@@ -155,7 +155,6 @@ class CreateProcessOutputView(AjaxCreateView):
 
 class CreateProcessInputView(AjaxCreateView):
     form_class = CreateInputDataForm
-
     def post_save(self):
         processus = get_object_or_404(Processus, pk=self.kwargs['processus'])
         processus.input_data.add(self.object)

@@ -8,6 +8,7 @@ from risk_management.users.utils import get_changes_between_2_objects
 
 from .models import (Processus, ProcessData, Activite, Risque, ClasseDeRisques, ActiviteRisque, Estimation,
                      Controle, ProcessusRisque, CritereDuRisque)
+from .forms import ProcessAdminForm
 
 
 # todo: inclure rules
@@ -22,6 +23,7 @@ class DonneesSortieProcessusInline(admin.StackedInline):
 
 @admin.register(Processus, site=risk_management_admin_site)
 class ProcessAdmin(admin.ModelAdmin):
+    form = ProcessAdminForm
     fieldsets = [
         (None, {'fields': ['type_processus', 'business_unit', 'nom', 'description', 'proc_manager', 'input_data']})
     ]

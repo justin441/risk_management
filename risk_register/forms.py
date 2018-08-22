@@ -59,6 +59,20 @@ class CreateProcessForm(forms.ModelForm):
                 raise forms.ValidationError(msg)
 
 
+class ProcessAdminForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        try:
+            self.fields['input_data'].queryset = ProcessData.objects.filter(
+                origine__business_unit=self.instance.business_unit).exclude(origine=self.instance)
+        except AttributeError:
+            self.fields['input_data'].queryset = ProcessData.objects.all()
+
+    class Meta:
+        model = Processus
+        fields = ['type_processus', 'business_unit', 'nom', 'description', 'proc_manager', 'input_data']
+
+
 class AddInputDataForm(forms.ModelForm):
     class Meta:
         model = Processus
