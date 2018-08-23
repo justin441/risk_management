@@ -506,6 +506,10 @@ class SetActiviterisqueReviewDate(AjaxUpdateView):
         self.object.modifie_par = self.request.user
 
 
+class SearchRisk(ListView):
+    pass
+
+
 def check_risk_status(request, pk):
     if request.is_ajax():
         data = {}
@@ -672,3 +676,6 @@ def get_controle_est_approuve(request, pk):
             data['result'] = 'success'
             data['checked'] = controle.est_approuve
         return JsonResponse(data)
+
+
+

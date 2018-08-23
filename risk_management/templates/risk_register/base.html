@@ -34,16 +34,24 @@
 <body>
 {#navbar#}
 <div class="mb-4">
-  <nav class="navbar navbar-expand-md navbar-dark sticky-top bg-primary flex-md-nowrap p-0 shadow">
+  <nav class="navbar navbar-expand-md navbar-dark sticky-top flex-md-nowrap p-0 shadow" style="background-color: #00a5e3;">
     <a href="{% url 'home' %}" class="navbar-brand col-sm-3 col-md-2 mr-0" style="background-color: #00a5e3;">NH-RM</a>
-    <input type="text" class="ml-2 mr-2 form-control-light w-50 " placeholder="{% trans 'Rechercher' %}"
-           aria-label="Search">
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse"
+
+    <button class="navbar-toggler mb-2" type="button" data-toggle="collapse" data-target="#navbarCollapse"
             aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
-    <div id="navbarCollapse" class="collapse navbar-collapse px-5">
-      <ul class="navbar-nav ml-auto mr-5">
+    <div id="navbarCollapse" class="collapse navbar-collapse mx-5" >
+    <form action="" method="get" class="form-inline w-100 ml-3 my-2 my-lg-0">
+      <div class="input-group w-100">
+        <input type="text" class="form-control-light w-75" placeholder="{% trans 'Rechercher un risque...' %}"
+           aria-label="Search" id="searchbar" name="q" data-result="{% url 'home' %}">
+      <div class="input-group-append">
+        <button type="submit" class="btn btn-primary"><i class="fa fa-search"></i></button>
+      </div>
+      </div>
+    </form>
+      <ul class="navbar-nav ml-3">
         {% if user.is_authenticated %}
           <li class="nav-item dropdown">
             <a href="" class="nav-link dropdown-toggle text-nowrap" id="navbarDropdownMenuLink" data-toggle="dropdown"
@@ -61,7 +69,7 @@
             <a href="{% url 'account_login' %}" class="nav-link">{% trans "Connexion" %}</a>
           </li>
           <li class="nav-item">
-            <a href="{% url 'account_signup' %}" class="nav-link">{% trans "Créer un compte" %}</a>
+            <a href="{% url 'account_signup' %}" class="nav-link" style="white-space: nowrap">{% trans "Créer un compte" %}</a>
           </li>
         {% endif %}
         <li class="nav-item">
