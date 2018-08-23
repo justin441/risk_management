@@ -16,7 +16,7 @@
       {{ employe.get_full_name }}
     </h4>
     <ul>
-      {% for poste in employe.postes %}
+      {% for poste in employe.postes.all %}
         <li>{{ poste.business_unit }} / {{ poste.poste }}</li>
       {% endfor %}
 

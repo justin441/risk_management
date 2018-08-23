@@ -1,6 +1,6 @@
 {% load i18n %}
 <dl class="row">
-  {% for poste in user.postes %}
+  {% for poste in user.postes.all %}
     <dt class="col-sm-4">{% trans 'Business Unit' %}</dt>
   <dd class="col-sm-8">{{ poste.business_unit }}</dd>
   <dt class="col-sm-4">{% trans 'Fonction' %}</dt>
