@@ -16,15 +16,9 @@ class AccountAdapter(DefaultAccountAdapter):
         user = super().save_user(request, user, form, commit=False)
         data = form.cleaned_data
         civilite = data.get('civilite')
-        businessunit = data.get('business_unit')
-        fonction = data.get('fonction')
         telephone = data.get('telephone')
         if civilite:
             user.civilite = civilite
-        if businessunit:
-            user.business_unit = businessunit
-        if fonction:
-            user.fonction = fonction
         if telephone:
             user.telephone = telephone
         if commit:

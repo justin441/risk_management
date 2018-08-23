@@ -17,9 +17,7 @@ class TestMyUserCreationForm(TestCase):
                 'civilite': 'M.',
                 'first_name': 'Patrice',
                 'last_name': 'Fotue Kamga',
-                'fonction': 'Assistant Manager de Projet',
                 'telephone': '(+234) 674228621',
-                'business_unit': BusinessFactory(denomination='Cameroon Tobacco Company', ville_siege='Yaoundé'),
                 'password1': 'JsRocks2018',
                 'password2': 'JsRocks2018'
             }
@@ -40,9 +38,7 @@ class TestMyUserCreationForm(TestCase):
                 'civilite': 'M.',
                 'first_name': 'Patrice',
                 'last_name': 'Fotue Kamga',
-                'fonction': 'Assistant Manager de Projet',
                 'telephone': '(+234) 674228621',
-                'business_unit': BusinessFactory(denomination='Cameroon Tobacco Company', ville_siege='Yaoundé'),
                 'password1': 'JavaRocks2018',
                 'password2': 'JavaRocks2018'
             }

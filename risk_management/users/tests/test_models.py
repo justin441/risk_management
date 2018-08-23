@@ -15,17 +15,11 @@ class TestUser(TestCase):
     def test_get_absolute_url(self):
         self.assertEqual(self.user.get_absolute_url(), f"/users/{self.user.username}")
 
-    def test_make_manager(self):
-        self.user.make_manager()
-        self.user.save()
-        self.assertEqual(self.user.fonction, 'Directeur Général')
-
 
 class TestBusinessUnit(TestCase):
     def setUp(self):
         self.bu = BusinessFactory(denomination='NH Construction', ville_siege='Yaoundé')
-        self.employe = UserFactory(business_unit=self.bu, first_name='Yannick', last_name='Noubi')
-        self.employe.make_manager()
+        self.employe = UserFactory(first_name='Yannick', last_name='Noubi')
         self.employe.save()
 
     def test__str__(self):
@@ -33,6 +27,3 @@ class TestBusinessUnit(TestCase):
             self.bu.__str__(),
             'NH Construction'
         )
-
-    def test_bu_manager(self):
-        self.assertEqual(self.bu.bu_manager, self.employe)

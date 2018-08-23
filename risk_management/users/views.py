@@ -12,7 +12,6 @@ from .forms import UserUpdateForm
 from .utils import ecart_seuil_de_risque, followed_risks
 
 
-
 class UserDetailView(LoginRequiredMixin, DetailView):
     model = User
     # These next two lines tell the view to index lookups by username
@@ -26,12 +25,12 @@ class UserDetailView(LoginRequiredMixin, DetailView):
         pr = user.processusrisques_manages.all()
         ar = user.activiterisques_manages.all()
         # risques assignés à l'utilisateur trier par priorité croissant
-        user_risks = sorted(
+        user_managed_risks = sorted(
             chain(pr, ar),
             key=ecart_seuil_de_risque,
             reverse=True
         )
-        context['my_risks'] = user_risks
+        context['my_risks'] = user_managed_risks
         context['followed_risks'] = followed_risks(self.request.user)
         return context
 

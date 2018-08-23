@@ -5,7 +5,8 @@ from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.admin import UserAdmin as AuthUserAdmin
 from django.contrib.auth.forms import UserChangeForm, UserCreationForm
 
-from .models import User, BusinessUnit
+from .models import User, BusinessUnit, Position
+from .forms import BusinessUnitAdminForm
 
 
 class RiskManagementAdmin(AdminSite):
@@ -30,7 +31,7 @@ class MyUserCreationForm(UserCreationForm):
 
     class Meta(UserCreationForm.Meta):
         model = User
-        fields = ('email', 'civilite', 'first_name', 'last_name', 'fonction', 'telephone', 'business_unit')
+        fields = ('email', 'civilite', 'first_name', 'last_name', 'telephone')
 
     def clean_username(self):
         username = self.cleaned_data["username"]
@@ -42,13 +43,17 @@ class MyUserCreationForm(UserCreationForm):
         raise forms.ValidationError(self.error_messages["duplicate_username"])
 
 
+class PositionInline(admin.TabularInline):
+    model = Position
+
+
 @admin.register(User, site=risk_management_admin_site)
 class MyUserAdmin(AuthUserAdmin):
     form = MyUserChangeForm
     add_form = MyUserCreationForm
     fieldsets = ((None, {'fields': ('email', 'password')}),
-                 (_("Profil"), {"fields": ("civilite", "first_name", 'last_name', "fonction",
-                                           "telephone", "business_unit")}),
+                 (_("Profil"), {"fields": ("civilite", "first_name", 'last_name',
+                                           "telephone")}),
                  (_('Permissions'), {'fields': ('is_active', 'is_staff', 'is_superuser',
                                                 'groups', 'user_permissions')}),
                  (_('Important dates'), {'fields': ('last_login', 'date_joined')}),
@@ -57,20 +62,27 @@ class MyUserAdmin(AuthUserAdmin):
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
-            'fields': ('email', 'civilite', 'first_name', 'last_name', 'business_unit', 'telephone', 'password1',
+            'fields': ('email', 'civilite', 'first_name', 'last_name', 'telephone', 'password1',
                        'password2')
         }
          ),
     )
-    list_display = ("username", 'email', "first_name", "last_name", "fonction",
-                    "telephone", "business_unit", "is_superuser")
+    list_display = ("username", 'email', "first_name", "last_name",
+                    "telephone", "is_superuser")
     search_fields = ["first_name", 'last_name']
-    list_filter = AuthUserAdmin.list_filter + ('business_unit',)
-    autocomplete_fields = ['business_unit']
 
 
 @admin.register(BusinessUnit, site=risk_management_admin_site)
 class BuAdmin(admin.ModelAdmin):
+    form = BusinessUnitAdminForm
     list_display = ('denomination', 'sigle', 'marche', 'ville_siege',
                     'adresse_physique', 'telephone', 'site_web', 'bu_manager')
     search_fields = ['denomination']
+    fieldsets = [
+        (_('Infos'), {'fields': ['denomination', 'sigle', 'marche', 'ville_siege', 'bu_manager']}),
+        (_('Contact'), {'fields': ['adresse_physique', 'telephone', 'site_web']}),
+    ]
+    inlines = [PositionInline, ]
+
+
+

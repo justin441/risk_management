@@ -15,7 +15,12 @@
     <h4 class="card-title">
       {{ employe.get_full_name }}
     </h4>
-    <h6 class="card-subtitle">{{ employe.fonction }}</h6>
+    <ul>
+      {% for poste in employe.postes %}
+        <li>{{ poste.business_unit }} / {{ poste.poste }}</li>
+      {% endfor %}
+
+    </ul>
     <a href="#detail-user" data-toggle="collapse" class="float-right"><i class="text-white fa fa-ellipsis-h"></i></a>
   </div>
   <div class="card-footer collapse" id="detail-user">

@@ -7,7 +7,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.urls import reverse
 
 
-from .models import User
+from .models import User, BusinessUnit
 
 
 class UserForm(forms.ModelForm):
@@ -27,9 +27,7 @@ class UserForm(forms.ModelForm):
                 'last_name'
             ),
             Fieldset(
-                _('Informations professionnelles'),
-                'business_unit',
-                'fonction',
+                _('Contact'),
                 'email',
                 'telephone',
             ),
@@ -42,7 +40,7 @@ class UserForm(forms.ModelForm):
     class Meta:
         model = User
         fields = ['email', 'civilite', 'first_name', 'last_name',
-                  'business_unit', 'fonction', 'telephone']
+                  'telephone']
 
     def signup(self, request, user):
         pass
@@ -52,10 +50,18 @@ class UserUpdateForm(UserForm):
 
     class Meta(UserForm.Meta):
         fields = ['civilite', 'first_name', 'last_name',
-                  'business_unit', 'fonction', 'telephone']
+                  'telephone']
 
 
+class BusinessUnitAdminForm(forms.ModelForm):
+    class Meta:
+        model = BusinessUnit
+        fields = '__all__'
 
-
-
+    def __init__(self, *args, **kwargs):
+        super(BusinessUnitAdminForm, self).__init__(*args, **kwargs)
+        try:
+            self.fields['bu_manager'].queryset = self.instance.employes.all()
+        except (AttributeError, BusinessUnit.DoesNotExist):
+            self.fields['bu_manager'].queryset = User.objects.none()
 

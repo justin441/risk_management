@@ -9,92 +9,38 @@ from .factories import (Processfactory, ActiviteFactory, ActiviteRisquefactory,
 class TestPredicate(TestCase):
     def setUp(self):
         # Business units
-        self.bu1 = BusinessFactory(denomination='Cameroon Tobacco Company')
-        self.bu2 = BusinessFactory(denomination='Projet Usine Céramique')
-        self.bu_mgr1 = UserFactory(
-            business_unit=self.bu1,
-            fonction='general manager'
-        )
-        self.bu_mgr2 = UserFactory(
-            business_unit=self.bu2,
-            fonction='project manager'
-        )
+        self.bu_mgr1 = UserFactory()
+        self.bu_mgr2 = UserFactory()
+        self.bu1 = BusinessFactory(denomination='Cameroon Tobacco Company', bu_manager=self.bu_mgr1)
+        self.bu2 = BusinessFactory(denomination='Projet Usine Céramique', projet=True, bu_manager=self.bu_mgr2)
 
         # Processus
-        self.proc_mgr1 = UserFactory(
-            business_unit=self.bu1,
-            fonction='DAF'
-        )
-        self.proc_mgr2 = UserFactory(
-            business_unit=self.bu2,
-            fonction='Ingenieur en chef'
-        )
-        self.process1 = Processfactory(
-            business_unit=self.bu1,
-            proc_manager=self.proc_mgr1
-        )
-        self.process2 = Processfactory(
-            business_unit=self.bu2,
-            proc_manager=self.proc_mgr2
-        )
+        self.proc_mgr1 = UserFactory()
+        self.proc_mgr2 = UserFactory()
+        self.process1 = Processfactory()
+        self.process2 = Processfactory()
 
         # Activités
-        self.act_owner1 = UserFactory(
-            business_unit=self.bu1,
-            fonction='comptable clients'
-        )
-        self.act_owner2 = UserFactory(
-            business_unit=self.bu2,
-            fonction='Topographe'
-        )
-        self.act1 = ActiviteFactory(
-            processus=self.process1,
-            responsable=self.act_owner1
-        )
-        self.act2 = ActiviteFactory(
-            processus=self.process2,
-            responsable=self.act_owner2
-        )
+        self.act_owner1 = UserFactory()
+        self.act_owner2 = UserFactory()
+        self.act1 = ActiviteFactory()
+        self.act2 = ActiviteFactory()
 
         # Risques
-        self.risk_reporter1 = UserFactory(
-            business_unit=self.bu1,
-            fonction='agent de securite'
-        )
-        self.risk_reporter2 = UserFactory(
-            business_unit=self.bu2,
-            fonction='magasinier'
-        )
-        self.act_risque = ActiviteRisquefactory(
-            activite=self.act1,
-            soumis_par=self.risk_reporter1
-        )
+        self.risk_reporter1 = UserFactory()
+        self.risk_reporter2 = UserFactory()
+        self.act_risque = ActiviteRisquefactory()
 
-        self.process_risque = ProcessusRisqueFactory(
-            processus=self.process2,
-            soumis_par=self.risk_reporter2
-        )
+        self.process_risque = ProcessusRisqueFactory()
 
         # Estimations
 
-        self.risk_owner1 = UserFactory(
-            business_unit=self.bu1,
-            fonction='chef du personnel'
-        )
-        self.risk_owner2 = UserFactory(
-            business_unit=self.bu2,
-            fonction='Superviseur de securité'
-        )
+        self.risk_owner1 = UserFactory()
+        self.risk_owner2 = UserFactory()
 
-        self.estimation1 = EstimationFactory(
-            content_object=self.act_risque,
-            proprietaire=self.risk_owner1,
-        )
+        self.estimation1 = EstimationFactory()
 
-        self.estimation2 = EstimationFactory(
-            content_object=self.process_risque,
-            proprietaire=self.risk_owner2
-        )
+        self.estimation2 = EstimationFactory()
 
         # Contrôles
         self.control_owner1 = UserFactory()

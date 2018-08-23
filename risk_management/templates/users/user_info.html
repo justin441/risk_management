@@ -1,7 +1,10 @@
 {% load i18n %}
 <dl class="row">
-  <dt class="col-sm-4">{% trans 'Business Unit' %}</dt>
-  <dd class="col-sm-8">{{ user.business_unit }}</dd>
+  {% for poste in user.postes %}
+    <dt class="col-sm-4">{% trans 'Business Unit' %}</dt>
+  <dd class="col-sm-8">{{ poste.business_unit }}</dd>
   <dt class="col-sm-4">{% trans 'Fonction' %}</dt>
-  <dd class="col-sm-8">{{ user.fonction }}</dd>
+  <dd class="col-sm-8">{{ poste.poste }}</dd>
+  {% endfor %}
+
 </dl>
