@@ -517,8 +517,9 @@ class SearchRisk(ListView):
 
     def get_queryset(self):
         qs = SearchQuery(self.request.GET.get('q'))
-        rank = SearchRank(F('search_vector'), qs)
-        return Risque.objects.filter(search_vector=qs).annotate(rank=rank).order_by('-rank')
+        if qs:
+            rank = SearchRank(F('search_vector'), qs)
+            return Risque.objects.filter(search_vector=qs).annotate(rank=rank).order_by('-rank')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

@@ -181,6 +181,7 @@ $(document).ready(function () {
     let validateLink = $('.validate');
     let approveLink = $('.approve');
     let ownerControlStatus = $('.owner-controle-status');
+    let searchForm = $('#searchform');
     riskConfirm.each(function () {
         getRiskStatus(this);
     });
@@ -287,6 +288,11 @@ $(document).ready(function () {
             }
 
         })
+    });
+    searchForm.on('submit', function (e) {
+        if(!$('#searchbox').val()){
+            e.preventDefault();
+        }
     });
 });
 

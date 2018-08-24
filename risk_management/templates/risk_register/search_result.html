@@ -13,20 +13,22 @@
   {% block data %}
     <div class="container">
 
-        {% for risk in search_result %}
-          <dt>
-            <a href="{% url 'risk_register:occurrences_risque' risque=risk.pk %}" class="h5">{{ risk.nom }} </a><br>
-          </dt>
-          <span
-              class="text-muted">{% trans 'Date de création' %}: {{ risk.created|naturalday }}; {% trans 'créé par' %}: {{ risk.cree_par|default_if_none:_('Inconnu') }}</span>
-          <dd>
-          <p>{{ risk.description|truncatewords:30 }}</p>          </dd>
-
-        {% endfor %}
+      {% for risk in search_result %}
+        <dt>
+          <a href="{% url 'risk_register:occurrences_risque' risque=risk.pk %}" class="h5">{{ risk.nom }} </a><br>
+        </dt>
+        <span
+          class="text-muted">{% trans 'Date de création' %}: {{ risk.created|naturalday }}; {% trans 'créé par' %}: {{ risk.cree_par|default_if_none:_('Inconnu') }}</span>
+        <dd>
+          <p>{{ risk.description|truncatewords:30 }}</p></dd>
+      {% empty %}
+        <p class="lead">{% trans 'Aucun résultats...' %}</p>
+      {% endfor %}
     </div>
   {% endblock %}
-  <div class="container mb-5">
-  <div class="pagination text-center">
+  {% if search_result.all %}
+    <div class="container mb-5">
+    <div class="pagination text-center">
       <span class="step-links">
         {% if page_obj.has_previous %}
           <a href="?page=1{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}" class="mr-2">
@@ -41,10 +43,13 @@
          </span>
 
         {% if page_obj.has_next %}
-          <a href="?page={{ page_obj.next_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}" class="mr-2">{% trans 'Suivant' %}</a>
-          <a href="?page={{ page_obj.paginator.num_pages }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">{% trans 'Dernier' %} &raquo;</a>
+          <a href="?page={{ page_obj.next_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}"
+             class="mr-2">{% trans 'Suivant' %}</a>
+          <a href="?page=
+            {{ page_obj.paginator.num_pages }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">{% trans 'Dernier' %} &raquo;</a>
         {% endif %}
       </span>
+    </div>
   </div>
-  </div>
+  {% endif %}
 {% endblock %}
