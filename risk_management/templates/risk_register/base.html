@@ -42,7 +42,7 @@
       <span class="navbar-toggler-icon"></span>
     </button>
     <div id="navbarCollapse" class="collapse navbar-collapse mx-5" >
-    <form action="" method="get" class="form-inline w-100 ml-3 my-2 my-lg-0">
+    <form action="{% url 'risk_register:recherche' %}" method="get" class="form-inline w-100 ml-3 my-2 my-lg-0">
       <div class="input-group w-100">
         <input type="text" class="form-control-light w-75" placeholder="{% trans 'Rechercher un risque...' %}"
            aria-label="Search" id="searchbar" name="q" data-result="{% url 'home' %}">

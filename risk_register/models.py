@@ -2,6 +2,8 @@ import uuid
 from datetime import timedelta
 
 from django.db import models
+from django.contrib.postgres.search import SearchVectorField
+from django.contrib.postgres.indexes import GinIndex
 from django.utils.translation import gettext_lazy as _
 from django.core.exceptions import ValidationError, FieldError
 from django.utils.timezone import now
@@ -138,7 +140,7 @@ class ClasseDeRisques(models.Model):
         verbose_name_plural = _('Classes de risques')
 
 
-class Risque(models.Model):
+class Risque(TimeStampedModel):
     code_risque = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     classe = models.ForeignKey(ClasseDeRisques, on_delete=models.CASCADE, null=True)
     nom = models.CharField(max_length=200, verbose_name=_('nom'))
@@ -153,6 +155,7 @@ class Risque(models.Model):
     aide = models.TextField(_('Sommes-nous concernés'), max_length=255, blank=True)
     cree_par = models.ForeignKey(settings.AUTH_USER_MODEL, blank=True, null=True,
                                  on_delete=models.SET_NULL, verbose_name=_('Crée par'))
+    search_vector = SearchVectorField(null=True, blank=True)
 
     def __str__(self):
         return self.nom
@@ -160,8 +163,9 @@ class Risque(models.Model):
     class Meta:
         verbose_name = _('risque')
         verbose_name_plural = _('risques')
-        ordering = ('nom', 'description')
+        ordering = ('created', 'nom', 'description')
         unique_together = (('nom', 'description'),)
+        indexes = [GinIndex(fields=['search_vector'])]
 
 
 class CritereDuRisque(models.Model):
@@ -382,6 +386,7 @@ class ProcessusRisque(IdentificationRisque):
         verbose_name = _('risque du processus')
         verbose_name_plural = _('risques des processus')
         unique_together = (('processus', 'risque', 'type_de_risque'),)
+
 
 class RiskMixin(models.Model):
     LIMIT = models.Q(app_label='risk_register',

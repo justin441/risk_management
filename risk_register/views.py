@@ -2,9 +2,11 @@ from fm.views import AjaxCreateView, AjaxUpdateView, AjaxDeleteView
 from dal import autocomplete
 
 from django.views.generic import DetailView, ListView
+from django.db.models import F, Count
 from django.shortcuts import get_object_or_404
 from django.http import JsonResponse
 from django.utils.translation import ugettext_lazy as _
+from django.contrib.postgres.search import SearchQuery, SearchRank
 
 from risk_management.users.models import BusinessUnit
 from .models import (ActiviteRisque, ProcessusRisque, Processus, Activite, Risque, Estimation,
@@ -20,12 +22,13 @@ from risk_management.users.utils import get_risk_occurrences
 # Create your views here.
 
 class RiskClassView(ListView):
-    paginate_by = 10
+    paginate_by = 20
     context_object_name = 'risks_list'
     template_name = 'risk_register/liste_risques.html'
 
     def get_queryset(self):
-        return Risque.objects.filter(classe__nom=self.kwargs['classe'])
+        return Risque.objects.filter(
+            classe__nom=self.kwargs['classe']).annotate(nb_risques=Count('processusrisque') + Count('activiterisque'))
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -170,6 +173,7 @@ class CreateProcessOutputView(AjaxCreateView):
 
 class CreateProcessInputView(AjaxCreateView):
     form_class = CreateInputDataForm
+
     def post_save(self):
         processus = get_object_or_404(Processus, pk=self.kwargs['processus'])
         processus.input_data.add(self.object)
@@ -507,7 +511,19 @@ class SetActiviterisqueReviewDate(AjaxUpdateView):
 
 
 class SearchRisk(ListView):
-    pass
+    template_name = 'risk_register/search_result.html'
+    context_object_name = 'search_result'
+    paginate_by = 10
+
+    def get_queryset(self):
+        qs = SearchQuery(self.request.GET.get('q'))
+        rank = SearchRank(F('search_vector'), qs)
+        return Risque.objects.filter(search_vector=qs).annotate(rank=rank).order_by('-rank')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['query_text'] = self.request.GET.get('q')
+        return context
 
 
 def check_risk_status(request, pk):
@@ -676,6 +692,3 @@ def get_controle_est_approuve(request, pk):
             data['result'] = 'success'
             data['checked'] = controle.est_approuve
         return JsonResponse(data)
-
-
-

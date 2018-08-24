@@ -64,11 +64,10 @@ class ClasseAdmin(admin.ModelAdmin):
 
 @admin.register(Risque, site=risk_management_admin_site)
 class RisqueAdmin(admin.ModelAdmin):
-    exclude = ['cree_par']
+    exclude = ['cree_par', 'search_vector']
     search_fields = ['description']
-    list_display = ['nom', 'description', 'cause', 'consequence', 'couverture', 'pilotage']
+    list_display = ['nom', 'description', 'cause', 'consequence']
     list_filter = ('classe',)
-    list_editable = ['couverture', 'pilotage']
 
     def save_model(self, request, obj, form, change):
         if not change:

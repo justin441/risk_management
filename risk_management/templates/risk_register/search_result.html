@@ -1,0 +1,46 @@
+{% extends 'risk_register/base.html' %}
+{% load i18n humanize %}
+
+{% block title %}
+  {% trans 'Recherche' %}: {{ query_text|truncatechars:40 }}
+{% endblock %}
+
+{% block content %}
+  {% block header %}
+    <div class="container"><h2 class="mb-5">{% trans 'Resultat de la recherche de' %} "{{ query_text }}"</h2></div>
+  {% endblock %}
+
+  {% block data %}
+    <div class="container">
+      <ol>
+        {% for risk in search_result %}
+          <li>
+            <a href="{% url 'risk_register:occurrences_risque' risque=risk.pk %}" class="h5 mb-0">{{ risk.nom }} </a><br>
+            <span
+              class="text-muted">{% trans 'Date de création' %}: {{ risk.created|naturalday }}; {% trans 'créé par' %}: {{ risk.cree_par|default_if_none:_('Inconnu') }}</span>
+            <p>{{ risk.description|truncatewords:30 }}</p>
+
+          </li>
+        {% endfor %}
+      </ol>
+    </div>
+  {% endblock %}
+  <div class="container">
+  <div class="pagination text-center">
+      <span class="step-links">
+        {% if page_obj.has_previous %}
+          <a href="?page=1" class="mr-2">&laquo; {% trans 'premier' %}</a>
+          <a href="?page={{ page_obj.previous_page_number }}">{% trans 'précédent' %}</a>
+        {% endif %}
+        <span class="current mr-5 ml-5 text-info">
+           Page {{ page_obj.number }} {% trans 'de' %} {{ page_obj.paginator.num_pages }}
+         </span>
+
+        {% if page_obj.has_next %}
+          <a href="?page={{ page_obj.next_page_number }}" class="mr-2">{% trans 'Suivant' %}</a>
+          <a href="?page={{ page_obj.paginator.num_pages }}">{% trans 'Dernier' %} &raquo;</a>
+        {% endif %}
+      </span>
+  </div>
+  </div>
+{% endblock %}

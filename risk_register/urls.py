@@ -7,6 +7,7 @@ app_name = 'risk_register'
 urlpatterns = [
     path('risks/<str:classe>/', views.RiskClassView.as_view(), name='liste_risques'),
     path('<uuid:risque>/occurences/', views.RiskOccurrencesView.as_view(), name='occurrences_risque'),
+    path('risk-search/', views.SearchRisk.as_view(), name='recherche'),
     path('business-unit/<str:pk>/', views.BusinessUnitRiskRegisterView.as_view(), name='detail_business_unit'),
     path('process/<uuid:pk>/', views.ProcessusRiskRegisterView.as_view(), name='detail_processus'),
     path('activity/<uuid:pk>/', views.ActiviteRiskRegisterView.as_view(), name='detail_activite'),
