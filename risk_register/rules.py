@@ -36,9 +36,7 @@ def is_activity_upper_mgt(user, activite):
 # Risques des activités
 @rules.predicate
 def is_activity_risk_reporter(user, activiterisque):
-    if activiterisque.soumis_par:
-        return activiterisque.soumis_par == user
-    return False
+    return activiterisque.soumis_par == user
 
 
 @rules.predicate

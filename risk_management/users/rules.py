@@ -11,6 +11,7 @@ rules.add_rule('add_process_to_bu', is_gm)
 
 # permissions
 rules.add_perm('users.add_process_to_bu', is_gm)
+rules.add_perm('users.add_businessunit', is_gm)
 
 
 

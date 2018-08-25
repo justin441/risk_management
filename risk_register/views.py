@@ -1,5 +1,6 @@
 from fm.views import AjaxCreateView, AjaxUpdateView, AjaxDeleteView
 from dal import autocomplete
+from rules.contrib.views import PermissionRequiredMixin
 
 from django.views.generic import DetailView, ListView
 from django.db.models import F, Count
@@ -90,9 +91,10 @@ class ActiviteRiskRegisterView(DetailView):
         return context
 
 
-class CreateProcessView(AjaxCreateView):
+class CreateProcessView(PermissionRequiredMixin, AjaxCreateView):
     form_class = CreateProcessForm
     message_template = 'risk_register/process_card.html'
+    permission_required = 'users.add_process_to_bu'
 
     def pre_save(self):
         self.object.business_unit = get_object_or_404(BusinessUnit, denomination=self.kwargs['business_unit'])
@@ -106,6 +108,9 @@ class CreateProcessView(AjaxCreateView):
         kwargs = super().get_form_kwargs()
         kwargs['bu'] = BusinessUnit.objects.get(pk=self.kwargs['business_unit'])
         return kwargs
+
+    def get_permission_object(self):
+        return get_object_or_404(BusinessUnit, denomination=self.kwargs['business_unit'])
 
 
 class UpdateProcessView(AjaxUpdateView):

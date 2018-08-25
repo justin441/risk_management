@@ -1,5 +1,8 @@
 {% extends 'risk_register/base.html' %}
-{% load i18n humanize %}
+{% load i18n humanize rules %}
+
+{% has_perm 'users.add_process_to_bu' user bu as can_add_process %}
+
 {% block title %}
   {{ bu.denomination }}: {% trans 'Registre des risques' %}
 {% endblock %}
@@ -31,11 +34,14 @@
           <h5>{% trans 'Ce Business unite ne comporte aucun processus pour le moment' %}</h5>
         {% endfor %}
         <div class="card card-header border-0 mt-3" id="create">
-          <a href="{% url 'risk_register:creer_processus' business_unit=bu.denomination %}"
-             class="fm-create text-info card-link"
-             data-fm-head="{% trans 'Nouveau Processus' %}" data-fm-callback="insertProcess" data-fm-target="#create">
-            <i class="fa fa-plus"></i> {% trans 'Nouveau processus' %}
-          </a>
+          {% has_perm 'users.add_process_to_bu' user bu as can_add_process %}
+          {% if can_add_process %}
+            <a href="{% url 'risk_register:creer_processus' business_unit=bu.denomination %}"
+               class="fm-create text-info card-link"
+               data-fm-head="{% trans 'Nouveau Processus' %}" data-fm-callback="insertProcess" data-fm-target="#create">
+              <i class="fa fa-plus"></i> {% trans 'Nouveau processus' %}
+            </a>
+          {% endif %}
         </div>
       </div>
       <div role="tabpanel" class="tab-pane mt-3" id="risquesprocessus">
@@ -85,11 +91,12 @@
                     {{ processusrisque.seuil_de_risque|default_if_none:_('Non defini') }}
                   </a>
                 </td>
-                <td >
+                <td>
                   <a href="{% url 'risk_register:estimer_processusrisque' processusrisque=processusrisque.pk %}"
                      class="fm-update" data-fm-head="{% trans 'Estimer le risque' %}" data-fm-callback="reload"
                      data-toggle="tooltip" data-placement="top" title="{% trans 'Estimer le risque' %}">
-                    <span class="{{ processusrisque.facteur_risque_display }}">{{ processusrisque.facteur_risque|default_if_none:_('Non estimé') }}</span>
+                    <span
+                      class="{{ processusrisque.facteur_risque_display }}">{{ processusrisque.facteur_risque|default_if_none:_('Non estimé') }}</span>
                   </a>
                 </td>
                 <td class="{{ processusrisque.status_display }}">
