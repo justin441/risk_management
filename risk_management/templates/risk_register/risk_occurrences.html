@@ -27,8 +27,8 @@
           <a href="?page=1" class="mr-2">&laquo; {% trans 'premier' %}</a>
           <a href="?page={{ page_obj.previous_page_number }}">{% trans 'précédent' %}</a>
         {% endif %}
-        <span class="current mr-5 ml-5">
-           Page {{ page_obj.number }} {% trans 'de' %} {{ page_obj.paginator.num_pages }}.
+        <span class="current mr-5 ml-5 text-danger">
+           Page {{ page_obj.number }} {% trans 'de' %} {{ page_obj.paginator.num_pages }}
          </span>
 
         {% if page_obj.has_next %}

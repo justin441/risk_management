@@ -85,7 +85,7 @@ class Position(models.Model):
 
     class Meta:
         ordering = ('poste',)
-        unique_together = (('poste', 'employe', 'business_unit'),)
+        unique_together = (('employe', 'business_unit'),)
 
     def __str__(self):
         return self.poste
