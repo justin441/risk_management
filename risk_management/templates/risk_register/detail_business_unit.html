@@ -1,9 +1,6 @@
 {% extends 'risk_register/base.html' %}
 {% load i18n humanize rules %}
 
-{% has_perm 'users.add_process_to_bu' user bu as can_add_process %}
-
-
 
 {% block title %}
   {{ bu.denomination }}: {% trans 'Registre des risques' %}
@@ -36,9 +33,9 @@
         {% empty %}
           <h5>{% trans 'Ce Business unite ne comporte aucun processus pour le moment' %}</h5>
         {% endfor %}
+        {% has_perm 'users.add_process_to_bu' user bu as can_add_process %}
         {% if can_add_process %}
-        <div class="card card-header border-0 mt-2" id="create">
-
+          <div class="card card-header border-0 mt-2" id="create">
             <a href="{% url 'risk_register:creer_processus' business_unit=bu.denomination %}"
                class="fm-create
                text-info card-link"
@@ -47,6 +44,7 @@
             </a>
         </div>
         {% endif %}
+
         </div>
       </div>
       <div role="tabpanel" class="tab-pane mt-3" id="risquesprocessus" >
