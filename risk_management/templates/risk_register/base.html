@@ -32,6 +32,48 @@
   {% endblock %}
 </head>
 <body>
+{% block javascript %}
+  <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
+        integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"
+        integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.30.7/js/jquery.tablesorter.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.30.7/js/jquery.tablesorter.widgets.js"></script>
+  <script type="text/javascript">
+    $(function () {
+      $.fm({debug: true});
+      $('.table-sortable').tablesorter({
+        theme : 'bootstrap',
+         widthFixed: true,
+        widgets: ['columns', 'zebra'],
+        headers: {
+          '.ajoute, .date-revue': {
+            sorter: false
+          }
+        }
+      });
+    });
+  </script>
+  <script type="text/javascript" src="{% url 'javascript-catalog' %}"></script>
+  <script src="{% static 'js/project.js' %}"></script>
+  <script type="text/javascript">
+    $(function () {
+      $.fm({
+        debug: true,
+        custom_callbacks: {
+          "insertProcess": function (data, options) {
+            $(options.modal_target).before(data.message);
+          }
+        }
+      });
+    });
+  </script>
+
+{% endblock %}
 {#navbar#}
 <div class="mb-4">
   <nav class="navbar navbar-expand-md navbar-dark sticky-top flex-md-nowrap p-0 shadow" style="background-color: #00a5e3;">
@@ -165,51 +207,8 @@
 </div>
 
 
-<!-- Optional JavaScript -->
-<!-- jQuery first, then Popper.js, then Bootstrap JS -->
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.30.7/js/jquery.tablesorter.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.30.7/js/jquery.tablesorter.widgets.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
-        integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
-        crossorigin="anonymous"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"
-        integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T"
-        crossorigin="anonymous"></script>
 {% block modal %}
   {% include 'fm/modal.html' %}
-{% endblock %}
-{% block javascript %}
-  <script type="text/javascript">
-    $(function () {
-      $.fm({debug: true});
-      $('.table-sortable').tablesorter({
-        theme : 'bootstrap',
-         widthFixed: true,
-        widgets: ['columns', 'zebra'],
-        headers: {
-          '.ajoute, .date-revue': {
-            sorter: false
-          }
-        }
-      });
-    });
-  </script>
-  <script type="text/javascript" src="{% url 'javascript-catalog' %}"></script>
-  <script src="{% static 'js/project.js' %}"></script>
-  <script type="text/javascript">
-    $(function () {
-      $.fm({
-        debug: true,
-        custom_callbacks: {
-          "insertProcess": function (data, options) {
-            $(options.modal_target).before(data.message);
-          }
-        }
-      });
-    });
-  </script>
-
 {% endblock %}
 
 </body>

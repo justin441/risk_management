@@ -1,15 +1,19 @@
 .facteur-1 {
-  color: #003300;
+  font-weight: bold;
+  color: #007a00 !important;
 }
 
 .facteur-1-3 {
-  color: #404813;
+  font-weight: bold;
+  color: #7a8b24 !important;
 }
 .facteur-3-5 {
-  color: #bb5216;
+  font-weight: bold;
+  color: #cf5b18 !important;
 }
 .facteur-5 {
-  color: #dc143c;
+  font-weight: bold;
+  color: #e7153f !important;
 }
 
 /*dashboard*/

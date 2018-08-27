@@ -1,5 +1,5 @@
 {% load i18n %}
-<div class="card ml-4 mt-2">
+<div class="card ml-4 mt-2 border-0">
   <div class="card-body">
   <a href="{% url 'risk_register:detail_activite' pk=activite.code_activite %}"
      class="h6 card-title ml-2">{{ activite.nom }}: {{ activite.description|truncatechars:50 }}</a>

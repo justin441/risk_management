@@ -272,7 +272,7 @@ class IdentificationRisque(TimeStampedModel):
         """renvoie des classes css pour l'affichage html du seuil de risque"""
         seuil = self.seuil_de_risque()
         if seuil:
-            return "text-primary"
+            return "text-info"
         return "text-muted"
 
     seuil_display.short_description = _('seuil de risque')
@@ -283,14 +283,24 @@ class IdentificationRisque(TimeStampedModel):
         if facteur_risque:
             if self.seuil_de_risque():
                 ratio = (self.facteur_risque() - self.seuil_de_risque()) / self.seuil_de_risque()
-                if ratio <= 0.1:
-                    return "facteur-1"
-                elif 0.1 < ratio <= 0.3:
-                    return "facteur-1-3"
-                elif 0.3 < ratio <= 0.5:
-                    return "facteur-3-5"
-                elif ratio > 0.5:
-                    return "facteur-5"
+                if self.type_de_risque == 'M':
+                    if ratio <= 0.1:
+                        return "facteur-1"
+                    elif 0.1 < ratio <= 0.3:
+                        return "facteur-1-3"
+                    elif 0.3 < ratio <= 0.5:
+                        return "facteur-3-5"
+                    elif ratio > 0.5:
+                        return "facteur-5"
+                elif self.type_de_risque == 'O':
+                    if ratio <= 0.1:
+                        return "facteur-5"
+                    elif 0.1 < ratio <= 0.3:
+                        return "facteur-3-5"
+                    elif 0.3 < ratio <= 0.5:
+                        return "facteur-1-3"
+                    elif ratio > 0.5:
+                        return "facteur-1"
             else:
                 return "facteur-5"
         else:

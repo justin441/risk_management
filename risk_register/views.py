@@ -1,10 +1,11 @@
 from fm.views import AjaxCreateView, AjaxUpdateView, AjaxDeleteView
 from dal import autocomplete
-from rules.contrib.views import PermissionRequiredMixin
+from rules.contrib.views import PermissionRequiredMixin, permission_required, objectgetter
 
 from django.views.generic import DetailView, ListView
+from django.conf import settings
 from django.db.models import F, Count
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, reverse, redirect
 from django.http import JsonResponse
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.postgres.search import SearchQuery, SearchRank
@@ -113,14 +114,16 @@ class CreateProcessView(PermissionRequiredMixin, AjaxCreateView):
         return get_object_or_404(BusinessUnit, denomination=self.kwargs['business_unit'])
 
 
-class UpdateProcessView(AjaxUpdateView):
+class UpdateProcessView(PermissionRequiredMixin, AjaxUpdateView):
+    permission_required = 'risk_register.change_processus'
     form_class = CreateProcessForm
     model = Processus
 
 
-class DeleteProcessView(AjaxDeleteView):
+class DeleteProcessView(PermissionRequiredMixin, AjaxDeleteView):
     model = Processus
     template_name = 'risk_register/confirmer_suppression_processus.html'
+    permission_required = 'risk_register.delete_processus'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -130,9 +133,10 @@ class DeleteProcessView(AjaxDeleteView):
         return context
 
 
-class CreateActiviteView(AjaxCreateView):
+class CreateActiviteView(PermissionRequiredMixin, AjaxCreateView):
     form_class = CreateActivityForm
     message_template = 'risk_register/activity_card.html'
+    permission_required = 'risk_register.add_activity_to_process'
 
     def pre_save(self):
         self.object.processus = get_object_or_404(Processus, code_processus=self.kwargs['processus'])
@@ -142,15 +146,20 @@ class CreateActiviteView(AjaxCreateView):
         msg_ctx['activite'] = self.object
         return msg_ctx
 
+    def get_permission_object(self):
+        return get_object_or_404(Processus, code_processus=self.kwargs['processus'])
 
-class UpdateActiviteView(AjaxUpdateView):
+
+class UpdateActiviteView(PermissionRequiredMixin, AjaxUpdateView):
     form_class = CreateActivityForm
     model = Activite
+    permission_required = 'risk_register.change_activite'
 
 
-class DeleteActiviteView(AjaxDeleteView):
+class DeleteActiviteView(PermissionRequiredMixin, AjaxDeleteView):
     model = Activite
     template_name = 'risk_register/confirmer_suppression_activite.html'
+    permission_required = 'risk_register.delete_activite',
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -159,7 +168,8 @@ class DeleteActiviteView(AjaxDeleteView):
         return context
 
 
-class CreateProcessOutputView(AjaxCreateView):
+class CreateProcessOutputView(PermissionRequiredMixin, AjaxCreateView):
+    permission_required = 'risk_register.add_process_data'
     form_class = CreateProcessOutputDataForm
 
     def get_message_template_context(self):
@@ -175,9 +185,13 @@ class CreateProcessOutputView(AjaxCreateView):
         kwargs['processus'] = get_object_or_404(Processus, pk=self.kwargs['processus'])
         return kwargs
 
+    def get_permission_object(self):
+        return get_object_or_404(Processus, pk=self.kwargs['processus'])
 
-class CreateProcessInputView(AjaxCreateView):
+
+class CreateProcessInputView(PermissionRequiredMixin, AjaxCreateView):
     form_class = CreateInputDataForm
+    permission_required = 'risk_register.add_process_data'
 
     def post_save(self):
         processus = get_object_or_404(Processus, pk=self.kwargs['processus'])
@@ -188,11 +202,15 @@ class CreateProcessInputView(AjaxCreateView):
         kwargs['processus'] = get_object_or_404(Processus, pk=self.kwargs['processus'])
         return kwargs
 
+    def get_permission_object(self):
+        return get_object_or_404(Processus, pk=self.kwargs['processus'])
 
-class AddProcessInputView(AjaxUpdateView):
+
+class AddProcessInputView(PermissionRequiredMixin, AjaxUpdateView):
     form_class = AddInputDataForm
     model = Processus
     pk_url_kwarg = 'processus'
+    permission_required = 'risk_register.add_process_data'
 
 
 class RiskAutocomplete(autocomplete.Select2QuerySetView):
@@ -213,9 +231,13 @@ class RiskAutocomplete(autocomplete.Select2QuerySetView):
         return qs
 
 
-class NewRiskForProcessView(AjaxCreateView):
+class NewRiskForProcessView(PermissionRequiredMixin, AjaxCreateView):
     form_class = CreateRiskForm
     pk_url_kwarg = 'processus'
+    permission_required = 'risk_register.add_process_risk'
+
+    def get_permission_object(self):
+        return get_object_or_404(Processus, pk=self.kwargs['processus'])
 
     def pre_save(self):
         self.object.cree_par = self.request.user
@@ -240,14 +262,19 @@ class RiskDetailView(DetailView):
     context_object_name = 'risque'
 
 
-class UpdateRiskView(AjaxUpdateView):
+class UpdateRiskView(PermissionRequiredMixin, AjaxUpdateView):
     model = Risque
     form_class = UpdateRiskForm
+    permission_required = 'risk_register.change_risque'
 
 
-class AddProcessusrisqueView(AjaxCreateView):
+class AddProcessusrisqueView(PermissionRequiredMixin, AjaxCreateView):
     form_class = AddProcessusrisqueForm
     pk_url_kwarg = 'processus'
+    permission_required = 'risk_register.add_process_risk'
+
+    def get_permission_object(self):
+        return get_object_or_404(Processus, pk=self.kwargs['processus'])
 
     def pre_save(self):
         self.object.processus = get_object_or_404(Processus, pk=self.kwargs['processus'])
@@ -273,7 +300,8 @@ class ProcessusrisqueDetailview(DetailView):
     template_name = 'risk_register/detail_identification_risque.html'
 
 
-class EditProcessusrisqueView(AjaxUpdateView):
+class EditProcessusrisqueView(PermissionRequiredMixin, AjaxUpdateView):
+    permission_required = 'risk_register.change_processusrisque'
     model = ProcessusRisque
     form_class = UpdateProcessusrisqueForm
     pk_url_kwarg = 'processusrisque'
@@ -282,16 +310,21 @@ class EditProcessusrisqueView(AjaxUpdateView):
         self.object.modifie_par = self.request.user
 
 
-class DeleteProcessusrisqueView(AjaxDeleteView):
+class DeleteProcessusrisqueView(PermissionRequiredMixin, AjaxDeleteView):
+    permission_required = 'risk_register.delete_processusrisque'
     model = ProcessusRisque
     pk_url_kwarg = 'processusrisque'
     template_name = 'risk_register/confirmer_suppression_processusrisque.html'
     context_object_name = 'processusrisque'
 
 
-class NewRiskForActivityView(AjaxCreateView):
+class NewRiskForActivityView(PermissionRequiredMixin, AjaxCreateView):
+    permission_required = 'risk_register.add_activity_risk'
     form_class = CreateRiskForm
     pk_url_kwarg = 'activite'
+
+    def get_permission_object(self):
+        return get_object_or_404(Activite, pk=self.kwargs['activite'])
 
     def pre_save(self):
         self.object.cree_par = self.request.user
@@ -310,9 +343,13 @@ class NewRiskForActivityView(AjaxCreateView):
         return super().form_valid(form)
 
 
-class AddActiviterisqueView(AjaxCreateView):
+class AddActiviterisqueView(PermissionRequiredMixin, AjaxCreateView):
+    permission_required = 'risk_register.add_activity_risk'
     form_class = AddActiviterisqueForm
     pk_url_kwarg = 'activite'
+
+    def get_permission_object(self):
+        return get_object_or_404(Activite, pk=self.kwargs['activite'])
 
     def pre_save(self):
         self.object.activite = get_object_or_404(Activite, pk=self.kwargs['activite'])
@@ -338,7 +375,8 @@ class ActiviterisqueDetailView(DetailView):
     template_name = 'risk_register/detail_identification_risque.html'
 
 
-class EditActiviterisqueView(AjaxUpdateView):
+class EditActiviterisqueView(PermissionRequiredMixin, AjaxUpdateView):
+    permission_required = 'risk_register.change_activiterisque'
     model = ActiviteRisque
     form_class = UpdateActiviterisqueForm
     pk_url_kwarg = 'activiterisque'
@@ -347,7 +385,8 @@ class EditActiviterisqueView(AjaxUpdateView):
         self.object.modifie_par = self.request.user
 
 
-class DeleteActiviterisqueView(AjaxDeleteView):
+class DeleteActiviterisqueView(PermissionRequiredMixin, AjaxDeleteView):
+    permission_required = 'risk_register.delete_activiterisque'
     model = ActiviteRisque
     pk_url_kwarg = 'activiterisque'
     template_name = 'risk_register/confirmer_suppression_activiterisque.html'
@@ -358,7 +397,11 @@ class AddControlMixin(AjaxCreateView):
     form_class = AddControleForm
 
 
-class AddProcessusrisqueControleView(AddControlMixin):
+class AddProcessusrisqueControleView(PermissionRequiredMixin, AddControlMixin):
+    permission_required = 'risk_register.add_control_process_risk'
+
+    def get_permission_object(self):
+        return get_object_or_404(ProcessusRisque, pk=self.kwargs['processusrisque'])
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
@@ -370,7 +413,11 @@ class AddProcessusrisqueControleView(AddControlMixin):
         self.object.content_object = get_object_or_404(ProcessusRisque, pk=self.kwargs['processusrisque'])
 
 
-class AddActiviterisqueControle(AddControlMixin):
+class AddActiviterisqueControle(PermissionRequiredMixin, AddControlMixin):
+    permission_required = 'risk_register.add_control_activity_risk'
+
+    def get_permission_object(self):
+        return get_object_or_404(ActiviteRisque, pk=self.kwargs['activiterisque'])
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
@@ -382,7 +429,8 @@ class AddActiviterisqueControle(AddControlMixin):
         self.object.content_object = get_object_or_404(ActiviteRisque, pk=self.kwargs['activiterisque'])
 
 
-class EditRiskControl(AjaxUpdateView):
+class EditRiskControl(PermissionRequiredMixin, AjaxUpdateView):
+    permission_required = 'risk_register.change_controle'
     model = Controle
     form_class = EditControleForm
     pk_url_kwarg = 'controle'
@@ -391,14 +439,16 @@ class EditRiskControl(AjaxUpdateView):
         self.object.modifie_par = self.request.user
 
 
-class DeleteRiskControl(AjaxDeleteView):
+class DeleteRiskControl(PermissionRequiredMixin, AjaxDeleteView):
+    permission_required = 'risk_register.delete_controle'
     model = Controle
     pk_url_kwarg = 'controle'
     context_object_name = 'controle'
     template_name = 'risk_register/confirmer_suppression_controle.html'
 
 
-class AssignerControleView(AjaxUpdateView):
+class AssignerControleView(PermissionRequiredMixin, AjaxUpdateView):
+    permission_required = 'risk_register.assign_control'
     model = Controle
     form_class = AssignControlform
     pk_url_kwarg = 'controle'
@@ -407,9 +457,13 @@ class AssignerControleView(AjaxUpdateView):
         self.object.modifie_par = self.request.user
 
 
-class SetSeuilProcessusrisqueView(AjaxCreateView):
+class SetSeuilProcessusrisqueView(PermissionRequiredMixin, AjaxCreateView):
+    permission_required = 'risk_register.set_seuil_process_risk'
     form_class = CritereRisqueForm
     pk_url_kwarg = 'processusrisque'
+
+    def get_permission_object(self):
+        return get_object_or_404(ProcessusRisque, pk=self.kwargs['processusrisque'])
 
     def pre_save(self):
         self.object.evalue_par = self.request.user
@@ -423,9 +477,13 @@ class SetSeuilProcessusrisqueView(AjaxCreateView):
         processusrisque.save()
 
 
-class ProcessusrisqueEstimationView(AjaxCreateView):
+class ProcessusrisqueEstimationView(PermissionRequiredMixin, AjaxCreateView):
+    permission_required = 'risk_register.estimate_process_risk'
     form_class = CritereRisqueForm
     pk_url_kwarg = 'processusrisque'
+
+    def get_permission_object(self):
+        return get_object_or_404(ProcessusRisque, pk=self.kwargs['processusrisque'])
 
     def pre_save(self):
         self.object.evalue_par = self.request.user
@@ -443,9 +501,13 @@ class ProcessusrisqueEstimationView(AjaxCreateView):
         return kwargs
 
 
-class SetSeuilActiviterisqueView(AjaxCreateView):
+class SetSeuilActiviterisqueView(PermissionRequiredMixin, AjaxCreateView):
     form_class = CritereRisqueForm
     pk_url_kwarg = 'activiterisque'
+    permission_required = 'risk_register.set_seuil_activity_risk'
+
+    def get_permission_object(self):
+        return get_object_or_404(ActiviteRisque, pk=self.kwargs['activiterisque'])
 
     def pre_save(self):
         self.object.evalue_par = self.request.user
@@ -459,9 +521,13 @@ class SetSeuilActiviterisqueView(AjaxCreateView):
         activiterisque.save()
 
 
-class ActiviterisqueEstimationView(AjaxCreateView):
+class ActiviterisqueEstimationView(PermissionRequiredMixin, AjaxCreateView):
+    permission_required = 'risk_register.estimate_activity_risk'
     form_class = CritereRisqueForm
     pk_url_kwarg = 'activiterisque'
+
+    def get_permission_object(self):
+        return get_object_or_404(ActiviteRisque, pk=self.kwargs['activiterisque'])
 
     def pre_save(self):
         self.object.evalue_par = self.request.user
@@ -479,16 +545,18 @@ class ActiviterisqueEstimationView(AjaxCreateView):
         return kwargs
 
 
-class AssignerActiviterisqueView(AjaxUpdateView):
+class AssignerActiviterisqueView(PermissionRequiredMixin, AjaxUpdateView):
     form_class = AssignActiviterisqueForm
     pk_url_kwarg = 'activiterisque'
     model = ActiviteRisque
+    permission_required = 'risk_register.assign_activity_risk'
 
     def pre_save(self):
         self.object.modifie_par = self.request.user
 
 
-class AssignerProcessusrisqueView(AjaxUpdateView):
+class AssignerProcessusrisqueView(PermissionRequiredMixin, AjaxUpdateView):
+    permission_required = 'risk_register.assign_process_risk'
     form_class = AssignProcessusrisqueForm
     pk_url_kwarg = 'processusrisque'
     model = ProcessusRisque
@@ -497,19 +565,21 @@ class AssignerProcessusrisqueView(AjaxUpdateView):
         self.object.modifie_par = self.request.user
 
 
-class SetProcessusrisqueReviewDate(AjaxUpdateView):
+class SetProcessusrisqueReviewDate(PermissionRequiredMixin, AjaxUpdateView):
     form_class = ChangeProcessusrisqueReviewDateForm
     pk_url_kwarg = 'processusrisque'
     model = ProcessusRisque
+    permission_required = 'risk_register.set_review_date_process_risk'
 
     def pre_save(self):
         self.object.modifie_par = self.request.user
 
 
-class SetActiviterisqueReviewDate(AjaxUpdateView):
+class SetActiviterisqueReviewDate(PermissionRequiredMixin, AjaxUpdateView):
     form_class = ChangeActiviterisqueReviewDateForm
     pk_url_kwarg = 'activiterisque'
     model = ActiviteRisque
+    permission_required = 'risk_register.set_review_date_activity_risk'
 
     def pre_save(self):
         self.object.modifie_par = self.request.user
@@ -570,6 +640,7 @@ def check_control_status(request, pk):
         return JsonResponse(data)
 
 
+@permission_required('risk_register.change_controle', fn=objectgetter(Controle, 'pk'))
 def change_control_status(request, pk):
     if request.method == 'POST' and request.is_ajax():
         data = {}
@@ -597,6 +668,14 @@ def change_control_status(request, pk):
         return JsonResponse(data)
 
 
+def get_risk_id(request, pk):
+    try:
+        return ActiviteRisque.objects.get(pk=pk)
+    except ActiviteRisque.DoesNotExist:
+        return get_object_or_404(ProcessusRisque, pk=pk)
+
+
+@permission_required('risk_register.verify_risque', fn=get_risk_id)
 def change_risk_status(request, pk):
     if request.method == 'POST' and request.is_ajax():
         data = {}
@@ -628,6 +707,7 @@ def change_risk_status(request, pk):
         return JsonResponse(data)
 
 
+@permission_required('risk_register.approve_controle', fn=objectgetter(Controle, 'pk'))
 def approve_controle(request, pk):
     if request.method == 'POST' and request.is_ajax():
         data = {}
@@ -650,6 +730,7 @@ def approve_controle(request, pk):
         return JsonResponse(data)
 
 
+@permission_required('risk_register.validate_controle_completion', fn=objectgetter(Controle, 'pk'))
 def validate_controle(request, pk):
     if request.method == 'POST' and request.is_ajax():
         data = {}
