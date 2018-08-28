@@ -1,44 +1,59 @@
-{% load i18n %}
+{% load i18n rules %}
+
+{% has_perm 'risk_register.change_activite' user activite as can_change %}
+{% has_perm 'risk_register.delete_activite' user activite as can_delete %}
 <nav aria-label="breadcrumb">
   <ol class="breadcrumb">
-    <li class="breadcrumb-item"><a href="{% url 'risk_register:detail_business_unit' pk=activite.processus.business_unit.denomination %}">Business Unit</a></li>
-    <li class="breadcrumb-item"><a href="{% url 'risk_register:detail_processus' pk=activite.processus.code_processus %}">{% trans 'Processus' %}</a></li>
+    <li class="breadcrumb-item"><a
+      href="{% url 'risk_register:detail_business_unit' pk=activite.processus.business_unit.denomination %}">Business
+      Unit</a></li>
+    <li class="breadcrumb-item"><a
+      href="{% url 'risk_register:detail_processus' pk=activite.processus.code_processus %}">{% trans 'Processus' %}</a>
+    </li>
     <li class="breadcrumb-item active h5" aria-current="page">{% trans 'Activité' %}</li>
   </ol>
 </nav>
 <div class="card mb-4" style=" border-color:#00a5e3;">
   <div class="card-header text-white" style="background-color:#00a5e3;">
-    <a href="{% url 'risk_register:effacer_activite' pk=activite.pk %}" class="fm-delete" data-fm-callback="redirect"
-       data-fm-head="{% trans 'Supprimer une activité' %}"
-       data-fm-target="{% url 'risk_register:detail_processus' pk=activite.processus.pk %}">
-      <i class="float-sm-right text-white ml-2 fa fa-trash-o"></i>
-    </a>
-    <a href="{% url 'risk_register:modifier_activite' pk=activite.pk %}" class="fm-update" data-fm-callback="reload"
-       data-fm-head="{% trans 'Modifier une activité' %}">
-      <i class="float-sm-right text-white fa fa-edit"></i>
-    </a>
+    {% if can_delete %}
+      <a href="{% url 'risk_register:effacer_activite' pk=activite.pk %}" class="fm-delete" data-fm-callback="redirect"
+         data-fm-head="{% trans 'Supprimer une activité' %}"
+         data-fm-target="{% url 'risk_register:detail_processus' pk=activite.processus.pk %}">
+    {% endif %}
+    <i class="float-sm-right text-white ml-2 fa fa-trash-o"></i>
+    {% if can_delete %}
+      </a>
+    {% endif %}
+    {% if can_change %}
+      <a href="{% url 'risk_register:modifier_activite' pk=activite.pk %}" class="fm-update" data-fm-callback="reload"
+         data-fm-head="{% trans 'Modifier une activité' %}">
+    {% endif %}
+    <i class="float-sm-right text-white fa fa-edit"></i>
+    {% if can_change %}
+      </a>
+    {% endif %}
     <h4 class="card-title">
-      {{ activite.nom}}
+      {{ activite.nom }}
     </h4>
     <p class="lead">{{ activite.description }}</p>
     <a href="#detail" data-toggle="collapse" class="float-right"><i class="text-white fa fa-ellipsis-h"></i></a>
   </div>
   <div class="card-footer collapse" id="detail">
-      <dl class="row">
-        <dt class="col-sm-3"> {% trans 'Business Unit' %}:</dt>
-        <dd class="col-sm-9">{{ activite.processus.business_unit }}</dd>
-        <dt class="col-sm-3"> {% trans 'Processus' %}:</dt>
-        <dd class="col-sm-9">{{ activite.processus }}</dd>
-        <dt class="col-sm-3">{% trans 'Statut' %}:</dt>
-        <dd class="col-sm-9">
+    <dl class="row">
+      <dt class="col-sm-3"> {% trans 'Business Unit' %}:</dt>
+      <dd class="col-sm-9">{{ activite.processus.business_unit }}</dd>
+      <dt class="col-sm-3"> {% trans 'Processus' %}:</dt>
+      <dd class="col-sm-9">{{ activite.processus }}</dd>
+      <dt class="col-sm-3">{% trans 'Statut' %}:</dt>
+      <dd class="col-sm-9">
           <span class="{% if activite.status == 'pending' %}text-info{% else %}text-danger{% endif %}">
             {{ activite.get_status_display }}
           </span>
-        </dd>
+      </dd>
       <dt class="col-sm-3">{% trans 'Risques identifiés ' %}:</dt>
-        <dd class="col-sm-9"><span class="badge badge-pill badge-secondary">{{ activite.risques.count }}</span></dd>
-        <dt class="col-sm-3">{% trans 'Responsable' %}:</dt>
-        <dd class="col-sm-9"><a href="mailto:{{ activite.responsable.email }}">{{ activite.responsable }}</a></dd>
-      </dl>
+      <dd class="col-sm-9"><span class="badge badge-pill badge-secondary">{{ activite.risques.count }}</span></dd>
+      <dt class="col-sm-3">{% trans 'Responsable' %}:</dt>
+      <dd class="col-sm-9"><a href="mailto:{{ activite.responsable.email }}">{{ activite.responsable }}</a></dd>
+    </dl>
   </div>
 </div>

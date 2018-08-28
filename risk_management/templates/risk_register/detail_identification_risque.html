@@ -1,38 +1,44 @@
-{% load i18n humanize %}
+{% load i18n humanize rules %}
 {% block content %}
   {% block data %}
-    <p>
+    <p class="text-justify">
       {{ risque_identif.risque.description }}
-      <a href="{% url 'risk_register:modifier_risque' pk=risque_identif.risque.pk %}"
+      {% has_perm 'change_risque' user risque_identif.risque as can_edit %}
+      {% if can_edit %}
+        <a href="{% url 'risk_register:modifier_risque' pk=risque_identif.risque.pk %}"
          class="ml-2 fm-update" data-fm-head="{% trans 'Modifier un risque' %}" data-fm-callback="reload">
         {% trans 'modifier' %} <i class="fa fa-edit"></i>
       </a>
+      {% endif %}
     </p>
-    <p class="mb-0">
-    {% if risque_identif.get_class == 'ActiviteRisque' %}
-      <a href="{% url 'risk_register:detail_activite' pk=risque_identif.activite.pk %}">
-        <span class="text-muted">{% trans 'Activité:' %} {{ risque_identif.activite }}</span>
-      </a>
-    {% elif risque_identif.get_class == 'ProcessusRisque' %}
-      <a href="{% url 'risk_register:detail_processus' pk=risque_identif.processus.pk %}">
-      <span class="text-muted">{% trans 'Processus:' %} {{ risque_identif.processus }}</span>
-      </a>
-    {% endif %}
+    <p class="mb-0 text-justify">
+      {% if risque_identif.get_class == 'ActiviteRisque' %}
+        <a href="{% url 'risk_register:detail_activite' pk=risque_identif.activite.pk %}">
+          <span class="text-muted">{% trans 'Activité:' %} {{ risque_identif.activite }}</span>
+        </a>
+      {% elif risque_identif.get_class == 'ProcessusRisque' %}
+        <a href="{% url 'risk_register:detail_processus' pk=risque_identif.processus.pk %}">
+          <span class="text-muted">{% trans 'Processus:' %} {{ risque_identif.processus }}</span>
+        </a>
+      {% endif %}
     </p>
-    <p class="text-muted mb-0">
+    <p class="text-muted mb-0 text-justify">
       {% trans 'Ajouté' %} {{ risque_identif.created|naturaltime }} {% trans 'par' %} {{ risque_identif.soumis_par }}.
     </p>
-    <p class="text-muted">
+    <p class="text-muted text-justify">
       {% trans 'Type de risque' %}: {{ risque_identif.get_type_de_risque_display|upper }}
-     <a href="
+      <a href="
               {% if risque_identif.get_class == 'ProcessusRisque' %}
-                {% url 'risk_register:modifier_processusrisque' processusrisque=risque_identif.pk %}
+                {% has_perm 'risk_register.change_processusrisque' user risque_identif as can_change %}
+                {% if can_change %}{% url 'risk_register:modifier_processusrisque' processusrisque=risque_identif.pk %}{% endif %}
               {% elif risque_identif.get_class == 'ActiviteRisque' %}
-                 {% url 'risk_register:modifier_activiterisque' activiterisque=risque_identif.pk %}
+                {% has_perm 'risk_register.change_activiterisque' user risque_identif as can_change %}
+                {% if can_change %}{% url 'risk_register:modifier_activiterisque' activiterisque=risque_identif.pk %}{% endif %}
               {% endif %}"
-       class="ml-2 fm-update" data-fm-head="{% trans 'Modifier un risque' %}" data-fm-callback="reload">
-      {% trans 'modifier' %} <i class="fa fa-edit"></i>
-    </a>
+         class="ml-2 fm-update"
+         data-fm-head="{% trans 'Modifier un risque' %}" data-fm-callback="reload" style="{% if not can_change %}display:none;{% endif %}">
+        {% trans 'modifier' %} <i class="fa fa-edit"></i>
+      </a>
     </p>
 
     <dl class="row">

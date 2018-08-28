@@ -62,7 +62,7 @@ urlpatterns = [
          name='revue-activiterisque'),
     path('ajax-risk-verification-status/<uuid:pk>/', views.check_risk_status, name='ajax-statut-risque'),
     path('ajax-control-completion-status/<uuid:pk>/', views.check_control_status, name='ajax-status-controle'),
-    path('ajax-risk-verification-status-change/<uuid:pk>', views.change_risk_status, name='ajax-changer-statut-risque'),
+    path('ajax-risk-verification-status-change/<uuid:pk>', views.manage_change_risk_status, name='ajax-changer-statut-risque'),
     path('ajax-control-completion-status-change/<uuid:pk>/', views.change_control_status,
          name='ajax-changer-statut-controle'),
     path('ajax-approve-control/<uuid:pk>/', views.approve_controle, name='ajax-approuver-controle'),

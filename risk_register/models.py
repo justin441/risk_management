@@ -216,7 +216,6 @@ class CritereDuRisque(models.Model):
         detectabilite = detectabilite_choice.get(self.detectabilite)
         return detectabilite * self.severite * self.occurence
 
-
     class Meta:
         verbose_name = _('critérisation')
         verbose_name_plural = _('critérisation')

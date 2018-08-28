@@ -735,4 +735,7 @@ class AssignControlform(forms.ModelForm):
         if not self.instance.est_approuve:
             msg = _('Vous ne pouvez pas assigner un contrôle non approuvé')
             self.add_error(None, msg)
+        if not self.instance.start or not self.instance.end:
+            msg = _('Definissez les dates de début et de fin avant d\'assigner le controle')
+            self.add_error(None, msg)
         return super().clean()

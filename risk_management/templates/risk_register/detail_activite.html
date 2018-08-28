@@ -1,5 +1,6 @@
 {% extends 'risk_register/base.html' %}
-{% load i18n humanize static %}
+{% load i18n humanize static rules %}
+
 {% block title %}
   {{ activite.nom }}: {% trans 'Registre des risques' %}
 {% endblock %}
@@ -10,17 +11,21 @@
   {% endblock %}
   {% block data %}
 
-      {% for activiterisque in activiterisques.all %}
-        {% include 'risk_register/activiterisque_card.html' %}
-      {% empty %}
-        <h6>{% trans 'Aucun risque identifié pour cette activité' %}</h6>
-      {% endfor %}
-    <div id="create">
-          <a href="{% url 'risk_register:ajout_activiterisque' activite=activite.pk %}" class="fm-create text-info card-link"
-             data-fm-head="{% trans "Nouveau risque d'activité"  %}" data-fm-callback="reload">
-            <i class="fa fa-plus"></i> {% trans 'Ajouter un risque' %}
-          </a>
-        </div>
+    {% for activiterisque in activiterisques.all %}
+      {% include 'risk_register/activiterisque_card.html' %}
+    {% empty %}
+      <h6>{% trans 'Aucun risque identifié pour cette activité' %}</h6>
+    {% endfor %}
+    {% has_perm 'risk_register.add_activity_risk' user as can_add_risks %}
+    {% if can_add_risks %}
+      <div id="create" class="mb-5">
+        <a href="{% url 'risk_register:ajout_activiterisque' activite=activite.pk %}"
+           class="fm-create text-info card-link"
+           data-fm-head="{% trans "Nouveau risque d'activité" %}" data-fm-callback="reload">
+          <i class="fa fa-plus"></i> {% trans 'Ajouter un risque' %}
+        </a>
+      </div>
+    {% endif %}
   {% endblock %}
 {% endblock %}
 

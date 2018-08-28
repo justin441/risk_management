@@ -1,5 +1,5 @@
 {% extends "risk_register/base.html" %}
-{% load static i18n humanize %}
+{% load static i18n humanize rules %}
 
 {% block title %}{{ employe.get_username }}{% endblock %}
 
@@ -18,9 +18,11 @@
         <a href="#my-controls" class="nav-link" role="tab" data-toggle="tab">{% trans 'Contrôles assignés' %}</a>
       </li>
     {% endif %}
-    <li class="nav-item">
-      <a href="#followed-risks" class="nav-link" role="tab" data-toggle="tab">{% trans 'Risques suivis' %}</a>
-    </li>
+    {% if followed_risks %}
+      <li class="nav-item">
+        <a href="#followed-risks" class="nav-link" role="tab" data-toggle="tab">{% trans 'Risques suivis' %}</a>
+      </li>
+    {% endif %}
     {% if employe.processus_manages.all %}
       <li class="nav-item">
         <a href="#my-processes" class="nav-link" role="tab" data-toggle="tab">{% trans 'Processus managés' %}</a>
@@ -40,7 +42,7 @@
             <div class="card-header">
               <a class="card-link float-right text-info" data-toggle="collapse"
                  href="#controles-{{ identified_risk.pk }}-0">
-                {% trans 'Contrôles' %} <i class="fa fa-ellipsis-h"></i>
+                {% trans 'Contrôles' %} <i class="fa fa-ellipsis-h align-text-bottom mr-2"></i>
               </a>
               {% if identified_risk.type_de_risque == 'O' %}
                 <strong
@@ -51,54 +53,83 @@
               {% endif %}
               <span style="white-space: nowrap;">
                 <strong id="status-risk-{{ identified_risk.pk }}-0"
-                      class="confirm-risk d-inline-block"
-                      data-check-url="{% url 'risk_register:ajax-statut-risque' pk=identified_risk.pk %}"
-                      data-change-url="{% url 'risk_register:ajax-changer-statut-risque' pk=identified_risk.pk %}">
+                        class="confirm-risk d-inline-block"
+                        data-check-url="{% url 'risk_register:ajax-statut-risque' pk=identified_risk.pk %}"
+                        data-change-url="{% url 'risk_register:ajax-changer-statut-risque' pk=identified_risk.pk %}">
               {% csrf_token %}</strong>
               </span>
 
             </div>
             <div class="card-body">
-              <a href="
+              {% if identified_risk.get_class == 'ProcessusRisque' %}
+                {% has_perm 'risk_register.change_processusrisque' user identified_risk as can_change %}
+                {% has_perm 'risk_register.set_seuil_process_risk' user identified_risk as can_set_seuil %}
+                {% has_perm 'risk_register.estimate_process_risk' user identified_risk as can_estimate %}
+                {% has_perm 'risk_register.set_review_date_process_risk' user identified_risk as can_set_review_date %}
+                {% has_perm 'risk_register.add_control_process_risk' user identified_risk as can_add_control %}
+              {% elif identified_risk.get_class == 'ActiviteRisque' %}
+                {% has_perm 'risk_register.change_activiterisque' user identified_risk as can_change %}
+                {% has_perm 'risk_register.set_seuil_activity_risk' user identified_risk as can_set_seuil %}
+                {% has_perm 'risk_register.estimate_activity_risk' user identified_risk as can_estimate %}
+                {% has_perm 'risk_register.set_seuil_activity_risk' user identified_risk as can_set_review_date %}
+                {% has_perm 'risk_register.add_control_activity_risk' user identified_risk as can_add_control %}
+              {% endif %}
+              {% if can_change %}
+                <a href="
                    {% if identified_risk.get_class == 'ProcessusRisque' %}
                      {% url 'risk_register:modifier_processusrisque' processusrisque=identified_risk.pk %}
                    {% else %}
                      {% url 'risk_register:modifier_activiterisque' activiterisque=identified_risk.pk %}
                    {% endif %}"
-                 class="fm-update card-title h5" data-fm-head="{% trans 'Modifier un risque' %}"
-                 data-fm-callback="reload">{{ identified_risk.risque.nom }}</a><br>
-              <span class="text-muted">{% trans 'Ajouté' %} {{ identified_risk.created | naturaltime }} {% trans 'par' %} {{ identified_risk.soumis_par }}</span>
+                   class="fm-update" data-fm-head="{% trans 'Modifier un risque' %}"
+                   data-fm-callback="reload">
+              {% endif %}
+              <span class="card-title h5">{{ identified_risk.risque.nom }}</span>
+              {% if can_change %}
+                </a>
+              {% endif %}
+              <br>
+              <span
+                class="text-muted">{% trans 'Ajouté' %} {{ identified_risk.created | naturaltime }} {% trans 'par' %} {{ identified_risk.soumis_par }}</span>
               <p>{{ identified_risk.risque.description|truncatechars:150 }}</p>
               <div class="row mt-2">
                 <div class="col-sm-12 col-md-2">
                   <h6 class="mb-0">{% trans 'Seuil de risque' %}</h6>
-                  <a href="
+                  {% if can_set_seuil %}
+                    <a href="
                    {% if identified_risk.get_class == 'ProcessusRisque' %}
                      {% url 'risk_register:definir_seuil_processusrisque' processusrisque=identified_risk.pk %}
                    {% else %}
                      {% url 'risk_register:definir_seuil_activiterisque' activiterisque=identified_risk.pk %}
                    {% endif %}"
-                     class="text-info fm-create" style="text-decoration: none;"
-                     data-fm-head="{% trans 'Définir le seuil de risque' %}"
-                     data-fm-callback="reload">
-                    <i class="mr-2 fa fa-sliders"></i>
-                  </a>
+                       class="text-info fm-create" style="text-decoration: none;"
+                       data-fm-head="{% trans 'Définir le seuil de risque' %}"
+                       data-fm-callback="reload">
+                  {% endif %}
+                  <i class="mr-2 fa fa-sliders"></i>
+                  {% if can_set_seuil %}
+                    </a>
+                  {% endif %}
                   <span class="{{ identified_risk.seuil_display }}">
            {{ identified_risk.seuil_de_risque|default_if_none:_('Non defini') }}
         </span>
                 </div>
                 <div class="col-sm-12 col-md-2">
                   <h6 class="mb-0">{% trans 'Facteur risque' %}</h6>
-                  <a href="
+                  {% if can_estimate %}
+                    <a href="
                    {% if identified_risk.get_class == 'ProcessusRisque' %}
                      {% url 'risk_register:estimer_processusrisque' processusrisque=identified_risk.pk %}
                    {% else %}
                      {% url 'risk_register:estimer_activiterisque' activiterisque=identified_risk.pk %}
                    {% endif %}"
-                     class="text-info fm-create" style="text-decoration: none;"
-                     data-fm-head="{% trans 'Estimer le risque' %}" data-fm-callback="reload">
-                    <i class="mr-2 fa fa-sliders"></i>
-                  </a>
+                       class="text-info fm-create" style="text-decoration: none;"
+                       data-fm-head="{% trans 'Estimer le risque' %}" data-fm-callback="reload">
+                  {% endif %}
+                  <i class="mr-2 fa fa-sliders"></i>
+                  {% if can_estimate %}
+                    </a>
+                  {% endif %}
                   <span class="{{ identified_risk.facteur_risque_display }}">
           {{ identified_risk.facteur_risque|default_if_none:_('Non defini') }}
         </span>
@@ -113,16 +144,21 @@
                 </div>
                 <div class="col-md-2 col-sm-12">
                   <h6 class="mb-0">{% trans 'Date de revue' %}</h6>
-                  <a href="
+                  {% if can_set_review_date %}
+                    <a href="
                    {% if identified_risk.get_class == 'ProcessusRisque' %}
                      {% url 'risk_register:revue-processusrisque' processusrisque=identified_risk.pk %}
                    {% else %}
                      {% url 'risk_register:revue-activiterisque' activiterisque=identified_risk.pk %}
                    {% endif %}"
-                     class="text-info fm-update" style="text-decoration: none;"
-                     data-fm-head="{% trans 'Définir la date de revue du risque:' %}"
-                     data-fm-callback="reload"> <i class="mr-2 fa fa-calendar"></i>
-                  </a>
+                       class="text-info fm-update" style="text-decoration: none;"
+                       data-fm-head="{% trans 'Définir la date de revue du risque:' %}"
+                       data-fm-callback="reload">
+                  {% endif %}
+                  <i class="mr-2 fa fa-calendar"></i>
+                  {% if can_set_review_date %}
+                    </a>
+                  {% endif %}
 
                   {{ identified_risk.date_revue | naturaltime  | default_if_none:_('Non défini ') }}
                   {% if identified_risk.est_obsolete %}
@@ -139,7 +175,8 @@
               {% empty %}
                 <p class="lead ml-4">{% trans 'Ce risque ne comporte aucun contrôle' %}</p>
               {% endfor %}
-              <div class="m-4 mb-2 mt-2 p-1 ">
+              {% if can_add_control %}
+                <div class="m-4 mb-2 mt-2 p-1 ">
                 <a href="
                    {% if identified_risk.get_class == 'ProcessusRisque' %}
                      {% url 'risk_register:ajout_controle_processusrique' processusrisque=identified_risk.pk %}
@@ -151,6 +188,7 @@
                   <i class="fa fa-plus"></i> {% trans 'Nouveau contrôle' %}
                 </a>
               </div>
+              {% endif %}
             </div>
           </div>
         {% empty %}
@@ -171,13 +209,13 @@
 
       </div>
       <div class="tab-pane mt-3" role="tabpanel" id="my-controls">
-          {% for controle in employe.traitements_assignes.all %}
-           {% if controle.est_approuve %}
+        {% for controle in employe.traitements_assignes.all %}
+          {% if controle.est_approuve %}
             {% include 'users/user_control_card.html' %}
-           {% endif %}
-          {% empty %}
-            <span class="empty"></span>
-          {% endfor %}
+          {% endif %}
+        {% empty %}
+          <span class="empty"></span>
+        {% endfor %}
       </div>
       <div class="tab-pane mt-3" role="tabpanel" id="my-processes">
         {% for processus in employe.processus_manages.all %}

@@ -1,13 +1,24 @@
-{% load i18n humanize %}
+{% load i18n humanize rules %}
+{% has_perm 'risk_register.delete_processusrisque' user processusrisque as can_delete %}
+{% has_perm 'risk_register.change_processusrisque' user processusrisque as can_change %}
+{% has_perm 'risk_register.set_seuil_process_risk' user processusrisque as can_set_seuil %}
+{% has_perm 'risk_register.estimate_process_risk' user processusrisque as can_estimate %}
+{% has_perm 'risk_register.assign_process_risk' user processusrisque as can_assign %}
+{% has_perm 'risk_register.add_control_process_risk' user processusrisque as can_add_controls %}
+{% has_perm 'risk_register.set_review_date_process_risk' user processusrisque as can_set_review_date %}
+
 <div class="card mb-3">
   <div class="card-header">
-    <a href="{% url 'risk_register:effacer_processusrisque' processusrisque=processusrisque.pk %}" class="fm-delete"
-       data-fm-callback="reload"
-       data-fm-head="{% trans 'Supprimer un risque' %}">
-      <i class="float-right text-danger ml-3 fa fa-times"></i>
-    </a>
+    {% if can_delete %}
+      <a href="{% url 'risk_register:effacer_processusrisque' processusrisque=processusrisque.pk %}" class="fm-delete"
+         data-fm-callback="reload"
+         data-fm-head="{% trans 'Supprimer un risque' %}" data-toggle="tooltip" data-placement="top"
+         title="{% trans 'Supprimer' %}">
+        <i class="float-right text-danger ml-3 fa fa-times align-text-bottom"></i>
+      </a>
+    {% endif %}
     <a class="card-link float-right text-info" data-toggle="collapse" href="#risk-{{ processusrisque.pk }}">
-      {% trans 'Contrôles' %} <i class="fa fa-ellipsis-h"></i>
+      {% trans 'Contrôles' %} <i class="fa fa-ellipsis-h ml-1 align-text-bottom"></i>
     </a>
     {% if processusrisque.type_de_risque == 'O' %}
       <strong class="text-success ml-2 mr-2">{{ processusrisque.get_type_de_risque_display | capfirst }}</strong>
@@ -16,41 +27,59 @@
     {% endif %}
     <span style="white-space: nowrap;">
       <strong id="status-risk-{{ processusrisque.pk }}" class="confirm-risk d-inline-block"
-            data-check-url="{% url 'risk_register:ajax-statut-risque' pk=processusrisque.pk %}"
-            data-change-url="{% url 'risk_register:ajax-changer-statut-risque' pk=processusrisque.pk %}">
+              data-check-url="{% url 'risk_register:ajax-statut-risque' pk=processusrisque.pk %}"
+              data-change-url="{% url 'risk_register:ajax-changer-statut-risque' pk=processusrisque.pk %}">
       {% csrf_token %}</strong>
     </span>
 
 
   </div>
   <div class="card-body">
-    <a href="{% url 'risk_register:modifier_processusrisque' processusrisque=processusrisque.pk %}"
-       class="fm-update card-title h5" data-fm-head="{% trans 'Modifier un risque de processus' %}"
-       data-fm-callback="reload">{{ processusrisque.risque.nom }}</a><br>
-    <span class="text-muted">{% trans 'Ajouté' %} {{ processusrisque.created | naturaltime }} {% trans 'par' %} {{ processusrisque.soumis_par }}</span><br>
+    {% if can_change %}
+      <a href="{% url 'risk_register:modifier_processusrisque' processusrisque=processusrisque.pk %}"
+         class="fm-update card-title h5" data-fm-head="{% trans 'Modifier un risque de processus' %}"
+         data-fm-callback="reload" data-toggle="tooltip" data-placement="top" title="{% trans 'Modifier' %}">
+    {% endif %}
+    {{ processusrisque.risque.nom }}
+    {% if can_change %}
+      </a>
+    {% endif %}
+    <br>
+    <span
+      class="text-muted">{% trans 'Ajouté' %} {{ processusrisque.created | naturaltime }} {% trans 'par' %} {{ processusrisque.soumis_par }}</span><br>
     <span class="text-muted">{% trans 'Processus' %}: {{ processusrisque.processus }}</span>
-  <p>{{ processusrisque.risque.description|truncatechars:150 }}</p>
+    <p>{{ processusrisque.risque.description|truncatechars:150 }}</p>
 
     <div class="row mt-2">
       <div class="col-sm-12 col-md-2">
         <h6 class="mb-0">{% trans 'Seuil de risque' %}</h6>
-        <a href="{% url 'risk_register:definir_seuil_processusrisque' processusrisque=processusrisque.pk %}"
-           class="text-info fm-create" style="text-decoration: none;"
-           data-fm-head="{% trans 'Définir le seuil de risque' %}"
-           data-fm-callback="reload">
-          <i class="mr-2 fa fa-sliders"></i>
-        </a>
+        {% if can_set_seuil %}
+          <a href="{% url 'risk_register:definir_seuil_processusrisque' processusrisque=processusrisque.pk %}"
+             class="text-info fm-create" style="text-decoration: none;"
+             data-fm-head="{% trans 'Définir le seuil de risque' %}"
+             data-fm-callback="reload" data-toggle="tooltip" data-placement="top"
+             title="{% trans 'Définir le seuil de risque' %}">
+        {% endif %}
+        <i class="mr-2 fa fa-sliders"></i>
+        {% if can_set_seuil %}
+          </a>
+        {% endif %}
         <span class="{{ processusrisque.seuil_display }}">
            {{ processusrisque.seuil_de_risque|default_if_none:_('Non defini') }}
         </span>
       </div>
       <div class="col-sm-12 col-md-2">
         <h6 class="mb-0">{% trans 'Facteur risque' %}</h6>
-        <a href="{% url 'risk_register:estimer_processusrisque' processusrisque=processusrisque.pk %}"
-           class="text-info fm-create" style="text-decoration: none;"
-           data-fm-head="{% trans 'Estimer le risque' %}" data-fm-callback="reload">
-          <i class="mr-2 fa fa-sliders"></i>
-        </a>
+        {% if can_estimate %}
+          <a href="{% url 'risk_register:estimer_processusrisque' processusrisque=processusrisque.pk %}"
+             class="text-info fm-create" style="text-decoration: none;"
+             data-fm-head="{% trans 'Estimer le risque' %}" data-fm-callback="reload" data-toggle="tooltip"
+             data-placement="top" title="{% trans 'Estimer le risque' %}">
+        {% endif %}
+        <i class="mr-2 fa fa-sliders"></i>
+        {% if can_estimate %}
+          </a>
+        {% endif %}
         <span class="{{ processusrisque.facteur_risque_display }}">
           {{ processusrisque.facteur_risque|default_if_none:_('Non defini') }}
         </span>
@@ -58,19 +87,23 @@
       <div class="col-sm-12 col-md-2">
         <h6 class="mb-0">{% trans 'Statut du risque' %}</h6>
         <span class="{{ processusrisque.status_display }}">
-                  {% blocktrans with status=processusrisque.status|default_if_none:'Inconnu' %}
-                    <i class="mr-2 fa fa-thermometer"></i>{{ status }}
-                  {% endblocktrans %}
-                </span>
+          <i class="mr-2 fa fa-thermometer"></i> {{ processusrisque.status|default_if_none:_('Inconnu') }}
+        </span>
       </div>
       <div class="col-md-2 col-sm-12">
         <h6 class="mb-0">{% trans 'Propriétaire' %}</h6>
         {% if processusrisque.facteur_risque %}
-          <a href="{% url 'risk_register:assigner-processusrisque' processusrisque=processusrisque.pk %}"
-             class="text-info fm-update" style="text-decoration: none;"
-             data-fm-head="{% trans 'Assigner le risque à:' %}"
-             data-fm-callback="reload"> <i class="mr-2 fa fa-user"></i>
+          {% if can_assign %}
+            <a href="{% url 'risk_register:assigner-processusrisque' processusrisque=processusrisque.pk %}"
+               class="text-info fm-update" style="text-decoration: none;"
+               data-fm-head="{% trans 'Assigner le risque à:' %}"
+               data-fm-callback="reload" data-fm-callback="reload" data-toggle="tooltip" data-placement="top"
+               title="{% trans 'Assigner le risque' %}">
+          {% endif %}
+        <i class="mr-2 fa fa-user"></i>
+        {% if can_assign %}
           </a>
+        {% endif %}
         {% else %}
           <i class="mr-2 fa fa-user"></i>
         {% endif %}
@@ -78,11 +111,16 @@
       </div>
       <div class="col-md-2 col-sm-12">
         <h6 class="mb-0">{% trans 'Date de revue' %}</h6>
-        <a href="{% url 'risk_register:revue-processusrisque' processusrisque=processusrisque.pk %}"
-           class="text-info fm-update" style="text-decoration: none;"
-           data-fm-head="{% trans 'Définir la date de revue du risque:' %}"
-           data-fm-callback="reload"> <i class="mr-2 fa fa-calendar"></i>
-        </a>
+        {% if can_set_review_date %}
+          <a href="{% url 'risk_register:revue-processusrisque' processusrisque=processusrisque.pk %}"
+             class="text-info fm-update" style="text-decoration: none;"
+             data-fm-head="{% trans 'Définir la date de revue du risque:' %}"
+             data-fm-callback="reload" data-toggle="tooltip" data-placement="top" title="{% trans 'Modifier' %}">
+        {% endif %}
+        <i class="mr-2 fa fa-calendar"></i>
+        {% if can_set_review_date %}
+          </a>
+        {% endif %}
 
         {{ processusrisque.date_revue | naturaltime  | default_if_none:_('Non défini ') }}
         {% if processusrisque.est_obsolete %}
@@ -99,13 +137,15 @@
     {% empty %}
       <p class="lead m-4">{% trans 'Ce risque ne comporte aucun contrôle' %}</p>
     {% endfor %}
-    <div class="m-4 mb-2 mt-2 p-1 ">
-      <a href="{% url 'risk_register:ajout_controle_processusrique' processusrisque=processusrisque.pk %}"
-         class="text-info card-link fm-create"
-         data-fm-head="{% trans 'Ajouter un contrôle' %}" data-fm-callback="reload">
-        <i class="fa fa-plus text-info"></i> {% trans 'Nouveau contrôle' %}
-      </a>
-    </div>
+    {% if can_add_controls %}
+      <div class="m-4 p-1" style="width: auto">
+        <a href="{% url 'risk_register:ajout_controle_processusrique' processusrisque=processusrisque.pk %}"
+           class="text-info card-link fm-create"
+           data-fm-head="{% trans 'Ajouter un contrôle' %}" data-fm-callback="reload">
+          <i class="fa fa-plus text-info"></i> {% trans 'Nouveau contrôle' %}
+        </a>
+      </div>
+    {% endif %}
   </div>
 </div>
 

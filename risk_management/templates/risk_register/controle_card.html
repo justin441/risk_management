@@ -1,37 +1,55 @@
-{% load i18n humanize %}
+{% load i18n humanize rules %}
+{% has_perm 'risk_register.delete_controle' user controle as can_delete %}
+{% has_perm 'risk_register.change_controle' user controle as can_change %}
+{% has_perm 'risk_register.approve_controle' user controle as can_approve %}
+{% has_perm 'risk_register.validate_controle_completion' user controle as can_validate %}
+{% has_perm 'risk_register.assign_control' user controle as can_assign %}
+
 <div class="card m-4 mt-2 border-0">
   <div class="card-header">
-    <a href="{% url 'risk_register:effacer_controle' controle=controle.pk %}" class="fm-delete"
-       data-fm-callback="reload"
-       data-fm-head="{% trans 'Supprimer un contrôle' %}">
-      <i class="float-right text-danger ml-3 fa fa-times"></i>
-    </a>
+    {% if can_delete %}
+      <a href="{% url 'risk_register:effacer_controle' controle=controle.pk %}" class="fm-delete"
+         data-fm-callback="reload"
+         data-fm-head="{% trans 'Supprimer un contrôle' %}" data-toggle="tooltip" data-placement="top"
+         title="{% trans 'Supprimer' %}">
+    {% endif %}
+    <i class="float-right text-danger ml-3 fa fa- align-text-bottom"></i>
+    {% if can_delete %}
+      </a>
+    {% endif %}
     <a class="card-link float-right text-info" data-toggle="collapse" href="#controle-{{ controle.pk }}">
-      {% trans 'Détails' %} <i class="fa fa-ellipsis-h"></i>
+      {% trans 'Détails' %} <i class="fa fa-ellipsis-h mr-2 align-text-bottom"></i>
     </a>
-    <a href="{% url 'risk_register:modifier_controle' controle=controle.pk %}"
-       class="fm-update card-title h5"
-       data-fm-callback="reload"
-       data-fm-head="{% trans 'Modifier un contrôle' %}">
-      {{ controle.nom }}
-    </a>
+    {% if can_change %}
+      <a href="{% url 'risk_register:modifier_controle' controle=controle.pk %}"
+         class="fm-update card-title h5"
+         data-fm-callback="reload"
+         data-fm-head="{% trans 'Modifier un contrôle' %}" data-toggle="tooltip" data-placement="top"
+         title="{% trans 'Modifier' %}">
+    {% endif %}
+    {{ controle.nom }}
+    {% if can_change %}
+      </a>
+    {% endif %}
     <strong class="ml-2 nowrap">{% trans 'Cible' %}:
       <span class="text-capitalize text-primary">{{ controle.get_critere_cible_display }}</span>
     </strong>
     <a href="" class="approve ml-2" id="approve-link-{{ controle.pk }}"
        data-check-url="{% url 'risk_register:ajax-get-controle-approuve' pk=controle.pk %}"
-       data-change-url="{% url 'risk_register:ajax-approuver-controle' pk=controle.pk %}" data-toggle="tooltip"
+       data-change-url="{% if can_approve %}{% url 'risk_register:ajax-approuver-controle' pk=controle.pk %}{% endif %}"
+       data-toggle="tooltip"
        data-placement="right">
       {% csrf_token %}
     </a>
     {% if controle.status == 'completed' %}
-          <a href="" class="validate ml-2" id="validate-link-{{ controle.pk }}"
-             data-check-url="{% url 'risk_register:ajax-get-controle-valide' pk=controle.pk %}"
-             data-change-url="{% url 'risk_register:ajax-validate-controle' pk=controle.pk %}">
-            {% csrf_token %}
-            {% trans 'Valider' %}
-          </a>
-        {% endif %}
+      <a href="" class="validate ml-2" id="validate-link-{{ controle.pk }}"
+         data-check-url="{% url 'risk_register:ajax-get-controle-valide' pk=controle.pk %}"
+         data-change-url="
+           {% if can_validate %}{% url 'risk_register:ajax-validate-controle' pk=controle.pk %}{% endif %}">
+        {% csrf_token %}
+        {% trans 'Valider' %}
+      </a>
+    {% endif %}
 
     <div style="font-size: 90%">
       <span
@@ -47,18 +65,18 @@
   <div id="controle-{{ controle.pk }}" class="collapse">
     <div class="card-body">
 
-      <p class="text-justify">{{ controle.description | default_if_none:'' | truncatewords:25 }}</p>
+      <p class="text-justify">{{ controle.description | default_if_none:'' }}</p>
 
       <div class="row">
         <div class="col-md-3">
           <h6 class="mb-0">{% trans 'Debut' %}:</h6>
-          <span class="text-muted">{{ controle.start | naturalday }}</span>
+          <span class="text-muted">{{ controle.start | naturalday | default_if_none:'--' }}</span>
         </div>
         <div class="col-md-3">
           <h6 class="mb-0">{% trans 'Fin' %}:</h6>
-          <span class="{{ controle.status_display }}">{{ controle.end | naturalday }}</span>
+          <span class="{{ controle.status_display }}">{{ controle.end | naturalday | default_if_none:'--' }}</span>
         </div>
-        {% if controle.est_approuve and controle.status == 'completed'%}
+        {% if controle.est_approuve and controle.status == 'completed' %}
           <div class="col-md-3">
             <h6 class="mb-0">{% trans 'Statut' %}:</h6>
             <span class="{{ controle.status_display }} controle-status"
@@ -71,16 +89,22 @@
         {% endif %}
         <div class="col-md-3">
           <h6 class="mb-0">{% trans 'Propriétaire' %}</h6>
-          <a href="{% url 'risk_register:assigner_controle' controle=controle.pk %}"
-             class="fm-update"
-             data-fm-callback="reload"
-             data-fm-head="{% trans 'Assigner un contrôle' %}">
-            {% if controle.assigne_a %}
-              <span class="text-muted">{{ controle.assigne_a }}</span>
-            {% else %}
-              {% trans 'Assigner' %}
-            {% endif %}
-          </a>
+          {% if can_assign and controle.est_approuve %}
+            <a href="{% url 'risk_register:assigner_controle' controle=controle.pk %}"
+               class="fm-update"
+               data-fm-callback="reload"
+               data-fm-head="{% trans 'Assigner un contrôle' %}">
+            <i class="fa fa-user mr-2 align-text-bottom"></i>
+              {% if can_assign and controle.est_approuve %}
+                </a>
+              {% endif %}
+          {% endif %}
+          {% if controle.assigne_a %}
+            <span class="text-muted">{{ controle.assigne_a }}</span>
+          {% else %}
+            {% trans 'Assigner' %}
+          {% endif %}
+
         </div>
       </div>
     </div>

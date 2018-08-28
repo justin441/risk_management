@@ -3,7 +3,7 @@ from dal import autocomplete
 from rules.contrib.views import PermissionRequiredMixin, permission_required, objectgetter
 
 from django.views.generic import DetailView, ListView
-from django.conf import settings
+from django.core.exceptions import PermissionDenied
 from django.db.models import F, Count
 from django.shortcuts import get_object_or_404, reverse, redirect
 from django.http import JsonResponse
@@ -675,7 +675,7 @@ def get_risk_id(request, pk):
         return get_object_or_404(ProcessusRisque, pk=pk)
 
 
-@permission_required('risk_register.verify_risque', fn=get_risk_id)
+@permission_required('risk_register.verify_risque', fn=get_risk_id, raise_exception=True)
 def change_risk_status(request, pk):
     if request.method == 'POST' and request.is_ajax():
         data = {}
@@ -705,6 +705,14 @@ def change_risk_status(request, pk):
                 data['error_message'] = _('status du risque inconnu')
 
         return JsonResponse(data)
+
+
+def manage_change_risk_status(request, pk):
+    # cette fonction est un "hack" pour gere l'exception PermissionDenied
+    try:
+        return change_risk_status(request, pk)
+    except PermissionDenied:
+        return JsonResponse({'permission': 'denied'})
 
 
 @permission_required('risk_register.approve_controle', fn=objectgetter(Controle, 'pk'))

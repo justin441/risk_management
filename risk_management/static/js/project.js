@@ -210,6 +210,10 @@ $(document).ready(function () {
                     risk.prev().remove();
                     getRiskStatus(risk);
                 }
+                if (data.permission === 'denied'){
+                    alert(gettext('Vous n\'avez pas la permission d\'effectuer cette action'))
+                }
+
             }
 
         })

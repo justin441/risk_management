@@ -1,13 +1,23 @@
-{% load i18n humanize %}
+{% load i18n humanize rules %}
+{% has_perm 'risk_register.delete_activiterisque' user activiterisque as can_delete %}
+{% has_perm 'risk_register.change_activiterisque' user activiterisque as can_change %}
+{% has_perm 'risk_register.set_seuil_activity_risk' user activiterisque as can_set_seuil %}
+{% has_perm 'risk_register.estimate_activity_risk' user activiterisque as can_estimate %}
+{% has_perm 'risk_register.assign_activity_risk' user activiterisque as can_assign %}
+{% has_perm 'risk_register.add_control_activity_risk' user activiterisque as can_add_controls %}
+{% has_perm 'risk_register.set_review_date_activity_risk' user activiterisque as can_set_review_date %}
 <div class="card mb-3">
   <div class="card-header">
-    <a href="{% url 'risk_register:effacer_activiterisque' activiterisque=activiterisque.pk %}" class="fm-delete"
-       data-fm-callback="reload"
-       data-fm-head="{% trans 'Supprimer un risque' %}">
-      <i class="fa fa-times float-right text-danger ml-3"></i>
-    </a>
+    {% if can_delete %}
+      <a href="{% url 'risk_register:effacer_activiterisque' activiterisque=activiterisque.pk %}" class="fm-delete"
+         data-fm-callback="reload"
+         data-fm-head="{% trans 'Supprimer un risque' %}" data-toggle="tooltip" data-placement="top"
+         title="{% trans 'Supprimer' %}">
+        <i class="fa fa-times float-right text-danger ml-3 align-text-bottom"></i>
+      </a>
+    {% endif %}
     <a class="card-link float-right text-info" data-toggle="collapse" href="#risk-{{ activiterisque.pk }}">
-      {% trans 'Contrôles' %} <i class="fa fa-ellipsis-h"></i>
+      {% trans 'Contrôles' %} <i class="fa fa-ellipsis-h ml-2 align-text-bottom"></i>
     </a>
 
     {% if activiterisque.type_de_risque == 'O' %}
@@ -24,68 +34,89 @@
 
   </div>
   <div class="card-body">
-    <a href="{% url 'risk_register:modifier_activiterisque' activiterisque=activiterisque.pk %}"
-       class="fm-update card-title h5" data-fm-head="{% trans "Modifier un risque d'activité" %}"
-       data-fm-callback="reload">
-      {{ activiterisque.risque.nom }}
-    </a><br>
+    {% if can_change %}
+      <a href="{% url 'risk_register:modifier_activiterisque' activiterisque=activiterisque.pk %}"
+         class="fm-update card-title h5" data-fm-head="{% trans "Modifier un risque d'activité" %}"
+         data-fm-callback="reload" data-toggle="tooltip" data-placement="top" title="{% trans 'Modifier' %}">
+    {% endif %}
+    {{ activiterisque.risque.nom }}
+    {% if can_change %}
+      </a>
+    {% endif %}
+    <br>
     <span
       class="text-muted">{% trans 'Ajouté' %} {{ activiterisque.created | naturaltime }} {% trans 'par' %} {{ activiterisque.soumis_par }}</span><br>
-  <span class="text-muted">{% trans 'Activité' %}: {{ activiterisque.activite }}</span>
+    <span class="text-muted">{% trans 'Activité' %}: {{ activiterisque.activite }}</span>
     <p>
       {{ activiterisque.risque.description|truncatechars:150 }}
     </p>
     <div class="row mt-2">
       <div class="col-md-2 col-sm-12">
         <h6 class="mb-0">{% trans 'Seuil de risque' %}</h6>
-        <a href="{% url 'risk_register:definir_seuil_activiterisque' activiterisque=activiterisque.pk %}"
-           class="text-info fm-create" style="text-decoration: none;"
-           data-fm-head="{% trans 'Définir le seuil de risque' %}"
-           data-fm-callback="reload">
-          <i class="mr-2 fa fa-sliders"></i>
-        </a>
+        {% if can_set_seuil %}
+          <a href="{% url 'risk_register:definir_seuil_activiterisque' activiterisque=activiterisque.pk %}"
+             class="text-info fm-create" style="text-decoration: none;"
+             data-fm-head="{% trans 'Définir le seuil de risque' %}"
+             data-fm-callback="reload" data-toggle="tooltip" data-placement="top"
+             title="{% trans 'Définir le seuil de risque' %}">
+        {% endif %}
+        <i class="mr-2 fa fa-sliders align-text-bottom"></i>
+        {% if can_set_seuil %}
+          </a>
+        {% endif %}
         <span
           class="{{ activiterisque.seuil_display }}">{{ activiterisque.seuil_de_risque|default_if_none:_('Non defini') }}</span>
       </div>
       <div class="col-md-2 col-sm-12">
         <h6 class="mb-0">{% trans 'Facteur risque' %}</h6>
-        <a href="{% url 'risk_register:estimer_activiterisque' activiterisque=activiterisque.pk %}"
-           class="text-info fm-create" style="text-decoration: none;" data-fm-head="{% trans 'Estimer le risque' %}"
-           data-fm-callback="reload">
-          <i class="mr-2 fa fa-sliders"></i>
-        </a>
+        {% if can_estimate %}
+          <a href="{% url 'risk_register:estimer_activiterisque' activiterisque=activiterisque.pk %}"
+             class="text-info fm-create" style="text-decoration: none;" data-fm-head="{% trans 'Estimer le risque' %}"
+             data-fm-callback="reload" data-toggle="tooltip" data-placement="top"
+             title="{% trans 'Estimer de risque' %}">
+        {% endif %}
+        <i class="mr-2 fa fa-sliders align-text-bottom"></i>
+        {% if can_estimate %}
+          </a>
+        {% endif %}
         <span
           class="{{ activiterisque.facteur_risque_display }}">{{ activiterisque.facteur_risque|default_if_none:_('Non defini') }}</span>
       </div>
       <div class="col-md-2 col-sm-12">
         <h6 class="mb-0">{% trans 'Statut du risque' %}</h6>
         <span class="{{ activiterisque.status_display }}">
-                  {% blocktrans with status=activiterisque.status|default_if_none:'Inconnu' %}
-                    <i class="mr-2 fa fa-thermometer"></i>{{ status }}
-                  {% endblocktrans %}
-                </span>
+          <i class="mr-2 fa fa-thermometer"></i> {{ activiterisque.status|default_if_none:_('Inconnu') }}
+        </span>
       </div>
       <div class="col-md-2 col-sm-12">
         <h6 class="mb-0">{% trans 'Propriétaire' %}</h6>
-        {% if activiterisque.facteur_risque %}
+        {% if activiterisque.facteur_risque  and can_assign %}
           <a href="{% url 'risk_register:assigner-activiterisque' activiterisque=activiterisque.pk %}"
              class="text-info fm-update" style="text-decoration: none;"
              data-fm-head="{% trans 'Assigner le risque à:' %}"
-             data-fm-callback="reload">
-            <i class="mr-2 fa fa-user"></i>
+             data-fm-callback="reload" data-toggle="tooltip" data-placement="top"
+             title="{% trans 'Assigner le risque' %}">
+        {% endif %}
+        <i class="mr-2 fa fa-user align-text-bottom"></i>
+        {% if can_assign %}
           </a>
-        {% else %}
-          <i class="mr-2 fa fa-user"></i>
         {% endif %}
         {{ activiterisque.proprietaire|default_if_none:_('Non assigné') }}
       </div>
       <div class="col-md-2 col-sm-12">
         <h6 class="mb-0">{% trans 'Date de revue' %}</h6>
-        <a href="{% url 'risk_register:revue-activiterisque' activiterisque=activiterisque.pk %}"
+        {% if can_set_review_date %}
+          <a href="{% url 'risk_register:revue-activiterisque' activiterisque=activiterisque.pk %}"
            class="text-info fm-update" style="text-decoration: none;"
            data-fm-head="{% trans 'Définir la date de revue du risque:' %}"
-           data-fm-callback="reload"> <i class="mr-2 fa fa-calendar"></i>
-        </a> {{ activiterisque.date_revue | naturaltime  | default_if_none:_('Non défini ') }}
+           data-fm-callback="reload" data-toggle="tooltip" data-placement="top"
+           title="{% trans 'Changer' %}">
+        {% endif %}
+          <i class="mr-2 fa fa-calendar align-text-bottom"></i>
+        {% if can_set_review_date %}
+          </a>
+        {% endif %}
+        {{ activiterisque.date_revue | naturaltime  | default_if_none:_('Non défini ') }}
         {% if activiterisque.est_obsolete %}
           <span class="mr-2 text-danger">{% trans 'Le risque est obsolète' %}</span>
         {% endif %}
@@ -101,12 +132,14 @@
     {% else %}
       <p class="lead ml-4">{% trans 'Ce risque ne comporte aucun contrôle' %}</p>
     {% endif %}
-    <div class="m-4 mb-2 mt-2 p-1 ">
+    {% if can_add_controls %}
+      <div class="m-4 mb-2 mt-2 p-1 ">
       <a href="{% url 'risk_register:ajout_controle_activiterisque' activiterisque=activiterisque.pk %}"
          class="text-info card-link fm-create"
          data-fm-head="{% trans 'Ajouter un contrôle' %}" data-fm-callback="reload">
-        <i class="fa fa-plus"></i> {% trans 'Nouveau contrôle' %}
+        <i class="fa fa-plus align-text-bottom"></i> {% trans 'Nouveau contrôle' %}
       </a>
     </div>
+    {% endif %}
   </div>
 </div>
