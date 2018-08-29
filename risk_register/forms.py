@@ -1,5 +1,5 @@
 from dal import autocomplete
-from datetime import datetime
+from datetime import datetime, timedelta
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Fieldset, HTML, Field
 from crispy_forms.bootstrap import InlineRadios
@@ -635,6 +635,21 @@ class CritereRisqueForm(forms.ModelForm):
             msg = _('Ce risque n\'a pas encore été vérifié; impossible de l\'estimer.')
             self.add_error(None, msg)
         return super().clean()
+
+
+class EstimationRisqueForm(CritereRisqueForm):
+    date_revue = forms.DateTimeField(label=_('Date de revue'), initial=now(), widget=forms.SelectDateWidget)
+
+    class Meta(CritereRisqueForm.Meta):
+        fields = CritereRisqueForm.Meta.fields + ['date_revue']
+
+    def clean(self):
+        cleaned_data = super().clean()
+        date_revue = cleaned_data.get('date_revue')
+        if date_revue < now() + timedelta(hours=1):
+            msg = _('La date de revue de l\'estimation du risque ne peut pas être antérieur à celle de sa création.')
+            self.add_error('date_revue', msg)
+        return cleaned_data
 
 
 class AssignRiskform(forms.ModelForm):

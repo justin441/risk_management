@@ -1,3 +1,5 @@
+import datetime
+
 from fm.views import AjaxCreateView, AjaxUpdateView, AjaxDeleteView
 from dal import autocomplete
 from rules.contrib.views import PermissionRequiredMixin, permission_required, objectgetter
@@ -9,6 +11,7 @@ from django.shortcuts import get_object_or_404, reverse, redirect
 from django.http import JsonResponse
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.postgres.search import SearchQuery, SearchRank
+from django.forms.utils import from_current_timezone
 
 from risk_management.users.models import BusinessUnit
 from .models import (ActiviteRisque, ProcessusRisque, Processus, Activite, Risque, Estimation,
@@ -17,7 +20,8 @@ from .forms import (CreateProcessForm, CreateActivityForm, CreateProcessOutputDa
                     AddProcessusrisqueForm, CreateRiskForm, UpdateProcessusrisqueForm, AddActiviterisqueForm,
                     UpdateActiviterisqueForm, AddControleForm, CritereRisqueForm, AssignActiviterisqueForm,
                     AssignProcessusrisqueForm, EditControleForm, UpdateRiskForm, CreateInputDataForm,
-                    ChangeActiviterisqueReviewDateForm, ChangeProcessusrisqueReviewDateForm, AssignControlform)
+                    ChangeActiviterisqueReviewDateForm, ChangeProcessusrisqueReviewDateForm, AssignControlform,
+                    EstimationRisqueForm)
 from risk_management.users.utils import get_risk_occurrences
 
 
@@ -479,20 +483,29 @@ class SetSeuilProcessusrisqueView(PermissionRequiredMixin, AjaxCreateView):
 
 class ProcessusrisqueEstimationView(PermissionRequiredMixin, AjaxCreateView):
     permission_required = 'risk_register.estimate_process_risk'
-    form_class = CritereRisqueForm
+    form_class = EstimationRisqueForm
     pk_url_kwarg = 'processusrisque'
 
     def get_permission_object(self):
         return get_object_or_404(ProcessusRisque, pk=self.kwargs['processusrisque'])
 
+    def form_valid(self, form):
+        print(form.data)
+        day = form.data.get('date_revue_day')
+        month = form.data.get('date_revue_month')
+        year = form.data.get('date_revue_year')
+        self.date_revue = from_current_timezone(datetime.datetime(year=int(year), month=int(month), day=int(day)))
+        return super().form_valid(form)
+
     def pre_save(self):
+        print(self.object)
         self.object.evalue_par = self.request.user
 
     def post_save(self):
         processusrisque = get_object_or_404(ProcessusRisque, pk=self.kwargs['processusrisque'])
-        Estimation.objects.create(
+        processusrisque.estimations.create(
+            date_revue=self.date_revue,
             criterisation=self.object,
-            content_object=processusrisque,
         )
 
     def get_form_kwargs(self):
@@ -523,20 +536,28 @@ class SetSeuilActiviterisqueView(PermissionRequiredMixin, AjaxCreateView):
 
 class ActiviterisqueEstimationView(PermissionRequiredMixin, AjaxCreateView):
     permission_required = 'risk_register.estimate_activity_risk'
-    form_class = CritereRisqueForm
+    form_class = EstimationRisqueForm
     pk_url_kwarg = 'activiterisque'
 
     def get_permission_object(self):
         return get_object_or_404(ActiviteRisque, pk=self.kwargs['activiterisque'])
+
+    def form_valid(self, form):
+        print(form.data)
+        day = form.data.get('date_revue_day')
+        month = form.data.get('date_revue_month')
+        year = form.data.get('date_revue_year')
+        self.date_revue = from_current_timezone(datetime.datetime(year=int(year), month=int(month), day=int(day)))
+        return super().form_valid(form)
 
     def pre_save(self):
         self.object.evalue_par = self.request.user
 
     def post_save(self):
         activiterisque = get_object_or_404(ActiviteRisque, pk=self.kwargs['activiterisque'])
-        Estimation.objects.create(
+        activiterisque.estimations.create(
             criterisation=self.object,
-            content_object=activiterisque
+            date_revue=self.date_revue
         )
 
     def get_form_kwargs(self):

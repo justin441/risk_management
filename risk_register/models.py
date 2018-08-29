@@ -73,13 +73,14 @@ class Processus(models.Model):
     input_data = models.ManyToManyField('ProcessData', verbose_name=_('Données d\'entrée'),
                                         related_name='clients', blank=True
                                         )
+    risques = models.ManyToManyField('Risque', through='ProcessusRisque')
 
     def __str__(self):
         return self.nom
 
     def get_absolute_url(self):
         if self.proc_manager:
-            return reverse('risk_register:detail_processus', kwargs={'p': self.code_processus})
+            return reverse('risk_register:detail_processus', kwargs={'pk': self.code_processus})
 
     class Meta:
         verbose_name = _('processus')
@@ -115,8 +116,8 @@ class Activite(TimeFramedModel):
                     'end': _('l\'activité ne peut pas se terminer avant d\'avoir commencé!')
                 })
 
-    # def get_absolute_url(self):
-    #     return reverse('risk_register:detail_activite', kwargs={'pk': self.code_activite})
+    def get_absolute_url(self):
+        return reverse('risk_register:detail_activite', kwargs={'pk': self.code_activite})
 
     class Meta:
         verbose_name = _('Activité')
@@ -132,8 +133,8 @@ class ClasseDeRisques(models.Model):
     def __str__(self):
         return self.nom
 
-    # def get_absolute_url(self):
-    #     return reverse('risk_register:liste_risque', kwargs={'nom': self.nom})
+    def get_absolute_url(self):
+        return reverse('risk_register:liste_risques', kwargs={'classe': self.nom})
 
     class Meta:
         verbose_name = _('Classe de risques')
@@ -158,7 +159,7 @@ class Risque(TimeStampedModel):
     search_vector = SearchVectorField(null=True, blank=True)
 
     def __str__(self):
-        return self.nom
+        return '%s: %s...' % (self.nom, self. description[:50])
 
     class Meta:
         verbose_name = _('risque')
@@ -205,16 +206,16 @@ class CritereDuRisque(models.Model):
     def __str__(self):
         return 'D: %d; S: %d; O: %d' % (self.detectabilite, self.severite, self.occurence)
 
-    def valeur(self):
+    def valeur_menace(self):
         """Renvoie le produit des score des critères"""
         return self.detectabilite * self.severite * self.occurence
 
-    def valeur_si_opportunite(self):
+    def valeur_opportunite(self):
         """si le risque est une opportunité, inverser la valeur de la détectabilité avant de calculer
          le produit des scores"""
-        detectabilite_choice = dict((x, y) for x, y in zip(range(1, 7), range(6, 0, -1)))
-        detectabilite = detectabilite_choice.get(self.detectabilite)
-        return detectabilite * self.severite * self.occurence
+        detectabilite_opp_choice = dict((x, y) for x, y in zip(range(1, 7), range(6, 0, -1)))
+        detectabilite_opp = detectabilite_opp_choice.get(self.detectabilite)
+        return detectabilite_opp * self.severite * self.occurence
 
     class Meta:
         verbose_name = _('critérisation')
@@ -240,12 +241,15 @@ class IdentificationRisque(TimeStampedModel):
     verifie_le = MonitorField(monitor='verifie')
     verifie_par = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True)
 
-    def save(self, *args, **kwargs):
+    def clean(self):
         if self.date_revue and (self.date_revue < self.created):
-            raise FieldError(
-                _('la date de revue (%s) ne peut pas prédéder la date de cration (%s)' %
-                  (self.date_revue.date(), self.created.date()))
+            raise ValidationError(
+                {'date_revue': _('la date de revue (%s) ne peut pas prédéder la date de cration (%s)' %
+                 (self.date_revue.date(), self.created.date()))}
             )
+        super().clean()
+
+    def save(self, *args, **kwargs):
         if self.verifie == 'verified' and not self.date_revue:
             # si le risque est verifié et la date de revue non fixé,
             # fixer la date de revue par défaut à un an dans le futur
@@ -253,11 +257,13 @@ class IdentificationRisque(TimeStampedModel):
         super().save(*args, **kwargs)
 
     def seuil_de_risque(self):
-        if self.criterisation:
+        if self.est_obsolete:
+            return
+        elif self.criterisation:
             if self.type_de_risque == 'M':
-                return self.criterisation.valeur()
+                return self.criterisation.valeur_menace()
             elif self.type_de_risque == 'O':
-                return self.criterisation.valeur_si_opportunite()
+                return self.criterisation.valeur_opportunite()
 
     seuil_de_risque.short_description = _('seuil de risque')
 
@@ -277,7 +283,7 @@ class IdentificationRisque(TimeStampedModel):
     seuil_display.short_description = _('seuil de risque')
 
     def facteur_risque_display(self):
-        """renvoi des classes css pour l'affichage du facteur risque"""
+        """renvoi des classes css pour l'affichage html du facteur risque"""
         facteur_risque = self.facteur_risque()
         if facteur_risque:
             if self.seuil_de_risque():
@@ -411,7 +417,7 @@ class RiskMixin(models.Model):
 
 class Estimation(TimeStampedModel, RiskMixin):
     code_estimation = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    date_revue = models.DateTimeField(_('revue prevue pour le'), default=now()+timedelta(days=60))
+    date_revue = models.DateTimeField(_('Date de revue'), default=now)
     criterisation = models.OneToOneField(CritereDuRisque, on_delete=models.SET_NULL, blank=True, null=True,
                                          verbose_name=_('Scoring'))
     date_revue_change = MonitorField(monitor='date_revue')
@@ -419,11 +425,13 @@ class Estimation(TimeStampedModel, RiskMixin):
 
     def facteur_risque(self):
         """renvoit le facteur risque"""
-        if self.criterisation:
+        if self.est_obsolete:
+            return
+        elif self.criterisation:
             if self.content_object.type_de_risque == 'M':
-                return self.criterisation.valeur()
+                return self.criterisation.valeur_menace()
             elif self.content_object.type_de_risque == 'O':
-                return self.criterisation.valeur_si_opportunite()
+                return self.criterisation.valeur_opportunite()
 
     @property
     def est_obsolete(self):

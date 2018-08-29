@@ -149,7 +149,7 @@ class IdentificationRisque(admin.ModelAdmin):
 @admin.register(CritereDuRisque, site=risk_management_admin_site)
 class CriterdurisqueAdmin(admin.ModelAdmin):
     exclude = ['evalue_par']
-    list_display = ['detectabilite', 'severite', 'occurence', 'valeur']
+    list_display = ['detectabilite', 'severite', 'occurence']
 
     def save_model(self, request, obj, form, change):
         if not change:
