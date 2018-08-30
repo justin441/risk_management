@@ -7,14 +7,14 @@ from rules.contrib.views import PermissionRequiredMixin, permission_required, ob
 from django.views.generic import DetailView, ListView
 from django.core.exceptions import PermissionDenied
 from django.db.models import F, Count
-from django.shortcuts import get_object_or_404, reverse, redirect
+from django.shortcuts import get_object_or_404
 from django.http import JsonResponse
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.postgres.search import SearchQuery, SearchRank
 from django.forms.utils import from_current_timezone
 
 from risk_management.users.models import BusinessUnit
-from .models import (ActiviteRisque, ProcessusRisque, Processus, Activite, Risque, Estimation,
+from .models import (ActiviteRisque, ProcessusRisque, Processus, Activite, Risque,
                      Controle)
 from .forms import (CreateProcessForm, CreateActivityForm, CreateProcessOutputDataForm, AddInputDataForm,
                     AddProcessusrisqueForm, CreateRiskForm, UpdateProcessusrisqueForm, AddActiviterisqueForm,
@@ -100,6 +100,7 @@ class CreateProcessView(PermissionRequiredMixin, AjaxCreateView):
     form_class = CreateProcessForm
     message_template = 'risk_register/process_card.html'
     permission_required = 'users.add_process_to_bu'
+    success_message = 'Le processus "%(nom)" a été ajouté avec succès.'
 
     def pre_save(self):
         self.object.business_unit = get_object_or_404(BusinessUnit, denomination=self.kwargs['business_unit'])

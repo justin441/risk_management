@@ -37,7 +37,8 @@
   {% block data %}
     <div class="tab-content">
       <div class="tab-pane mt-3 active" role="tabpanel" id="my-risks">
-        {% for identified_risk in my_risks %}
+        <div class="container">
+          {% for identified_risk in my_risks %}
           <div class="card mb-3">
             <div class="card-header">
               <a class="card-link float-right text-info" data-toggle="collapse"
@@ -194,10 +195,12 @@
         {% empty %}
           <span class="empty"></span>
         {% endfor %}
+        </div>
 
       </div>
       <div class="tab-pane mt-3" role="tabpanel" id="followed-risks">
-        {% for followed_risk in followed_risks %}
+        <div class="container">
+          {% for followed_risk in followed_risks %}
           {% if followed_risk.get_class == 'ProcessusRisque' %}
             {% include 'risk_register/processusrisque_card.html' with processusrisque=followed_risk %}
           {% elif followed_risk.get_class == 'ActiviteRisque' %}
@@ -206,31 +209,40 @@
         {% empty %}
           <span class="empty"></span>
         {% endfor %}
+        </div>
 
       </div>
       <div class="tab-pane mt-3" role="tabpanel" id="my-controls">
-        {% for controle in employe.traitements_assignes.all %}
+        <div class="container">
+          {% for controle in employe.traitements_assignes.all %}
           {% if controle.est_approuve %}
             {% include 'users/user_control_card.html' %}
           {% endif %}
         {% empty %}
           <span class="empty"></span>
         {% endfor %}
+        </div>
       </div>
       <div class="tab-pane mt-3" role="tabpanel" id="my-processes">
-        {% for processus in employe.processus_manages.all %}
+        <div class="container">
+          {% for processus in employe.processus_manages.all %}
           {% include 'risk_register/process_card.html' %}
         {% empty %}
           <span class="empty"></span>
         {% endfor %}
+        </div>
 
       </div>
       <div class="tab-pane m-t3" role="tabpanel" id="my-activities">
-        {% for activite in employe.activites.all %}
-          {% include 'risk_register/activity_card.html' %}
+        <div class="container">
+          <ol>
+          {% for activite in employe.activites.all %}
+            <li>{% include 'risk_register/activity_card.html' %}</li>
         {% empty %}
           <span class="empty"></span>
         {% endfor %}
+        </ol>
+        </div>
 
       </div>
     </div>

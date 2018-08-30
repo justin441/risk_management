@@ -24,7 +24,7 @@ class CreateProcessForm(forms.ModelForm):
 
     class Meta:
         model = Processus
-        exclude = ['business_unit', 'input_data']
+        exclude = ['business_unit', 'input_data', 'risques']
         widgets = {
             'proc_manager': autocomplete.ModelSelect2(url='users:user-autocomplete',
                                                       attrs={

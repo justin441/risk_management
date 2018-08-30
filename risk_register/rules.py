@@ -218,12 +218,11 @@ rules.add_perm('risk_register.set_review_date_activity_risk', is_activity_risk_s
 rules.add_perm('risk_register.add_control_activity_risk', is_activity_risk_reporter | is_activity_risk_monitor |
                is_activity_risk_owner | is_activity_risk_supervisor | is_activity_risk_upper_mgt)
 rules.add_perm('risk_register.assign_activity_risk', is_activity_risk_supervisor | is_activity_risk_upper_mgt)
-rules.add_perm('risk_register.estimate_activity_risk', is_activity_risk_supervisor | is_activity_risk_upper_mgt |
-               is_activity_risk_owner | is_activity_risk_reporter)
+rules.add_perm('risk_register.estimate_activity_risk',
+               is_activity_risk_supervisor | is_activity_risk_upper_mgt | is_activity_risk_reporter)
 rules.add_perm('risk_register.change_activiterisque', is_activity_risk_supervisor |
                is_activity_risk_upper_mgt | is_activity_risk_reporter)
 rules.add_perm('risk_register.delete_activiterisque', is_activity_risk_supervisor | is_activity_risk_upper_mgt)
-
 
 # Risques des processus
 rules.add_perm('risk_register.set_seuil_process_risk', is_process_risk_monitor | is_process_risk_upper_mgt)
@@ -236,7 +235,6 @@ rules.add_perm('risk_register.estimate_process_risk', is_process_risk_upper_mgt 
 rules.add_perm('risk_register.change_processusrisque', is_process_risk_upper_mgt |
                is_process_risk_monitor | is_process_risk_reporter)
 rules.add_perm('risk_register.delete_processusrisque', is_process_risk_monitor | is_process_risk_upper_mgt)
-
 
 # Estimations
 rules.add_perm('risk_register.set_estimation_review_date', is_estimation_monitor)
