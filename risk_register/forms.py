@@ -482,7 +482,12 @@ class AddActiviterisqueForm(ActiviterisqueBaseForm):
         fields = ['classe_de_risque', 'type_de_risque', 'risque']
 
     def clean(self):
-        """Verifier qu'un même risque n'est pas soumis plusieurs fois"""
+        # Ajouter des risques seulement aux activités en
+        if self.activite.status == 'completed':
+            msg = _('Cet activité est achevé. Impossible d\'y ajouter des risques')
+            self.add_error(None, msg)
+
+        # Verifier qu'un même risque n'est pas soumis plusieurs fois
         cleaned_data = super().clean()
         cleaned_data.pop('classe_de_risque')
         risque = cleaned_data.get('risque', '')
@@ -750,6 +755,11 @@ class AssignControlform(forms.ModelForm):
         if not self.instance.est_approuve:
             msg = _('Vous ne pouvez pas assigner un contrôle non approuvé')
             self.add_error(None, msg)
+        if self.instance.content_object.est_obsolete:
+            msg = _('Les données du risque ne sont pas à jour; impossible d\'assignier le contrôle')
+            self.add_error(None, msg)
+        if self.instance.content_object.estimations.latest().est_obsolete:
+            msg = _('L\'estimation du risque n\'est pas à jour; impossible d\'assignier le contrôle')
         if not self.instance.start or not self.instance.end:
             msg = _('Definissez les dates de début et de fin avant d\'assigner le controle')
             self.add_error(None, msg)
