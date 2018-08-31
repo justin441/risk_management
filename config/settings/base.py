@@ -72,6 +72,8 @@ THIRD_PARTY_APPS = [
     'allauth.socialaccount',
     'rest_framework',
     'rules.apps.AutodiscoverRulesConfig',
+    'django_vox',
+    'background_task'
 
 ]
 LOCAL_APPS = [
