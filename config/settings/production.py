@@ -2,6 +2,7 @@ import logging
 
 from .base import *  # noqa
 from .base import env
+import datetime
 
 # GENERAL
 # ------------------------------------------------------------------------------
@@ -158,8 +159,10 @@ LOGGING = {
     },
     'formatters': {
         'verbose': {
-            'format': '%(levelname)s %(asctime)s %(module)s '
-                      '%(process)d %(thread)d %(message)s'
+            'format': '%(levelname)s %(asctime)s %(module)s %(lineno)d %(process)d %(message)s'
+        },
+        'simple': {
+            'format': '%(levelname)s %(asctime)s %(message)s '
         },
     },
     'handlers': {
@@ -173,16 +176,46 @@ LOGGING = {
             'class': 'logging.StreamHandler',
             'formatter': 'verbose',
         },
+        'security_log_file': {
+            'level': 'WARNING',
+            'class': 'logging.handlers.TimedRotatingFileHandler',
+            'filename': 'logs/security.log',
+            'when': 'W0',
+            'backupCount': 2,
+            'atTime': datetime.time(1, 0, 0),
+            'formatter': 'verbose',
+            'filters': ['require_debug_false'],
+        },
+        'request_log_file': {
+            'level': 'WARNING',
+            'class': 'logging.handlers.TimedRotatingFileHandler',
+            'filename': 'logs/request.log',
+            'when': 'W0',
+            'backupCount': 4,
+            'atTime': datetime.time(1, 0, 0),
+            'formatter': 'verbose',
+            'filters': ['require_debug_false'],
+        },
+        'others_file': {
+            'level': 'WARNING',
+            'class': 'logging.handlers.TimedRotatingFileHandler',
+            'filename': 'logs/others.log',
+            'when': 'W0',
+            'backupCount': 4,
+            'atTime': datetime.time(1, 0, 0),
+            'formatter': 'verbose',
+            'filters': ['require_debug_false'],
+        },
     },
     'loggers': {
         'django.request': {
-            'handlers': ['mail_admins'],
-            'level': 'ERROR',
+            'handlers': ['request_log_file', 'mail_admins'],
+            'level': 'WARNING',
             'propagate': True
         },
         'django.security.DisallowedHost': {
             'level': 'ERROR',
-            'handlers': ['console', 'mail_admins'],
+            'handlers': ['security_log_file', 'mail_admins'],
             'propagate': True
         }
     }
