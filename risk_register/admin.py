@@ -1,3 +1,5 @@
+import logging
+
 from django.contrib import admin
 from django.contrib.admin.widgets import AdminDateWidget
 from django.contrib.contenttypes.admin import GenericStackedInline
@@ -53,6 +55,10 @@ class ActiviteAdmin(admin.ModelAdmin):
 
     def mark_completed(self, request, queryset):
         queryset.update(status='completed')
+        logging.getLogger('django.request').info(
+            "%s a achevé %d activité(s): %s" % (
+                request.user.get_full_name(), len(queryset),
+                ', '.join([activite['nom'] for activite in queryset.values('nom')])))
 
     mark_completed.short_description = _('marquer comme achevé')
 
@@ -112,8 +118,17 @@ class IdentificationRisque(admin.ModelAdmin):
 
     def mark_verified(self, request, queryset):
         queryset = queryset.filter(verifie='pending')
+        liste_risques = [str(ident.code_identification) + ": " + ident.risque.description[:25]
+                         + '...' for ident in queryset]
         queryset.update(verifie='verified')
         queryset.update(verifie_par=request.user)
+
+        logging.getLogger('django.request').info('%s a vérifié %d risque(s): %s' % (request.user.get_full_name(),
+                                                                                    len(queryset),
+                                                                                    ', '.join(liste_risques)))
+        logging.getLogger('django').info('%s a vérifié %d risque(s): %s' % (request.user.get_full_name(),
+                                                                            len(queryset),
+                                                                            ', '.join(liste_risques)))
 
     mark_verified.short_description = _('marquer comme verifier')
 
@@ -173,7 +188,7 @@ class ProcessusRisqueAdmin(IdentificationRisque):
     autocomplete_fields = ['processus', 'risque']
     list_filter = ('processus__business_unit', 'type_de_risque')
     list_display = ['created', 'date_revue', 'processus', 'risque', 'type_de_risque', 'verifie',
-                    'verifie_par', 'status',  'seuil_de_risque', 'facteur_risque', 'proprietaire']
+                    'verifie_par', 'status', 'seuil_de_risque', 'facteur_risque', 'proprietaire']
 
 
 @admin.register(ProcessData, site=risk_management_admin_site)

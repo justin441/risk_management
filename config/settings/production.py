@@ -159,7 +159,8 @@ LOGGING = {
     },
     'formatters': {
         'verbose': {
-            'format': '%(levelname)s %(asctime)s %(module)s %(lineno)d %(process)d %(message)s'
+            'format': '%(levelname)s %(asctime)s [%(filename)s %(funcName)s %(lineno)d] '
+                      '[Pid %(process)d, Thread %(thread)d]: %(message)s'
         },
         'simple': {
             'format': '%(levelname)s %(asctime)s %(message)s '
@@ -187,12 +188,12 @@ LOGGING = {
             'filters': ['require_debug_false'],
         },
         'request_log_file': {
-            'level': 'WARNING',
+            'level': 'INFO',
             'class': 'logging.handlers.TimedRotatingFileHandler',
             'filename': 'logs/request.log',
             'when': 'W0',
             'backupCount': 4,
-            'atTime': datetime.time(1, 0, 0),
+            'atTime': datetime.time(2, 0, 0),
             'formatter': 'verbose',
             'filters': ['require_debug_false'],
         },
@@ -202,7 +203,7 @@ LOGGING = {
             'filename': 'logs/others.log',
             'when': 'W0',
             'backupCount': 4,
-            'atTime': datetime.time(1, 0, 0),
+            'atTime': datetime.time(3, 0, 0),
             'formatter': 'verbose',
             'filters': ['require_debug_false'],
         },

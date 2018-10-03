@@ -52,7 +52,6 @@ DEBUG_TOOLBAR_CONFIG = {
 # https://django-debug-toolbar.readthedocs.io/en/latest/installation.html#internal-ips
 INTERNAL_IPS = ['127.0.0.1', '10.0.2.2']
 
-
 # django-extensions
 # ------------------------------------------------------------------------------
 # https://django-extensions.readthedocs.io/en/latest/installation_instructions.html#configuration
@@ -79,16 +78,33 @@ LOGGING = {
     },
     'handlers': {
         'console': {
-            'level': 'INFO',
+            'level': 'DEBUG',
             'filters': ['require_debug_true'],
             'class': 'logging.StreamHandler',
             'formatter': 'verbose',
         },
     },
+    'root': {
+        'level': 'DEBUG',
+        'handlers': ['console']
+    },
     'loggers': {
         'django': {
             'handler': ['console'],
-            'level': 'INFO'
+            'level': 'DEBUG'
         },
+        'risk_management.users.views': {
+            'handlers': ['console'],
+            'level': 'DEBUG'
+        },
+        'risk_register.models': {
+            'handlers': ['console'],
+            'level': 'DEBUG'
+        },
+        'risk_register.views': {
+            'handlers': ['console'],
+            'level': 'DEBUG'
+        }
+
     },
 }

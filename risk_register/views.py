@@ -1,4 +1,5 @@
 import datetime
+import logging
 
 from fm.views import AjaxCreateView, AjaxUpdateView, AjaxDeleteView
 from dal import autocomplete
@@ -23,6 +24,8 @@ from .forms import (CreateProcessForm, CreateActivityForm, CreateProcessOutputDa
                     ChangeActiviterisqueReviewDateForm, ChangeProcessusrisqueReviewDateForm, AssignControlform,
                     EstimationRisqueForm)
 from risk_management.users.utils import get_risk_occurrences
+
+logger = logging.getLogger(__name__)
 
 
 # Create your views here.
@@ -104,6 +107,10 @@ class CreateProcessView(PermissionRequiredMixin, AjaxCreateView):
 
     def pre_save(self):
         self.object.business_unit = get_object_or_404(BusinessUnit, denomination=self.kwargs['business_unit'])
+        logger.info('Saving process %s in %s' % (str(self.object), self.object.business_unit))
+
+    def post_save(self):
+        logger.info('Process %s saved' % str(self.object))
 
     def get_message_template_context(self):
         msg_ctx = super().get_message_template_context()
@@ -137,6 +144,9 @@ class DeleteProcessView(PermissionRequiredMixin, AjaxDeleteView):
         context['processus'] = self.get_object()
         return context
 
+    def post_delete(self):
+        logger.info('Process successfully deleted.')
+
 
 class CreateActiviteView(PermissionRequiredMixin, AjaxCreateView):
     form_class = CreateActivityForm
@@ -145,6 +155,10 @@ class CreateActiviteView(PermissionRequiredMixin, AjaxCreateView):
 
     def pre_save(self):
         self.object.processus = get_object_or_404(Processus, code_processus=self.kwargs['processus'])
+        logger.info('Saving activity %s in process %s' % (str(self.object), str(self.object.processus)))
+
+    def post_save(self):
+        logger.info('Activity %s saved' % self.object.nom)
 
     def get_message_template_context(self):
         msg_ctx = super().get_message_template_context()
@@ -172,6 +186,9 @@ class DeleteActiviteView(PermissionRequiredMixin, AjaxDeleteView):
         context['activite'] = self.get_object()
         return context
 
+    def post_delete(self):
+        logger.info('Activity successfully deleted')
+
 
 class CreateProcessOutputView(PermissionRequiredMixin, AjaxCreateView):
     permission_required = 'risk_register.add_process_data'
@@ -184,6 +201,10 @@ class CreateProcessOutputView(PermissionRequiredMixin, AjaxCreateView):
 
     def pre_save(self):
         self.object.origine = get_object_or_404(Processus, pk=self.kwargs['processus'])
+        logger.info('Saving process data %s' % str(self.object))
+
+    def post_save(self):
+        logger.info('Process data %s saved successfully' % str(self.object))
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
@@ -201,6 +222,7 @@ class CreateProcessInputView(PermissionRequiredMixin, AjaxCreateView):
     def post_save(self):
         processus = get_object_or_404(Processus, pk=self.kwargs['processus'])
         processus.input_data.add(self.object)
+        logger.info('Process data %s saved successfully' % str(self.object))
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
@@ -246,15 +268,20 @@ class NewRiskForProcessView(PermissionRequiredMixin, AjaxCreateView):
 
     def pre_save(self):
         self.object.cree_par = self.request.user
+        logger.info('Saving new risk: %s' % str(self.object))
 
     def post_save(self):
+        logger.info('%s saved successfully' % str(self.object))
         processus = get_object_or_404(Processus, pk=self.kwargs['processus'])
+        logger.info("Adding '%s' to process '%s'" % (str(self.object), str(processus)))
         pr = processus.processusrisque_set.create(
             type_de_risque=self.tr,
             risque=self.object,
             soumis_par=self.request.user,
         )
+        logger.info("'%s' successfully added to process %s" % (str(self.object), str(processus)))
         pr.suivi_par.add(self.request.user)
+
 
     def form_valid(self, form):
         self.tr = form.data.get('type_de_risque')
@@ -284,9 +311,11 @@ class AddProcessusrisqueView(PermissionRequiredMixin, AjaxCreateView):
     def pre_save(self):
         self.object.processus = get_object_or_404(Processus, pk=self.kwargs['processus'])
         self.object.soumis_par = self.request.user
+        logger.info("Saving risk identification '%s'" % (str(self.object)))
 
     def post_save(self):
         self.object.suivi_par.add(self.request.user)
+        logger.info("Risk identification '%s' saved successfully" % (str(self.object)))
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
@@ -322,6 +351,9 @@ class DeleteProcessusrisqueView(PermissionRequiredMixin, AjaxDeleteView):
     template_name = 'risk_register/confirmer_suppression_processusrisque.html'
     context_object_name = 'processusrisque'
 
+    def post_delete(self):
+        logger.info("Risk '%s' deleted successfully." % str(self.object))
+
 
 class NewRiskForActivityView(PermissionRequiredMixin, AjaxCreateView):
     permission_required = 'risk_register.add_activity_risk'
@@ -333,6 +365,7 @@ class NewRiskForActivityView(PermissionRequiredMixin, AjaxCreateView):
 
     def pre_save(self):
         self.object.cree_par = self.request.user
+        logger.info('Saving new risk: %s' % str(self.object))
 
     def post_save(self):
         activite = get_object_or_404(Activite, pk=self.kwargs['activite'])
@@ -342,6 +375,7 @@ class NewRiskForActivityView(PermissionRequiredMixin, AjaxCreateView):
             soumis_par=self.request.user
         )
         ar.suivi_par.add(self.request.user)
+        logger.info("'%s' successfully added to activity %s" % (str(self.object), str(activite)))
 
     def form_valid(self, form):
         self.tr = form.data.get('type_de_risque')
@@ -359,9 +393,11 @@ class AddActiviterisqueView(PermissionRequiredMixin, AjaxCreateView):
     def pre_save(self):
         self.object.activite = get_object_or_404(Activite, pk=self.kwargs['activite'])
         self.object.soumis_par = self.request.user
+        logger.info("Saving '%s'" % str(self.object))
 
     def post_save(self):
         self.object.suivi_par.add(self.request.user)
+        logger.info("'%s' Saved successfully" % str(self.object))
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
@@ -388,6 +424,10 @@ class EditActiviterisqueView(PermissionRequiredMixin, AjaxUpdateView):
 
     def pre_save(self):
         self.object.modifie_par = self.request.user
+        logger.info("Saving '%s'" % str(self.object))
+
+    def post_save(self):
+        logger.info("'%s' Saved successfully" % str(self.object))
 
 
 class DeleteActiviterisqueView(PermissionRequiredMixin, AjaxDeleteView):
@@ -396,6 +436,9 @@ class DeleteActiviterisqueView(PermissionRequiredMixin, AjaxDeleteView):
     pk_url_kwarg = 'activiterisque'
     template_name = 'risk_register/confirmer_suppression_activiterisque.html'
     context_object_name = 'activiterisque'
+
+    def post_delete(self):
+        logger.info("'%s' successfully deleted" % str(self.object))
 
 
 class AddControlMixin(AjaxCreateView):
@@ -416,6 +459,10 @@ class AddProcessusrisqueControleView(PermissionRequiredMixin, AddControlMixin):
     def pre_save(self):
         self.object.cree_par = self.request.user
         self.object.content_object = get_object_or_404(ProcessusRisque, pk=self.kwargs['processusrisque'])
+        logger.info("Saving '%s'" % str(self.object))
+
+    def post_save(self):
+        logger.info("'%s' Saved successfully" % str(self.object))
 
 
 class AddActiviterisqueControle(PermissionRequiredMixin, AddControlMixin):
@@ -432,6 +479,10 @@ class AddActiviterisqueControle(PermissionRequiredMixin, AddControlMixin):
     def pre_save(self):
         self.object.cree_par = self.request.user
         self.object.content_object = get_object_or_404(ActiviteRisque, pk=self.kwargs['activiterisque'])
+        logger.info("Saving '%s'" % str(self.object))
+
+    def post_save(self):
+        logger.info("'%s' Saved successfully" % str(self.object))
 
 
 class EditRiskControl(PermissionRequiredMixin, AjaxUpdateView):
@@ -451,6 +502,9 @@ class DeleteRiskControl(PermissionRequiredMixin, AjaxDeleteView):
     context_object_name = 'controle'
     template_name = 'risk_register/confirmer_suppression_controle.html'
 
+    def post_delete(self):
+        logger.info("'%s' successfully deleted" % str(self.object))
+
 
 class AssignerControleView(PermissionRequiredMixin, AjaxUpdateView):
     permission_required = 'risk_register.assign_control'
@@ -460,6 +514,10 @@ class AssignerControleView(PermissionRequiredMixin, AjaxUpdateView):
 
     def pre_save(self):
         self.object.modifie_par = self.request.user
+        logger.info("Assigning '%s' to %s" % (str(self.object), self.object.assigne_a.get_full_name()))
+
+    def post_save(self):
+        logger.info("'%s' successfully assigned to %s" % (str(self.object), self.object.assigne_a.get_full_name()))
 
 
 class SetSeuilProcessusrisqueView(PermissionRequiredMixin, AjaxCreateView):
@@ -613,6 +671,7 @@ class SearchRisk(ListView):
     paginate_by = 10
 
     def get_queryset(self):
+        logger.info('Searching')
         qs = SearchQuery(self.request.GET.get('q'))
         if qs:
             rank = SearchRank(F('search_vector'), qs)
@@ -630,9 +689,11 @@ def check_risk_status(request, pk):
         try:
             risque = ProcessusRisque.objects.get(pk=pk)
         except ProcessusRisque.DoesNotExist:
+            logger.exception('Process not found')
             try:
                 risque = ActiviteRisque.objects.get(pk=pk)
-            except ActiviteRisque.DoesNotExist:
+            except ActiviteRisque.DoesNotExist as e:
+                logger.exception('Activity not found')
                 data['error_message'] = _('Aucun risque trouvé')
                 data['result'] = 'failure'
 
@@ -652,6 +713,7 @@ def check_control_status(request, pk):
         try:
             controle = Controle.objects.get(pk=pk)
         except Controle.DoesNotExist:
+            logger.exception('Control not found')
             data['error_message'] = _('Contrôle inexistant')
             data['result'] = 'failure'
         else:
@@ -670,6 +732,7 @@ def change_control_status(request, pk):
         try:
             controle = Controle.objects.get(pk=pk)
         except Controle.DoesNotExist:
+            logger.exception('Controle not found')
             data['error_message'] = _('Contrôle inexistant')
             data['result'] = 'failure'
         else:
@@ -704,9 +767,11 @@ def change_risk_status(request, pk):
         try:
             risque = ProcessusRisque.objects.get(pk=pk)
         except ProcessusRisque.DoesNotExist:
+            logger.exception('Risk not found')
             try:
                 risque = ActiviteRisque.objects.get(pk=pk)
             except ActiviteRisque.DoesNotExist:
+                logger.exception('Activity not found')
                 risque = None
                 data['error_message'] = _('Aucun risque trouvé')
                 data['result'] = 'failure'
@@ -734,6 +799,7 @@ def manage_change_risk_status(request, pk):
     try:
         return change_risk_status(request, pk)
     except PermissionDenied:
+        logger.error('Permission denied')
         return JsonResponse({'permission': 'denied'})
 
 
@@ -744,6 +810,7 @@ def approve_controle(request, pk):
         try:
             controle = Controle.objects.get(pk=pk)
         except Controle.DoesNotExist:
+            logger.exception('Controle not found')
             data['result'] = 'failure'
             data['error_message'] = _('Contrôle inexistant')
         else:
@@ -767,6 +834,7 @@ def validate_controle(request, pk):
         try:
             controle = Controle.objects.get(pk=pk)
         except Controle.DoesNotExist:
+            logger.exception('Controle not found')
             data['result'] = 'failure'
             data['error_message'] = _('Contrôle inexistant')
         else:
@@ -789,6 +857,7 @@ def get_controle_est_valide(request, pk):
         try:
             controle = Controle.objects.get(pk=pk)
         except Controle.DoesNotExist:
+            logger.exception('Controle not found')
             data['result'] = 'failure'
             data['error_message'] = _('Contrôle inexistant')
         else:
@@ -803,6 +872,7 @@ def get_controle_est_approuve(request, pk):
         try:
             controle = Controle.objects.get(pk=pk)
         except Controle.DoesNotExist:
+            logger.exception('Controle not found')
             data['result'] = 'failure'
             data['error_message'] = _('Contrôle inexistant')
         else:

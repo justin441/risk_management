@@ -25,6 +25,7 @@ def followed_risks(user):
     qs1 = user.processusrisques_manages.all()  # risques de processus assignés à l'utilisateur
     qs2 = user.activiterisques_manages.all()  # risques d'activité assignés à l'utilisateur
 
+    # exclure les risques assignés à l'utilisateur des risques suivis par l'utilisateur
     user_processusrisques = user.processusrisques_suivis.exclude(code_identification__in=qs1)
     user_activiterisques = user.activiterisques_suivis.exclude(code_identification__in=qs2)
 
@@ -64,6 +65,10 @@ def get_risk_occurrences(risque):
 
 
 def get_changes_between_2_objects(object1, object2, exclude=[]):
+    """"Prends 2 objets de meme modèle et retourne un dictionnaire contenant
+        les attributs pour lesquels ces objets diffèrent. Utile pour savoir si un objet l'état d'un objet
+        a été modifié
+    """
     changes = {}
     for field in object1._meta.fields:
         if field.value_from_object(object1) != field.value_from_object(object2):

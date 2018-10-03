@@ -40,14 +40,18 @@ class CreateProcessForm(forms.ModelForm):
         }
 
     def clean_nom(self):
-        # le nom du processus doit être unique pour un business_unit
+        """
+        S'assure que le nom du processus est unique pour un business_unit
+        """
         nom = self.cleaned_data['nom']
         try:
+            # faire une recherche par nom dans la table des processus
             try:
-                # si le formulaire est utilisé pour modifier un processus
+                # dans le cas où le formulaire est utilisé pour modifier un processus
                 Processus.objects.get(nom=nom, business_unit=self.instance.business_unit)
             except AttributeError:
-                # si le formulaire est utilisé pour créer un processus
+                # dans le cas où l'instance n'a pas d'attribut 'business_unit', et donc
+                # le formulaire est utilisé pour créer un processus
                 Processus.objects.get(nom=nom, business_unit=self.bu)
         except Processus.DoesNotExist:
             return nom
@@ -63,6 +67,8 @@ class ProcessAdminForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         try:
+            # les données de l'instance proviennent des processus du business unit de l'instance,
+            # mais sans les données provennant de l'intance elle-même
             self.fields['input_data'].queryset = ProcessData.objects.filter(
                 origine__business_unit=self.instance.business_unit).exclude(origine=self.instance)
         except AttributeError:
@@ -93,6 +99,7 @@ class AddInputDataForm(forms.ModelForm):
         self.fields['input_data'].queryset = q.exclude(origine=processus)
         self.helper.layout = Layout(
             Field('input_data'),
+            # lien de création d'une nouvelle donnée de processus
             HTML(
                 """{% load i18n %}
                 <span class='mr-2 col-md-offset-4 col-md-8'>{% trans 'Nouveau' %}</span>
@@ -277,7 +284,7 @@ class AddProcessusrisqueForm(ProcessusrisqueBaseForm):
         fields = ['classe_de_risque', 'type_de_risque', 'risque']
 
     def clean(self):
-        """Verifier qu'un même risque n'est pas soumis plusieurs fois"""
+        """Verifier qu'un même risque n'est pas soumis plusieurs fois sur le même processus"""
         cleaned_data = super().clean()
         cleaned_data.pop('classe_de_risque')
         risque = cleaned_data.get('risque', '')

@@ -1,4 +1,5 @@
 import uuid
+import logging
 from datetime import timedelta
 
 from django.db import models
@@ -17,6 +18,8 @@ from model_utils import Choices
 from model_utils.models import TimeFramedModel, TimeStampedModel
 
 from risk_management.users.models import BusinessUnit
+
+logger = logging.getLogger(__name__)
 
 
 class RiskDataError(Exception):
@@ -115,6 +118,7 @@ class Activite(TimeFramedModel):
                 {
                     'end': _('l\'activité ne peut pas se terminer avant d\'avoir commencé!')
                 })
+
 
     def get_absolute_url(self):
         return reverse('risk_register:detail_activite', kwargs={'pk': self.code_activite})
@@ -444,6 +448,7 @@ class Estimation(TimeStampedModel, RiskMixin):
             raise RiskDataError(
                 _('Les donneés du risque ont besoins d\'une mise à jour'))
         if self.content_object.verifie == 'pending':
+            logger.error("erreur lors de la sauvegarde d'une estimation")
             raise RiskDataError(
                 _('On ne peut pas estimer un risque sans l\'avoir verifié')
             )
@@ -497,15 +502,18 @@ class Controle(TimeFramedModel, TimeStampedModel, RiskMixin):
 
     def save(self, *args, **kwargs):
         if (self.start and self.end) and (self.start > self.end):
+            logger.error("erreur de sauvergarde du controle '%s'" % self.nom)
             raise FieldError(
                 'la date de fin ne peut pas précédée celle du début. Veuillez corriger le champ "debut".'
             )
         if self.content_object and not self.content_object.estimations.all():
+            logger.error("erreur de sauvergarde du controle '%s'" % self.nom)
             raise RiskDataError(
                 {self.content_type.name: _(' le risque n\'a pas encore été estimé')}
             )
         elif self.content_object and (self.content_object.est_obsolete or
                                       self.content_object.estimations.latest().est_obsolete):
+            logger.error("erreur de sauvergarde du controle '%s'" % self.nom)
             raise RiskDataError(
                 _('Les donneés du risque ont besoins d\'une mise à jour'))
         super().save(*args, **kwargs)

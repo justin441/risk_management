@@ -1,5 +1,6 @@
 from itertools import chain
 from dal import autocomplete
+import logging
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse
@@ -10,6 +11,8 @@ from django.db.models import Q
 from .models import User
 from .forms import UserUpdateForm
 from .utils import ecart_seuil_de_risque, followed_risks
+
+logger = logging.getLogger(__name__)
 
 
 class UserDetailView(LoginRequiredMixin, DetailView):

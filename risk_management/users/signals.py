@@ -1,11 +1,15 @@
 import unicodedata
 import uuid
+import logging
 
 
 from django.db.models.signals import pre_save
 from django.dispatch import receiver
 
 from .models import User
+
+
+logger = logging.getLogger('django.request')
 
 
 @receiver(pre_save, sender=User)
@@ -19,4 +23,5 @@ def make_username(sender, **kwargs):
             name = name_list[0] + str(uuid.uuid4())
         user.username = str(unicodedata.normalize(
             'NFD', name).encode('ascii', 'ignore'), 'utf8')
+        logger.info('Nouvel utilisateur ajouté: %s' % user.username)
 
