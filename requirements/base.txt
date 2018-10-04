@@ -4,6 +4,7 @@ Pillow==5.1.0  # https://github.com/python-pillow/Pillow
 argon2-cffi==18.1.0  # https://github.com/hynek/argon2_cffi
 whitenoise==3.3.1  # https://github.com/evansd/whitenoise
 redis>=2.10.5  # https://github.com/antirez/redis
+django-sendgrid-v5==0.6.893 # https://github.com/sklarsa/django-sendgrid-v5
 
 # Django
 # ------------------------------------------------------------------------------
