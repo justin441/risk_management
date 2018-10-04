@@ -6,7 +6,7 @@
         <option name="rootFolder" value="$MODULE_DIR$" />
         <option name="settingsModule" value="config/settings/local.py" />
         <option name="manageScript" value="$MODULE_DIR$/manage.py" />
-        <option name="environment" value="&lt;map&gt;&#10;  &lt;entry&gt;&#10;    &lt;string&gt;DATABASE_URL&lt;/string&gt;&#10;    &lt;string&gt;postgres://justinfotue:DjangoRules2018@127.0.0.1:5432/risk_management&lt;/string&gt;&#10;  &lt;/entry&gt;&#10;&lt;/map&gt;" />
+        <option name="environment" value="&lt;map&gt;&#10;  &lt;entry&gt;&#10;    &lt;string&gt;DJANGO_EMAIL_BACKEND&lt;/string&gt;&#10;    &lt;string&gt;sgbackend.SendGridBackend&lt;/string&gt;&#10;  &lt;/entry&gt;&#10;  &lt;entry&gt;&#10;    &lt;string&gt;DATABASE_URL&lt;/string&gt;&#10;    &lt;string&gt;postgres://justinfotue:DjangoRules2018@127.0.0.1:5432/risk_management&lt;/string&gt;&#10;  &lt;/entry&gt;&#10;  &lt;entry&gt;&#10;    &lt;string&gt;SENDGRID_API_KEY&lt;/string&gt;&#10;    &lt;string&gt;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&lt;/string&gt;&#10;  &lt;/entry&gt;&#10;&lt;/map&gt;" />
         <option name="doNotUseTestRunner" value="false" />
         <option name="trackFilePattern" value="migrations" />
       </configuration>
