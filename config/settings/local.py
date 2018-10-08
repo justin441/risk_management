@@ -92,7 +92,7 @@ LOGGING = {
     'loggers': {
         'django': {
             'handler': ['console'],
-            'level': 'DEBUG'
+            'level': 'INFO'
         },
         'risk_management.users.views': {
             'handlers': ['console'],

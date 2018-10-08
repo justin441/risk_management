@@ -219,8 +219,7 @@ FIXTURE_DIRS = (
 EMAIL_BACKEND = env('DJANGO_EMAIL_BACKEND', default='django.core.mail.backends.smtp.EmailBackend')
 SENDGRID_API_KEY = env('SENDGRID_API_KEY')
 DEFAULT_FROM_EMAIL = 'asst.project-nh@ctccm.com'
-
-
+EMAIL_USE_TLS = True
 # ADMIN
 # ------------------------------------------------------------------------------
 # Django Admin URL.

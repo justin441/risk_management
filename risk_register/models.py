@@ -12,6 +12,10 @@ from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from django.urls import reverse
 from django.conf import settings
+from django.contrib.auth import get_user_model
+
+from django_vox.models import VoxModel, VoxNotifications, VoxNotification
+from django_vox.registry import channels
 
 from model_utils.fields import StatusField, MonitorField
 from model_utils import Choices
@@ -27,7 +31,6 @@ class RiskDataError(Exception):
 
 
 class ProcessData(models.Model):
-
     nom = models.CharField(max_length=255)
     origine = models.ForeignKey('Processus', on_delete=models.SET_NULL,
                                 null=True, blank=True, verbose_name=_('fournisseur interne'),
@@ -53,8 +56,7 @@ class ProcessData(models.Model):
         verbose_name_plural = _('données des processus')
 
 
-class Processus(models.Model):
-
+class Processus(VoxModel):
     PROCESSUS_MANAGEMENT = 'PM'
     PROCESSUS_OPERATIONNEL = 'PO'
     PROCESSUS_SOUTIEN = 'PS'
@@ -85,13 +87,31 @@ class Processus(models.Model):
         if self.proc_manager:
             return reverse('risk_register:detail_processus', kwargs={'pk': self.code_processus})
 
+    def get_bu_managers(self):
+        return self.business_unit.get_managers()
+
+    def get_risk_managers(self):
+        return self.business_unit.get_risk_managers()
+
     class Meta:
         verbose_name = _('processus')
         verbose_name_plural = _('processus')
-        unique_together = (('business_unit', 'nom'), )
+        unique_together = (('business_unit', 'nom'),)
+
+    class VoxMeta:
+        notifications = VoxNotifications(
+            create=VoxNotification(
+                _('Notifier qu\'un nouveau processus a été créé'),
+                actor_type='users.user'
+            ),
+            change_proc_manager=VoxNotification(
+                _('Notifier que le manager du processus a changé'),
+                actor_type='users.user'
+            )
+        )
 
 
-class Activite(TimeFramedModel):
+class Activite(TimeFramedModel, VoxModel):
     STATUS = Choices(('pending', _('en cours')), ('completed', _('achevé')))
     code_activite = models.UUIDField(
         primary_key=True, default=uuid.uuid4, editable=False)
@@ -108,6 +128,14 @@ class Activite(TimeFramedModel):
     status = StatusField()
     acheve_le = MonitorField(monitor='status', when=['achevé'])
 
+    class VoxMeta:
+        notifications = VoxNotifications(
+            create=VoxNotification(
+                _('Notification qu\'une activité a été créée'),
+                actor_type='users.user', target_type='risk_register.activite'
+            )
+        )
+
     def __str__(self):
         return self.nom
 
@@ -118,7 +146,6 @@ class Activite(TimeFramedModel):
                 {
                     'end': _('l\'activité ne peut pas se terminer avant d\'avoir commencé!')
                 })
-
 
     def get_absolute_url(self):
         return reverse('risk_register:detail_activite', kwargs={'pk': self.code_activite})
@@ -145,7 +172,7 @@ class ClasseDeRisques(models.Model):
         verbose_name_plural = _('Classes de risques')
 
 
-class Risque(TimeStampedModel):
+class Risque(TimeStampedModel, VoxModel):
     code_risque = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     classe = models.ForeignKey(ClasseDeRisques, on_delete=models.CASCADE, null=True)
     nom = models.CharField(max_length=200, verbose_name=_('nom'))
@@ -162,8 +189,16 @@ class Risque(TimeStampedModel):
                                  on_delete=models.SET_NULL, verbose_name=_('Crée par'))
     search_vector = SearchVectorField(null=True, blank=True)
 
+    class VoxMeta:
+        notifications = VoxNotifications(
+            create=VoxNotification(
+                _('Notification qu\'un nouveau risque a été créé'),
+                actor_type='users.user'
+            )
+        )
+
     def __str__(self):
-        return '%s: %s...' % (self.nom, self. description[:50])
+        return '%s: %s...' % (self.nom, self.description[:50])
 
     class Meta:
         verbose_name = _('risque')
@@ -249,7 +284,7 @@ class IdentificationRisque(TimeStampedModel):
         if self.date_revue and (self.date_revue < self.created):
             raise ValidationError(
                 {'date_revue': _('la date de revue (%s) ne peut pas prédéder la date de cration (%s)' %
-                 (self.date_revue.date(), self.created.date()))}
+                                 (self.date_revue.date(), self.created.date()))}
             )
         super().clean()
 
@@ -344,7 +379,7 @@ class IdentificationRisque(TimeStampedModel):
 
     # le risque est-il assigné
     def est_assigne(self):
-            return self.proprietaire is not None
+        return self.proprietaire is not None
 
     def get_class(self):
         return self.__class__.__name__
@@ -361,7 +396,7 @@ class IdentificationRisque(TimeStampedModel):
         ordering = ('-created', 'verifie_le')
 
 
-class ActiviteRisque(IdentificationRisque):
+class ActiviteRisque(IdentificationRisque, VoxModel):
     activite = models.ForeignKey(Activite, on_delete=models.CASCADE, verbose_name=_('activité'))
     soumis_par = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL,
                                    related_name='activiterisques_soumis', null=True,
@@ -374,6 +409,9 @@ class ActiviteRisque(IdentificationRisque):
     proprietaire_change = MonitorField(monitor='proprietaire')
     estimations = GenericRelation('Estimation', related_query_name='activiterisque')
     controles = GenericRelation('Controle', related_query_name='activiterisque')
+
+    class VoxMeta:
+        notifications = VoxNotifications()
 
     def __str__(self):
         return "%s/%s (%s)" % (self.activite.nom, self.risque.nom, self.type_de_risque)
@@ -536,3 +574,13 @@ class Controle(TimeFramedModel, TimeStampedModel, RiskMixin):
         verbose_name_plural = _('contrôles')
         ordering = ('start',)
         get_latest_by = 'created'
+
+
+# ---------- django-vox channels ----------
+
+
+channels[Processus].add('bu_manager', _('Manager du Business unit'), get_user_model(),
+                        Processus.get_bu_managers)
+channels[Processus].add('risk_manager', _('Manager du risque'), get_user_model(), Processus.get_risk_managers)
+channels[Risque].add('risk_manager', _('Manager du risque'), get_user_model(), Processus.get_risk_managers)
+channels[Activite].add('risk_manager', _('Manager du risque'), get_user_model(), Processus.get_risk_managers)

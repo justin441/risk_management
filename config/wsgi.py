@@ -1,5 +1,5 @@
 """
-WSGI config for Risk Management Framework Project project.
+WSGI config for Risk Management Framework project.
 
 This module contains the WSGI application used by Django's development server
 and any production WSGI deployments. It should expose a module-level variable
