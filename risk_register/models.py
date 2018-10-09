@@ -14,8 +14,9 @@ from django.urls import reverse
 from django.conf import settings
 from django.contrib.auth import get_user_model
 
-from django_vox.models import VoxModel, VoxNotifications, VoxNotification
+from django_vox.models import VoxNotifications, VoxNotification
 from django_vox.registry import channels
+from django_vox.extra.background import BackgroundVoxModel as VoxModel
 
 from model_utils.fields import StatusField, MonitorField
 from model_utils import Choices
@@ -88,10 +89,16 @@ class Processus(VoxModel):
             return reverse('risk_register:detail_processus', kwargs={'pk': self.code_processus})
 
     def get_bu_managers(self):
-        return self.business_unit.get_managers()
+        if self.business_unit.bu_manager:
+            yield self.business_unit.bu_manager
+        else:
+            return self.business_unit.get_risk_managers()
 
     def get_risk_managers(self):
         return self.business_unit.get_risk_managers()
+
+    def get_proc_managers(self):
+        yield self.proc_manager
 
     class Meta:
         verbose_name = _('processus')
@@ -102,11 +109,11 @@ class Processus(VoxModel):
         notifications = VoxNotifications(
             create=VoxNotification(
                 _('Notifier qu\'un nouveau processus a été créé'),
-                actor_type='users.user'
+                actor_type='users.user', target_type='risk_register.processus'
             ),
             change_proc_manager=VoxNotification(
                 _('Notifier que le manager du processus a changé'),
-                actor_type='users.user'
+                actor_type='users.user', target_type='risk_register.processus'
             )
         )
 
@@ -133,6 +140,14 @@ class Activite(TimeFramedModel, VoxModel):
             create=VoxNotification(
                 _('Notification qu\'une activité a été créée'),
                 actor_type='users.user', target_type='risk_register.activite'
+            ),
+            complete=VoxNotification(
+                _('Notification qu\'une activité a été achevée'),
+                actor_type='users.user', target_type='risk_register.activite'
+            ),
+            delete=VoxNotification(
+                _('Notification qu\'une activité a été supprimée'),
+                actor_type='users.user', target_type='risk_register.activite'
             )
         )
 
@@ -149,6 +164,15 @@ class Activite(TimeFramedModel, VoxModel):
 
     def get_absolute_url(self):
         return reverse('risk_register:detail_activite', kwargs={'pk': self.code_activite})
+
+    def get_proc_manager(self):
+        return self.processus.get_proc_managers()
+
+    def get_responsable(self):
+        yield self.responsable
+
+    def get_risk_managers(self):
+        return self.processus.get_risk_managers()
 
     class Meta:
         verbose_name = _('Activité')
@@ -193,12 +217,15 @@ class Risque(TimeStampedModel, VoxModel):
         notifications = VoxNotifications(
             create=VoxNotification(
                 _('Notification qu\'un nouveau risque a été créé'),
-                actor_type='users.user'
-            )
+                actor_type='users.user', target_type='risk_register.risque'
+            ),
         )
 
     def __str__(self):
         return '%s: %s...' % (self.nom, self.description[:50])
+
+    def get_risk_managers(self):
+        yield self.cree_par.__class__.objects.filter(is_superuser=True)
 
     class Meta:
         verbose_name = _('risque')
@@ -411,10 +438,49 @@ class ActiviteRisque(IdentificationRisque, VoxModel):
     controles = GenericRelation('Controle', related_query_name='activiterisque')
 
     class VoxMeta:
-        notifications = VoxNotifications()
+        notifications = VoxNotifications(
+            create=VoxNotification(
+                _('Notification qu\'un nouveau risque a été identifié'),
+                actor_type='users.user', target_type='risk_register.activiterisque'
+            ),
+            assign=VoxNotification(
+                _('Notification que le risque a été assigné'),
+                actor_type='users.user', target_type='risk_register.activiterisque'
+            ),
+            verify=VoxNotification(
+                _('Notification que le risque est vérifié'),
+                actor_type='users.user', target_type='risk_register.activiterisque'
+            ),
+            obsolete=VoxNotification(
+                _('Notification que les données du risque sont obsolètes')
+            )
+        )
 
     def __str__(self):
         return "%s/%s (%s)" % (self.activite.nom, self.risque.nom, self.type_de_risque)
+
+    # for django-vox channels
+    def get_proprietaires(self):
+        yield self.proprietaire
+
+    def get_proc_managers(self):
+        yield self.activite.processus.proc_manager
+
+    def get_bu_managers(self):
+        return self.activite.processus.get_bu_managers()
+
+    def get_risk_managers(self):
+        return self.activite.processus.get_risk_managers()
+
+    def get_suiveurs(self):
+        return self.suivi_par.exclude(
+            pk=self.soumis_par.pk).exclude(
+            pk__in=self.get_proprietaires()).exclude(
+            pk__in=self.get_proc_managers()).exclude(
+            pk__in=self.get_bu_managers()).exclude(pk__in=self.get_risk_managers())
+
+    def get_reporters(self):
+        yield self.soumis_par
 
     class Meta(IdentificationRisque.Meta):
         verbose_name = _('risque de l\'activité')
@@ -436,8 +502,50 @@ class ProcessusRisque(IdentificationRisque):
     estimations = GenericRelation('Estimation', related_query_name='processusrisque')
     controles = GenericRelation('Controle', related_query_name='processusrisque')
 
+    class VoxMeta:
+        notifications = VoxNotifications(
+            create=VoxNotification(
+                _('Notification qu\'un nouveau risque a été identifié'),
+                actor_type='users.user', target_type='risk_register.processusrisque'
+            ),
+            assign=VoxNotification(
+                _('Notification que le risque a été assigné'),
+                actor_type='users.user', target_type='risk_register.processusrisque'
+            ),
+            verify=VoxNotification(
+                _('Notification que le risque est vérifié'),
+                actor_type='users.user', target_type='risk_register.processusrisque'
+            ),
+            obsolete=VoxNotification(
+                _('Notification que les données du risque sont obsolètes')
+            )
+        )
+
     def __str__(self):
         return '%s/%s (%s)' % (self.processus.nom, self.risque.nom, self.type_de_risque)
+
+    # for django-vox channels
+    def get_proprietaires(self):
+        yield self.proprietaire
+
+    def get_proc_managers(self):
+        yield self.processus.proc_manager
+
+    def get_bu_managers(self):
+        return self.processus.get_bu_managers()
+
+    def get_risk_managers(self):
+        return self.processus.get_risk_managers()
+
+    def get_suiveurs(self):
+        return self.suivi_par.exclude(
+            pk=self.soumis_par.pk).exclude(
+            pk__in=self.get_proprietaires()).exclude(
+            pk__in=self.get_proc_managers()).exclude(
+            pk__in=self.get_bu_managers()).exclude(pk__in=self.get_risk_managers())
+
+    def get_reporters(self):
+        yield self.soumis_par
 
     class Meta(IdentificationRisque.Meta):
         verbose_name = _('risque du processus')
@@ -445,13 +553,32 @@ class ProcessusRisque(IdentificationRisque):
         unique_together = (('processus', 'risque', 'type_de_risque'),)
 
 
-class RiskMixin(models.Model):
+class RiskMixin(VoxModel):
     LIMIT = models.Q(app_label='risk_register',
                      model='activiterisque') | models.Q(app_label='risk_register',
                                                         model='processusrisque')
     content_type = models.ForeignKey(ContentType, limit_choices_to=LIMIT, on_delete=models.CASCADE)
     object_id = models.CharField(max_length=36)
     content_object = GenericForeignKey()
+
+    def get_bu_managers(self):
+        return self.content_object.get_bu_managers()
+
+    def get_risk_managers(self):
+        return self.content_object.get_risk_managers()
+
+    def get_proc_managers(self):
+        return self.content_object.get_proc_managers()
+
+    def get_risk_suiveurs(self):
+        return self.content_object.get_suiveurs()
+
+    def get_risk_reporters(self):
+        return self.content_object.get_reporters()
+
+    def get_act_responsable(self):
+        if self.content_object.get_class() == 'ActiviteRisque':
+            return self.content_object.activite.get_responsable()
 
     class Meta:
         abstract = True
@@ -465,8 +592,23 @@ class Estimation(TimeStampedModel, RiskMixin):
     date_revue_change = MonitorField(monitor='date_revue')
     criterisation_change = MonitorField(monitor='criterisation')
 
+    class VoxMeta:
+        notifications = VoxNotifications(
+            create=VoxNotification(
+                _('Notification qu\'une estimation a été créée'),
+                actor_type='users.user', target_type='risk_register.estimation'
+            ),
+            obsolete=VoxNotification(
+                _('Notification qu\'une estimation est obsolete'),
+            )
+        )
+
+    def get_estimators(self):
+        yield self.criterisation.evalue_par
+
     def facteur_risque(self):
         """renvoit le facteur risque"""
+        # si le risque est obsolète il n'y a pas de facteur risque
         if self.est_obsolete:
             return
         elif self.criterisation:
@@ -532,6 +674,37 @@ class Controle(TimeFramedModel, TimeStampedModel, RiskMixin):
     status = StatusField()
     acheve_le = MonitorField(monitor='status', when=['completed'])
 
+    class VoxMeta:
+        notifications = VoxNotifications(
+            create=VoxNotification(
+                _('Notification qu\'un contrôle a été ajouté'),
+                actor_type='users.user', target_type='risk_register.controle'
+            ),
+            approve=VoxNotification(
+                _('Notification que le contrôle a été approuvé')
+                ,
+                actor_type='users.user', target_type='risk_register.controle'
+            ),
+            complete=VoxNotification(
+                _('Notification qu\'un controle a été implementé'),
+                actor_type='users.user', target_type='risk_register.controle'
+            ),
+            validate=VoxNotification(
+                _('Notification qu\'un contrôle a été validé'),
+                actor_type='users.user', target_type='risk_register.controle'
+            ),
+            assign=VoxNotification(
+                _('Notification que le contrôle est assigné'),
+                actor_type='users.user', target_type='risk_register.controle'
+            )
+        )
+
+    def get_creator(self):
+        yield self.cree_par
+
+    def get_proprietaire(self):
+        return self.assigne_a
+
     def clean(self):
         if (self.start and self.end) and (self.start > self.end):
             raise ValidationError(
@@ -578,9 +751,13 @@ class Controle(TimeFramedModel, TimeStampedModel, RiskMixin):
 
 # ---------- django-vox channels ----------
 
-
+# processus
 channels[Processus].add('bu_manager', _('Manager du Business unit'), get_user_model(),
                         Processus.get_bu_managers)
 channels[Processus].add('risk_manager', _('Manager du risque'), get_user_model(), Processus.get_risk_managers)
+
+# risques
 channels[Risque].add('risk_manager', _('Manager du risque'), get_user_model(), Processus.get_risk_managers)
+
+# activites
 channels[Activite].add('risk_manager', _('Manager du risque'), get_user_model(), Processus.get_risk_managers)

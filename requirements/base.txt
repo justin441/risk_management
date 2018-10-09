@@ -21,5 +21,5 @@ django-autocomplete-light==3.2.10 # https://github.com/yourlabs/django-autocompl
 djangorestframework==3.8.2  # https://github.com/encode/django-rest-framework
 coreapi==2.3.3  # https://github.com/core-api/python-client
 django-vox==2.0.0 # https://gitlab.com/alantrick/django-vox
-django-background-tasks==1.1.13 # https://github.com/arteria/django-background-tasks
+django-background-tasks==1.2.0 # https://github.com/arteria/django-background-tasks
 

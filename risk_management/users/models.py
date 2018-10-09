@@ -44,13 +44,10 @@ class BusinessUnit(VoxModel):
         if self.bu_manager:
             yield self.bu_manager
         else:
-            try:
-                yield User.objects.get(email=settings.ADMINS[0][1])
-            except User.DoesNotExist:
-                yield User.objects.filter(is_superuser=True).first()
+            return User.objects.filter(is_superuser=True)
 
     def get_risk_managers(self):
-        yield User.objects.filter(is_superuser=True).first()
+        return User.objects.filter(is_superuser=True)
 
     class VoxMeta:
         notifications = VoxNotifications(
