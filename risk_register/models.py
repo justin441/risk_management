@@ -463,6 +463,9 @@ class ActiviteRisque(IdentificationRisque, VoxModel):
     def get_proprietaires(self):
         yield self.proprietaire
 
+    def get_activity_owners(self):
+        yield self.activite.responsable
+
     def get_proc_managers(self):
         yield self.activite.processus.proc_manager
 
@@ -575,6 +578,9 @@ class RiskMixin(VoxModel):
 
     def get_risk_reporters(self):
         return self.content_object.get_reporters()
+
+    def get_risk_owner(self):
+        return self.content_object.get_proprietaires()
 
     def get_act_responsable(self):
         if self.content_object.get_class() == 'ActiviteRisque':
@@ -750,14 +756,52 @@ class Controle(TimeFramedModel, TimeStampedModel, RiskMixin):
 
 
 # ---------- django-vox channels ----------
-
-# processus
+#  processus
 channels[Processus].add('bu_manager', _('Manager du Business unit'), get_user_model(),
-                        Processus.get_bu_managers)
+                        Processus.get_proc_managers)
 channels[Processus].add('risk_manager', _('Manager du risque'), get_user_model(), Processus.get_risk_managers)
 
 # risques
-channels[Risque].add('risk_manager', _('Manager du risque'), get_user_model(), Processus.get_risk_managers)
+channels[Risque].add('risk_manager', _('Manager du risque'), get_user_model(), Risque.get_risk_managers)
 
 # activites
-channels[Activite].add('risk_manager', _('Manager du risque'), get_user_model(), Processus.get_risk_managers)
+channels[Activite].add('risk_manager', _('Manager du risque'), get_user_model(), Activite.get_risk_managers)
+channels[Activite].add('activity_owner', _('Responsable de l\'activité'), get_user_model(), Activite.get_responsable)
+channels[Activite].add('activity_manager', _('Manager de l\'activité'), get_user_model(), Activite.get_proc_manager)
+
+# activiterisques
+
+channels[ActiviteRisque].add('activity_owner', _('Responsable de l\'activité'), ActiviteRisque.get_activity_owners)
+channels[ActiviteRisque].add('proc_manager', _('Manager du processus'), ActiviteRisque.get_proc_managers)
+channels[ActiviteRisque].add('risk_manager', _('Manager du risque'), ActiviteRisque.get_risk_managers)
+channels[ActiviteRisque].add('risk_reporter', _('la personne qui a soumis le risque'), ActiviteRisque.get_reporters)
+channels[ActiviteRisque].add('risk_followers', _('Ceux qui suivent le risque'), ActiviteRisque.get_suiveurs)
+channels[ActiviteRisque].add('risk_owner', _('Propriétaire du risque'), ActiviteRisque.get_proprietaires)
+
+# processusrisques
+
+channels[ProcessusRisque].add('proc_manager', _('Manager du processus'), ProcessusRisque.get_proc_managers)
+channels[ProcessusRisque].add('bu_manager', _('Manager du Business unit'), ProcessusRisque.get_bu_managers)
+channels[ProcessusRisque].add('risk_manager', _('Manager du risque'), ProcessusRisque.get_risk_managers)
+channels[ProcessusRisque].add('risk_reporter', _('La personne qui a soumis le risque'), ProcessusRisque.get_reporters)
+channels[ProcessusRisque].add('risk_owner', _('Propriétaire du risque'), ProcessusRisque.get_proprietaires)
+channels[ProcessusRisque].add('risk_followers', _('Ceux qui suivent le risque'), ProcessusRisque.get_suiveurs)
+
+# estimations
+
+channels[Estimation].add('risk_manager', _('Manager du risque'), Estimation.get_risk_managers)
+channels[Estimation].add('risk_owner', _('Propriétaire du risque'), Estimation.get_risk_owner)
+channels[Estimation].add('risk_followers', _('Ceux qui suivent le risque'), Estimation.get_risk_suiveurs)
+channels[Estimation].add('bu_manager', _('Manager du Business Unit'), Estimation.get_bu_managers)
+channels[Estimation].add('proc_manager', _('Manager du Processus'), Estimation.get_proc_managers)
+channels[Estimation].add('activity_owner', _('Responsable de l\'activité'), Estimation.get_act_responsable)
+channels[Estimation].add('estimator', _('l\'estimateur du risque'), Estimation.get_estimators)
+
+# contrôles
+
+channels[Controle].add('risk_manager', _('Manager du risque'), Controle.get_risk_managers)
+channels[Controle].add('risk_owner', _('Propriétaire du risque'), Controle.get_risk_owner)
+channels[Controle].add('proc_manager', _('Manager du processus'), Controle.get_proc_managers)
+channels[Controle].add('control_creator', _('Créateur du contrôle'), Controle.get_creator)
+channels[Controle].add('control_owner', _('Propriétaire du controle'), Controle.get_proprietaire)
+
