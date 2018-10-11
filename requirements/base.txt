@@ -4,7 +4,6 @@ Pillow==5.1.0  # https://github.com/python-pillow/Pillow
 argon2-cffi==18.1.0  # https://github.com/hynek/argon2_cffi
 whitenoise==3.3.1  # https://github.com/evansd/whitenoise
 redis>=2.10.5  # https://github.com/antirez/redis
-django-sendgrid-v5==0.6.893 # https://github.com/sklarsa/django-sendgrid-v5
 
 # Django
 # ------------------------------------------------------------------------------
@@ -17,9 +16,12 @@ django-redis==4.9.0  # https://github.com/niwinz/django-redis
 rules==1.3  # https://github.com/dfunckt/django-rules
 django-fm==0.2.5 # https://github.com/django-fm
 django-autocomplete-light==3.2.10 # https://github.com/yourlabs/django-autocomplete-light
+django-vox==2.0.0 # https://gitlab.com/alantrick/django-vox
+django-background-tasks==1.2.0 # https://github.com/arteria/django-background-tasks
+django-sendgrid-v5==0.6.893 # https://github.com/sklarsa/django-sendgrid-v5
+
 # Django REST Framework
 djangorestframework==3.8.2  # https://github.com/encode/django-rest-framework
 coreapi==2.3.3  # https://github.com/core-api/python-client
-django-vox==2.0.0 # https://gitlab.com/alantrick/django-vox
-django-background-tasks==1.2.0 # https://github.com/arteria/django-background-tasks
+
 
