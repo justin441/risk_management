@@ -771,37 +771,49 @@ channels[Activite].add('activity_manager', _('Manager de l\'activité'), get_use
 
 # activiterisques
 
-channels[ActiviteRisque].add('activity_owner', _('Responsable de l\'activité'), ActiviteRisque.get_activity_owners)
-channels[ActiviteRisque].add('proc_manager', _('Manager du processus'), ActiviteRisque.get_proc_managers)
-channels[ActiviteRisque].add('risk_manager', _('Manager du risque'), ActiviteRisque.get_risk_managers)
-channels[ActiviteRisque].add('risk_reporter', _('la personne qui a soumis le risque'), ActiviteRisque.get_reporters)
-channels[ActiviteRisque].add('risk_followers', _('Ceux qui suivent le risque'), ActiviteRisque.get_suiveurs)
-channels[ActiviteRisque].add('risk_owner', _('Propriétaire du risque'), ActiviteRisque.get_proprietaires)
+channels[ActiviteRisque].add('activity_owner', _('Responsable de l\'activité'), get_user_model(),
+                             ActiviteRisque.get_activity_owners)
+channels[ActiviteRisque].add('proc_manager', _('Manager du processus'), get_user_model(),
+                             ActiviteRisque.get_proc_managers)
+channels[ActiviteRisque].add('risk_manager', _('Manager du risque'), get_user_model(), ActiviteRisque.get_risk_managers)
+channels[ActiviteRisque].add('risk_reporter', _('la personne qui a soumis le risque'), get_user_model(),
+                             ActiviteRisque.get_reporters)
+channels[ActiviteRisque].add('risk_followers', _('Ceux qui suivent le risque'), get_user_model(),
+                             ActiviteRisque.get_suiveurs)
+channels[ActiviteRisque].add('risk_owner', _('Propriétaire du risque'), get_user_model(),
+                             ActiviteRisque.get_proprietaires)
 
 # processusrisques
 
-channels[ProcessusRisque].add('proc_manager', _('Manager du processus'), ProcessusRisque.get_proc_managers)
-channels[ProcessusRisque].add('bu_manager', _('Manager du Business unit'), ProcessusRisque.get_bu_managers)
-channels[ProcessusRisque].add('risk_manager', _('Manager du risque'), ProcessusRisque.get_risk_managers)
-channels[ProcessusRisque].add('risk_reporter', _('La personne qui a soumis le risque'), ProcessusRisque.get_reporters)
-channels[ProcessusRisque].add('risk_owner', _('Propriétaire du risque'), ProcessusRisque.get_proprietaires)
-channels[ProcessusRisque].add('risk_followers', _('Ceux qui suivent le risque'), ProcessusRisque.get_suiveurs)
+channels[ProcessusRisque].add('proc_manager', _('Manager du processus'), get_user_model(),
+                              ProcessusRisque.get_proc_managers)
+channels[ProcessusRisque].add('bu_manager', _('Manager du Business unit'), get_user_model(),
+                              ProcessusRisque.get_bu_managers)
+channels[ProcessusRisque].add('risk_manager', _('Manager du risque'), get_user_model(),
+                              ProcessusRisque.get_risk_managers)
+channels[ProcessusRisque].add('risk_reporter', _('La personne qui a soumis le risque'), get_user_model(),
+                              ProcessusRisque.get_reporters)
+channels[ProcessusRisque].add('risk_owner', _('Propriétaire du risque'), get_user_model(),
+                              ProcessusRisque.get_proprietaires)
+channels[ProcessusRisque].add('risk_followers', _('Ceux qui suivent le risque'), get_user_model(),
+                              ProcessusRisque.get_suiveurs)
 
 # estimations
 
-channels[Estimation].add('risk_manager', _('Manager du risque'), Estimation.get_risk_managers)
-channels[Estimation].add('risk_owner', _('Propriétaire du risque'), Estimation.get_risk_owner)
-channels[Estimation].add('risk_followers', _('Ceux qui suivent le risque'), Estimation.get_risk_suiveurs)
-channels[Estimation].add('bu_manager', _('Manager du Business Unit'), Estimation.get_bu_managers)
-channels[Estimation].add('proc_manager', _('Manager du Processus'), Estimation.get_proc_managers)
-channels[Estimation].add('activity_owner', _('Responsable de l\'activité'), Estimation.get_act_responsable)
-channels[Estimation].add('estimator', _('l\'estimateur du risque'), Estimation.get_estimators)
+channels[Estimation].add('risk_manager', _('Manager du risque'), get_user_model(), Estimation.get_risk_managers)
+channels[Estimation].add('risk_owner', _('Propriétaire du risque'), get_user_model(), Estimation.get_risk_owner)
+channels[Estimation].add('risk_followers', _('Ceux qui suivent le risque'), get_user_model(),
+                         Estimation.get_risk_suiveurs)
+channels[Estimation].add('bu_manager', _('Manager du Business Unit'), get_user_model(), Estimation.get_bu_managers)
+channels[Estimation].add('proc_manager', _('Manager du Processus'), get_user_model(), Estimation.get_proc_managers)
+channels[Estimation].add('activity_owner', _('Responsable de l\'activité'), get_user_model(),
+                         Estimation.get_act_responsable)
+channels[Estimation].add('estimator', _('l\'estimateur du risque'), get_user_model(), Estimation.get_estimators)
 
 # contrôles
 
-channels[Controle].add('risk_manager', _('Manager du risque'), Controle.get_risk_managers)
-channels[Controle].add('risk_owner', _('Propriétaire du risque'), Controle.get_risk_owner)
-channels[Controle].add('proc_manager', _('Manager du processus'), Controle.get_proc_managers)
-channels[Controle].add('control_creator', _('Créateur du contrôle'), Controle.get_creator)
-channels[Controle].add('control_owner', _('Propriétaire du controle'), Controle.get_proprietaire)
-
+channels[Controle].add('risk_manager', _('Manager du risque'), get_user_model(), Controle.get_risk_managers)
+channels[Controle].add('risk_owner', _('Propriétaire du risque'), get_user_model(), Controle.get_risk_owner)
+channels[Controle].add('proc_manager', _('Manager du processus'), get_user_model(), Controle.get_proc_managers)
+channels[Controle].add('control_creator', _('Créateur du contrôle'), get_user_model(), Controle.get_creator)
+channels[Controle].add('control_owner', _('Propriétaire du controle'), get_user_model(), Controle.get_proprietaire)

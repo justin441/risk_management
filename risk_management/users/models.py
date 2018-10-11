@@ -5,6 +5,8 @@ from django.utils.translation import gettext_lazy as _
 from django.core.validators import RegexValidator
 from django.conf import settings
 
+import logging
+
 from django_vox.models import VoxModel, VoxNotifications, VoxNotification
 from django_vox.registry import channels
 from django_vox.base import Contact
@@ -13,6 +15,8 @@ phone_regex = RegexValidator(regex=r'^(\(\+\d{0,3}\))? ?\d{9}$',
                              message=_("le format du numéro de téléphone est:[(+000)][ ]000000000;"
                                        "les parties entre crochet sont optionnelles. "
                                        "exemple: (+237) 674228621, 674228621, (+234)674228621"))
+
+logger = logging.getLogger('django')
 
 
 class BusinessUnit(VoxModel):
@@ -34,6 +38,13 @@ class BusinessUnit(VoxModel):
     site_web = models.URLField(verbose_name=_('site internet'), null=True, blank=True)
     projet = models.BooleanField(default=False, help_text=_('Le Business Unit est-il un Projet?'))
 
+    class VoxMeta:
+        notifications = VoxNotifications(
+            create=VoxNotification(
+                _('Notifier à l\'administrateur qu\'un nouveau business unit a été créé')
+            ),
+        )
+
     def __str__(self):
         return self.denomination
 
@@ -49,17 +60,20 @@ class BusinessUnit(VoxModel):
     def get_risk_managers(self):
         return User.objects.filter(is_superuser=True)
 
-    class VoxMeta:
-        notifications = VoxNotifications(
-            create=VoxNotification(
-                _('Notifier à l\'administrateur qu\'un nouveau business unit a été créé'),
-                actor_type='users.user'
-            ),
-        )
+    def save(self, *args, **kwargs):
+        try:
+            old = BusinessUnit.objects.get(pk=self.pk)
+        except BusinessUnit.DoesNotExist:
+            old = False
+        super().save(*args, **kwargs)
+        if not old:
+            logger.info('New Business unit created')
+            self.issue_notification('create')
+            logger.info('Notification sent')
 
     class Meta:
         verbose_name_plural = "Business Units"
-        ordering = ('denomination', )
+        ordering = ('denomination',)
 
 
 class User(AbstractUser):
@@ -91,7 +105,7 @@ class User(AbstractUser):
     def get_username(self):
         return self.username[:-36]
 
-    def get_contacts_for_notification(self):
+    def get_contacts_for_notification(self, _notification):
         yield Contact(self.get_full_name(), 'email', self.email)
 
     def get_absolute_url(self):
