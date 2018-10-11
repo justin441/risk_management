@@ -7,7 +7,8 @@ from django.conf import settings
 
 import logging
 
-from django_vox.models import VoxModel, VoxNotifications, VoxNotification
+from django_vox.models import VoxNotifications, VoxNotification
+from django_vox.extra.background import BackgroundVoxModel as VoxModel
 from django_vox.registry import channels
 from django_vox.base import Contact
 
@@ -59,17 +60,6 @@ class BusinessUnit(VoxModel):
 
     def get_risk_managers(self):
         return User.objects.filter(is_superuser=True)
-
-    def save(self, *args, **kwargs):
-        try:
-            old = BusinessUnit.objects.get(pk=self.pk)
-        except BusinessUnit.DoesNotExist:
-            old = False
-        super().save(*args, **kwargs)
-        if not old:
-            logger.info('New Business unit created')
-            self.issue_notification('create')
-            logger.info('Notification sent')
 
     class Meta:
         verbose_name_plural = "Business Units"
