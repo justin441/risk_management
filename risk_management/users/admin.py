@@ -21,13 +21,11 @@ risk_management_admin_site = RiskManagementAdmin(name='admin-nh-risk-management'
 
 
 class MyUserChangeForm(UserChangeForm):
-
     class Meta(UserChangeForm.Meta):
         model = User
 
 
 class MyUserCreationForm(UserCreationForm):
-
     error_message = UserCreationForm.error_messages.update(
         {"duplicate_username": _('Ce nom d\'utilisateur est déjà pris')}
     )
@@ -82,25 +80,21 @@ class BuAdmin(admin.ModelAdmin):
                     'adresse_physique', 'telephone', 'site_web', 'bu_manager')
     search_fields = ['denomination']
     fieldsets = [
-        (_('Infos'), {'fields': ['denomination', 'sigle', 'marche', 'ville_siege', 'bu_manager']}),
-        (_('Contact'), {'fields': ['adresse_physique', 'telephone', 'site_web']}),
+        (_('Infos'),
+         {'fields': ['denomination', 'raison_sociale', 'sigle', 'marche', 'ville_siege', 'bu_manager', 'projet']}),
+        (_('Contact'), {'fields': ['adresse_physique', 'adresse_postale', 'telephone', 'site_web']}),
     ]
     inlines = [PositionInline, ]
 
     def save_model(self, request, obj, form, change):
+        super().save_model(request, obj, form, change)
         if not change:
-            logger.info('New Business unit created.')
+            logger.info('New {} created.'.format(obj.get_bu_type()))
             obj.issue_notification('created', actor=request.user, target=obj)
             logger.info('Notification sent.')
-        super().save_model(request, obj, form, change)
 
     def delete_model(self, request, obj):
+        super().save_model(request, obj)
         logger.info('Business unit {} was sucesffuly deleted.'.format(obj.denomination))
         obj.issue_notification('delete', actor=request.user, target=obj)
         logger.info('Notification sent.')
-        super().save_model(request, obj)
-
-
-
-
-

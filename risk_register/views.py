@@ -13,6 +13,7 @@ from django.http import JsonResponse
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.postgres.search import SearchQuery, SearchRank
 from django.forms.utils import from_current_timezone
+from django.core.mail import send_mail
 
 from risk_management.users.models import BusinessUnit
 from .models import (ActiviteRisque, ProcessusRisque, Processus, Activite, Risque,
@@ -23,9 +24,9 @@ from .forms import (CreateProcessForm, CreateActivityForm, CreateProcessOutputDa
                     AssignProcessusrisqueForm, EditControleForm, UpdateRiskForm, CreateInputDataForm,
                     ChangeActiviterisqueReviewDateForm, ChangeProcessusrisqueReviewDateForm, AssignControlform,
                     EstimationRisqueForm)
-from risk_management.users.utils import get_risk_occurrences
+from risk_management.users.utils import get_risk_occurrences, get_changes_between_2_objects
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger('my view_logger')
 
 
 # Create your views here.
@@ -110,7 +111,9 @@ class CreateProcessView(PermissionRequiredMixin, AjaxCreateView):
         logger.info('Saving process %s in %s' % (str(self.object), self.object.business_unit))
 
     def post_save(self):
-        logger.info('Process %s saved' % str(self.object))
+        logger.info('New process \'%s\' created' % str(self.object.nom))
+        self.object.issue_notification('create')
+        logger.info('Notification sent')
 
     def get_message_template_context(self):
         msg_ctx = super().get_message_template_context()
@@ -130,6 +133,16 @@ class UpdateProcessView(PermissionRequiredMixin, AjaxUpdateView):
     permission_required = 'risk_register.change_processus'
     form_class = CreateProcessForm
     model = Processus
+
+    def pre_save(self):
+        self.old_object = get_object_or_404(Processus, pk=self.object.pk)
+
+    def post_save(self):
+        exclude = [f.name for f in Processus._meta.fields if not f.name == 'proc_manager']
+        if get_changes_between_2_objects(self.old_object, self.object, exclude):
+            logger.info("Le manager du processus '{}' a été changé.".format(self.object.nom))
+            self.object.issue_notification('change_proc_manager')
+            logger.info('Notification sent.')
 
 
 class DeleteProcessView(PermissionRequiredMixin, AjaxDeleteView):

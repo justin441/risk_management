@@ -23,11 +23,13 @@ logger = logging.getLogger('django')
 class BusinessUnit(VoxModel):
     """Représente un business unit au sens large, soit une société soit un projet"""
 
-    denomination = models.CharField(max_length=100, primary_key=True, verbose_name=_('Dénomination'),
-                                    help_text=_("Nom de la société ou du projet"))
+    denomination = models.CharField(max_length=100, primary_key=True, verbose_name=_('Nom'),
+                                    help_text=_("Nom de la société ou du projet; doit être unique."))
+    raison_sociale = models.CharField(max_length=50, verbose_name=_('raison sociale'), blank=True, null=True)
     sigle = models.CharField(max_length=10, blank=True, help_text=_('exemple: C.T.C'))
-    marche = models.CharField(_("Domaine d'activité"), max_length=200, blank=True)
-    ville_siege = models.CharField(_("ville siège"), max_length=25)
+    marche = models.CharField(_("objet"), max_length=200, blank=True, help_text=_('activités de l\'entrepriser'
+                                                                                  ' / but du projet'))
+    ville_siege = models.CharField(_("ville"), max_length=25)
     adresse_physique = models.CharField(max_length=200, help_text=_("Rue, quartier, lieu-dit"))
     adresse_postale = models.CharField(max_length=32, blank=True, verbose_name=_("Adresse postale"))
     telephone = models.CharField(max_length=18, default='(+237) 000000000', validators=[phone_regex],

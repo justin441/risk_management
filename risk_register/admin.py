@@ -38,6 +38,24 @@ class ProcessAdmin(admin.ModelAdmin):
     list_display = ['__str__', 'type_processus', 'business_unit', 'description', 'proc_manager']
     list_filter = ('type_processus', 'business_unit', 'business_unit__projet')
 
+    def save_model(self, request, obj, form, change):
+        old = None
+        if change:
+            old = obj.__class__.objects.get(pk=obj.pk)
+        super().save_model(request, obj, form, change)
+
+        if old:
+            exclude = [f.name for f in obj._meta.fields if not f.name == 'proc_manager']
+            if get_changes_between_2_objects(old, obj, exclude):
+                logging.getLogger('django').info("Le manager du processus '{}' a été changé.".format(obj.nom))
+                obj.issue_notification('change_proc_manager')
+                logging.getLogger('django').info('Notification sent')
+
+        else:
+            logging.getLogger('django').info('New process added to {}'.format(obj.business_unit))
+            obj.issue_notification('create')
+            logging.getLogger('django').info('Notification sent.')
+
 
 @admin.register(Activite, site=risk_management_admin_site)
 class ActiviteAdmin(admin.ModelAdmin):

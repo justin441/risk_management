@@ -84,21 +84,35 @@ class Processus(VoxModel):
     def __str__(self):
         return self.nom
 
-    def get_absolute_url(self):
-        if self.proc_manager:
-            return reverse('risk_register:detail_processus', kwargs={'pk': self.code_processus})
+    @property
+    def id(self):
+        return str(self.pk)
 
-    def get_bu_managers(self):
-        if self.business_unit.bu_manager:
-            yield self.business_unit.bu_manager
-        else:
-            return self.business_unit.get_risk_managers()
+    def get_absolute_url(self):
+            return reverse('risk_register:detail_processus', kwargs={'pk': self.code_processus})
 
     def get_risk_managers(self):
         return self.business_unit.get_risk_managers()
 
+    def get_bu_managers(self):
+        if not self.business_unit.bu_manager:
+            logger.info('On monte encore plus haut')
+            return self.business_unit.get_risk_managers()
+
+        def iter_funct():
+            if self.business_unit.bu_manager:
+                yield self.business_unit.bu_manager
+        return iter_funct()
+
     def get_proc_managers(self):
-        yield self.proc_manager
+        if not self.proc_manager:
+            logger.info('on va aller voir plus haut')
+            return self.get_bu_managers()
+
+        def iter_func():
+            if self.proc_manager:
+                yield self.proc_manager
+        return iter_func()
 
     class Meta:
         verbose_name = _('processus')
@@ -108,12 +122,10 @@ class Processus(VoxModel):
     class VoxMeta:
         notifications = VoxNotifications(
             create=VoxNotification(
-                _('Notifier qu\'un nouveau processus a été créé'),
-                actor_type='users.user', target_type='risk_register.processus'
+                _('Notifier qu\'un nouveau processus a été créé')
             ),
             change_proc_manager=VoxNotification(
-                _('Notifier que le manager du processus a changé'),
-                actor_type='users.user', target_type='risk_register.processus'
+                _('Notifier que le manager du processus a changé')
             )
         )
 
@@ -758,8 +770,9 @@ class Controle(TimeFramedModel, TimeStampedModel, RiskMixin):
 # ---------- django-vox channels ----------
 #  processus
 channels[Processus].add('bu_manager', _('Manager du Business unit'), get_user_model(),
-                        Processus.get_proc_managers)
+                        Processus.get_bu_managers)
 channels[Processus].add('risk_manager', _('Manager du risque'), get_user_model(), Processus.get_risk_managers)
+channels[Processus].add('process manager', _('Manager du processus'), get_user_model(), Processus.get_proc_managers)
 
 # risques
 channels[Risque].add('risk_manager', _('Manager du risque'), get_user_model(), Risque.get_risk_managers)
