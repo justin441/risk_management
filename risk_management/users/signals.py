@@ -25,11 +25,3 @@ def make_username(sender, **kwargs):
             'NFD', name).encode('ascii', 'ignore'), 'utf8')
         logger.info('Nouvel utilisateur ajouté: %s' % user.username)
 
-
-@receiver(post_save, sender=BusinessUnit)
-def send_new_bu_notice(sender, **kwargs):
-    created, business_unit = kwargs['created'], kwargs['instance']
-    if created:
-        logger.info('New Business unit created')
-        business_unit.issue_notification('created', schedule=60)
-        logger.info('Notification sent.')
