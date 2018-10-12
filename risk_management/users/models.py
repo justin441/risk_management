@@ -42,15 +42,25 @@ class BusinessUnit(VoxModel):
     class VoxMeta:
         notifications = VoxNotifications(
             create=VoxNotification(
-                _('Notifier à l\'administrateur qu\'un nouveau business unit a été créé')
+                _('Notifier aux administrateurs qu\'un nouveau business unit a été créé'),
+                actor_type='users.user', target_type='users.businessunit'
             ),
+            delete=VoxNotification(
+                _('Notifier aux administrateurs qu\'un business unit a été supprimé'),
+                actor_type='users.user', target_type='users.businessunit'
+            )
         )
 
     def __str__(self):
         return self.denomination
 
+    @property
+    def id(self):
+        # necessaire pour utiliser le paramètre target de Vox notification
+        return self.pk
+
     def get_absolute_url(self):
-        return reverse('risk_register:detail_business_unit', kwargs={'pk': self.denomination})
+        return reverse('risk_register:detail_business_unit', kwargs={'pk': self.pk})
 
     def get_managers(self):
         if self.bu_manager:
@@ -64,6 +74,12 @@ class BusinessUnit(VoxModel):
     class Meta:
         verbose_name_plural = "Business Units"
         ordering = ('denomination',)
+
+    def get_bu_type(self):
+        if self.projet:
+            return _('projet')
+        else:
+            return 'business unit'
 
 
 class User(AbstractUser):
