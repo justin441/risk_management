@@ -1,3 +1,4 @@
+import logging
 from django import forms
 from django.contrib import admin
 from django.contrib.admin import AdminSite
@@ -7,6 +8,8 @@ from django.contrib.auth.forms import UserChangeForm, UserCreationForm
 
 from .models import User, BusinessUnit, Position
 from .forms import BusinessUnitAdminForm
+
+logger = logging.getLogger('django')
 
 
 class RiskManagementAdmin(AdminSite):
@@ -83,6 +86,21 @@ class BuAdmin(admin.ModelAdmin):
         (_('Contact'), {'fields': ['adresse_physique', 'telephone', 'site_web']}),
     ]
     inlines = [PositionInline, ]
+
+    def save_model(self, request, obj, form, change):
+        if not change:
+            logger.info('New Business unit created.')
+            obj.issue_notification('created', actor=request.user, target=obj)
+            logger.info('Notification sent.')
+        super().save_model(request, obj, form, change)
+
+    def delete_model(self, request, obj):
+        logger.info('Business unit {} was sucesffuly deleted.'.format(obj.denomination))
+        obj.issue_notification('delete', actor=request.user, target=obj)
+        logger.info('Notification sent.')
+        super().save_model(request, obj)
+
+
 
 
 
