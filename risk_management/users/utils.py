@@ -75,3 +75,20 @@ def get_changes_between_2_objects(object1, object2, exclude=[]):
             changes[field.name] = (field.value_from_object(object1), field.value_from_object(object2))
     return changes
 
+
+def get_latests(qs, n):
+    """"
+    :param qs: queryset
+    :param n: positive integer
+    :returns queryset with the n latest entry of qs
+    """
+    if len(qs) <= n:
+        return qs
+    ids = []
+    qs_copy = qs.all()
+    for i in range(n):
+        ids.append(qs_copy.latest().pk)
+        qs_copy = qs_copy.exclude(pk=ids[i])
+    return qs.filter(pk__in=ids)
+
+

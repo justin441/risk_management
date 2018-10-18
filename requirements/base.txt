@@ -18,7 +18,7 @@ django-fm==0.2.5 # https://github.com/django-fm
 django-autocomplete-light==3.2.10 # https://github.com/yourlabs/django-autocomplete-light
 django-vox==2.0.0 # https://gitlab.com/alantrick/django-vox
 django-background-tasks==1.2.0 # https://github.com/arteria/django-background-tasks
-django-sendgrid-v5==0.6.893 # https://github.com/sklarsa/django-sendgrid-v5
+django-anymail[mailjet]==4.3  # https://github.com/anymail/django-anymail
 
 # Django REST Framework
 djangorestframework==3.8.2  # https://github.com/encode/django-rest-framework

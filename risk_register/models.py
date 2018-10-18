@@ -122,10 +122,12 @@ class Processus(VoxModel):
     class VoxMeta:
         notifications = VoxNotifications(
             create=VoxNotification(
-                _('Notifier qu\'un nouveau processus a été créé')
+                _('Notifier qu\'un nouveau processus a été créé'),
+                actor_type='users.user', target_type='risk_register.processus'
             ),
             change_proc_manager=VoxNotification(
-                _('Notifier que le manager du processus a changé')
+                _('Notifier que le manager du processus a changé'),
+                actor_type='users.user', target_type='risk_register.processus'
             )
         )
 
@@ -465,6 +467,18 @@ class ActiviteRisque(IdentificationRisque, VoxModel):
             ),
             obsolete=VoxNotification(
                 _('Notification que les données du risque sont obsolètes')
+            ),
+            set_risk_type=VoxNotification(
+                _('notification que le type de risque a changé'),
+                actor_type='users.user', target_type='risk_register.activiterisque'
+            ),
+            set_seuil=VoxNotification(
+                _('Notification que le seuil du risque a changé'),
+                actor_type='users.user', target_type='risk_register.activiterisque'
+            ),
+            delete=VoxNotification(
+                _('Notification que le seuil du risque a été supprimé'),
+                actor_type='users.user', target_type='risk_register.activiterisque'
             )
         )
 
@@ -503,7 +517,7 @@ class ActiviteRisque(IdentificationRisque, VoxModel):
         unique_together = (('activite', 'risque', 'type_de_risque'),)
 
 
-class ProcessusRisque(IdentificationRisque):
+class ProcessusRisque(IdentificationRisque, VoxModel):
     processus = models.ForeignKey(Processus, on_delete=models.CASCADE, verbose_name=_('processus'))
     soumis_par = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL,
                                    related_name='processusrisques_soumis', null=True,
@@ -533,6 +547,18 @@ class ProcessusRisque(IdentificationRisque):
             ),
             obsolete=VoxNotification(
                 _('Notification que les données du risque sont obsolètes')
+            ),
+            set_risk_type=VoxNotification(
+                _('notification que le type de risque a changé'),
+                actor_type='users.user', target_type='risk_register.processusrisque'
+            ),
+            set_seuil=VoxNotification(
+                _('Notification que le seuil du risque a changé'),
+                actor_type='users.user', target_type='risk_register.processusrisque'
+            ),
+            delete=VoxNotification(
+                _('Notification que le seuil du risque a été supprimé'),
+                actor_type='users.user', target_type='risk_register.processusrisque'
             )
         )
 
@@ -724,28 +750,32 @@ class Controle(TimeFramedModel, TimeStampedModel, RiskMixin):
         return self.assigne_a
 
     def clean(self):
+        new = False
+        try:
+            Controle.objects.get(pk=self.pk)
+        except Controle.DoesNotExist:
+            new = True
         if (self.start and self.end) and (self.start > self.end):
             raise ValidationError(
                 {'end': _('la date de fin ne peut pas précédée celle du début. Veuillez corriger le champ "debut".')}
             )
+        if new:
+            if self.content_object and not self.content_object.estimations.all():
+                logger.error("erreur de sauvergarde du controle '%s'" % self.nom)
+                raise ValidationError(
+                    {self.content_type.name: _(' le risque n\'a pas encore été estimé')}
+                )
+            elif self.content_object and (self.content_object.est_obsolete or
+                                          self.content_object.estimations.latest().est_obsolete):
 
-    def save(self, *args, **kwargs):
-        if (self.start and self.end) and (self.start > self.end):
-            logger.error("erreur de sauvergarde du controle '%s'" % self.nom)
-            raise FieldError(
-                'la date de fin ne peut pas précédée celle du début. Veuillez corriger le champ "debut".'
-            )
-        if self.content_object and not self.content_object.estimations.all():
-            logger.error("erreur de sauvergarde du controle '%s'" % self.nom)
-            raise RiskDataError(
-                {self.content_type.name: _(' le risque n\'a pas encore été estimé')}
-            )
-        elif self.content_object and (self.content_object.est_obsolete or
-                                      self.content_object.estimations.latest().est_obsolete):
-            logger.error("erreur de sauvergarde du controle '%s'" % self.nom)
-            raise RiskDataError(
-                _('Les donneés du risque ont besoins d\'une mise à jour'))
-        super().save(*args, **kwargs)
+                logger.error("erreur de sauvergarde du controle '%s'" % self.nom)
+                if self.content_object.est_obsolete:
+                    logger.info('risque obsolte: %s' % self.content_object.est_obsolete)
+                else:
+                    logger.info(
+                        "dernière estimations obsolete: %s" % self.content_object.estimations.latest().est_obsolete)
+                raise ValidationError(
+                    _('Les donneés du risque ont besoins d\'une mise à jour'))
 
     def est_en_retard(self):
         if self.end and (self.status == 'in_progress' and self.end < now()):

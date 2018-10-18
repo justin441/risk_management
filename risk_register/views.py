@@ -112,7 +112,7 @@ class CreateProcessView(PermissionRequiredMixin, AjaxCreateView):
 
     def post_save(self):
         logger.info('New process \'%s\' created' % str(self.object.nom))
-        self.object.issue_notification('create')
+        self.object.issue_notification('create', actor=self.request.user, target=self.object)
         logger.info('Notification sent')
 
     def get_message_template_context(self):
@@ -141,7 +141,7 @@ class UpdateProcessView(PermissionRequiredMixin, AjaxUpdateView):
         exclude = [f.name for f in Processus._meta.fields if not f.name == 'proc_manager']
         if get_changes_between_2_objects(self.old_object, self.object, exclude):
             logger.info("Le manager du processus '{}' a été changé.".format(self.object.nom))
-            self.object.issue_notification('change_proc_manager')
+            self.object.issue_notification('change_proc_manager', actor=self.request.user, target=self.object)
             logger.info('Notification sent.')
 
 
@@ -172,6 +172,7 @@ class CreateActiviteView(PermissionRequiredMixin, AjaxCreateView):
 
     def post_save(self):
         logger.info('Activity %s saved' % self.object.nom)
+        self.object.issue_notification('create', actor=self.request.user, target=self.object)
 
     def get_message_template_context(self):
         msg_ctx = super().get_message_template_context()
@@ -187,6 +188,16 @@ class UpdateActiviteView(PermissionRequiredMixin, AjaxUpdateView):
     model = Activite
     permission_required = 'risk_register.change_activite'
 
+    def pre_save(self):
+        self.old = Activite.objects.get(pk=self.object.pk)
+
+    def post_save(self):
+        if 'status' in get_changes_between_2_objects(self.old, self.object):
+            if self.object.status == 'completed':
+                self.object.issue_notification('complete', actor=self.request.user, target=self.object)
+            else:
+                self.object.issue_notification('create', actor=self.request.user, target=self.object)
+
 
 class DeleteActiviteView(PermissionRequiredMixin, AjaxDeleteView):
     model = Activite
@@ -201,6 +212,7 @@ class DeleteActiviteView(PermissionRequiredMixin, AjaxDeleteView):
 
     def post_delete(self):
         logger.info('Activity successfully deleted')
+        self.object.issue_notification('delete', actor=self.request.user, target=self.object)
 
 
 class CreateProcessOutputView(PermissionRequiredMixin, AjaxCreateView):
@@ -285,6 +297,7 @@ class NewRiskForProcessView(PermissionRequiredMixin, AjaxCreateView):
 
     def post_save(self):
         logger.info('%s saved successfully' % str(self.object))
+        self.object.issue_notification('create', actor=self.request.user, target=self.object)
         processus = get_object_or_404(Processus, pk=self.kwargs['processus'])
         logger.info("Adding '%s' to process '%s'" % (str(self.object), str(processus)))
         pr = processus.processusrisque_set.create(
@@ -292,9 +305,9 @@ class NewRiskForProcessView(PermissionRequiredMixin, AjaxCreateView):
             risque=self.object,
             soumis_par=self.request.user,
         )
+        pr.issue_notification('create', actor=self.request.user, target=pr)
         logger.info("'%s' successfully added to process %s" % (str(self.object), str(processus)))
         pr.suivi_par.add(self.request.user)
-
 
     def form_valid(self, form):
         self.tr = form.data.get('type_de_risque')
@@ -329,6 +342,7 @@ class AddProcessusrisqueView(PermissionRequiredMixin, AjaxCreateView):
     def post_save(self):
         self.object.suivi_par.add(self.request.user)
         logger.info("Risk identification '%s' saved successfully" % (str(self.object)))
+        self.object.issue_notification('create', actor=self.request.user, target=self.object)
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
@@ -355,6 +369,11 @@ class EditProcessusrisqueView(PermissionRequiredMixin, AjaxUpdateView):
 
     def pre_save(self):
         self.object.modifie_par = self.request.user
+        self.old = ProcessusRisque.objects.get(pk=self.object.pk)
+
+    def post_save(self):
+        if 'type_de_risque' in get_changes_between_2_objects(self.old, self.object):
+            self.object.issue_notification('change_risk_type', actor=self.request.user, target=self.object)
 
 
 class DeleteProcessusrisqueView(PermissionRequiredMixin, AjaxDeleteView):
@@ -366,6 +385,7 @@ class DeleteProcessusrisqueView(PermissionRequiredMixin, AjaxDeleteView):
 
     def post_delete(self):
         logger.info("Risk '%s' deleted successfully." % str(self.object))
+        self.object.issue_notification('delete', actor=self.request.user, target=self.object)
 
 
 class NewRiskForActivityView(PermissionRequiredMixin, AjaxCreateView):
@@ -381,12 +401,14 @@ class NewRiskForActivityView(PermissionRequiredMixin, AjaxCreateView):
         logger.info('Saving new risk: %s' % str(self.object))
 
     def post_save(self):
+        self.object.issue_notification('create', actor=self.request.user, target=self.object)
         activite = get_object_or_404(Activite, pk=self.kwargs['activite'])
         ar = activite.activiterisque_set.create(
             type_de_risque=self.tr,
             risque=self.object,
             soumis_par=self.request.user
         )
+        ar.issue_notification('create', actor=self.request.user, target=ar)
         ar.suivi_par.add(self.request.user)
         logger.info("'%s' successfully added to activity %s" % (str(self.object), str(activite)))
 
@@ -411,6 +433,7 @@ class AddActiviterisqueView(PermissionRequiredMixin, AjaxCreateView):
     def post_save(self):
         self.object.suivi_par.add(self.request.user)
         logger.info("'%s' Saved successfully" % str(self.object))
+        self.object.issue_notification('create', actor=self.request.user, target=self.object)
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
@@ -437,10 +460,13 @@ class EditActiviterisqueView(PermissionRequiredMixin, AjaxUpdateView):
 
     def pre_save(self):
         self.object.modifie_par = self.request.user
+        self.old = ActiviteRisque.objects.get(pk=self.object.pk)
         logger.info("Saving '%s'" % str(self.object))
 
     def post_save(self):
         logger.info("'%s' Saved successfully" % str(self.object))
+        if 'type_de_risque' in get_changes_between_2_objects(self.old, self.object):
+            self.object.issue_notification('change_risk_type', actor=self.request.user, target=self.object)
 
 
 class DeleteActiviterisqueView(PermissionRequiredMixin, AjaxDeleteView):
@@ -452,6 +478,7 @@ class DeleteActiviterisqueView(PermissionRequiredMixin, AjaxDeleteView):
 
     def post_delete(self):
         logger.info("'%s' successfully deleted" % str(self.object))
+        self.object.issue_notification('delete', actor=self.request.user, target=self.object)
 
 
 class AddControlMixin(AjaxCreateView):
@@ -476,6 +503,7 @@ class AddProcessusrisqueControleView(PermissionRequiredMixin, AddControlMixin):
 
     def post_save(self):
         logger.info("'%s' Saved successfully" % str(self.object))
+        self.object.issue_notification('create', actor=self.request.user, target=self.object)
 
 
 class AddActiviterisqueControle(PermissionRequiredMixin, AddControlMixin):
@@ -496,6 +524,7 @@ class AddActiviterisqueControle(PermissionRequiredMixin, AddControlMixin):
 
     def post_save(self):
         logger.info("'%s' Saved successfully" % str(self.object))
+        self.object.issue_notification('create', actor=self.request.user, target=self.object)
 
 
 class EditRiskControl(PermissionRequiredMixin, AjaxUpdateView):
@@ -531,6 +560,7 @@ class AssignerControleView(PermissionRequiredMixin, AjaxUpdateView):
 
     def post_save(self):
         logger.info("'%s' successfully assigned to %s" % (str(self.object), self.object.assigne_a.get_full_name()))
+        self.object.issue_notification('assign', actor=self.request.user, target=self.object)
 
 
 class SetSeuilProcessusrisqueView(PermissionRequiredMixin, AjaxCreateView):
@@ -551,6 +581,7 @@ class SetSeuilProcessusrisqueView(PermissionRequiredMixin, AjaxCreateView):
             processusrisque.criterisation.delete()
         processusrisque.criterisation = self.object
         processusrisque.save()
+        processusrisque.issue_notification('set_seuil', actor=self.request.user, target=processusrisque)
 
 
 class ProcessusrisqueEstimationView(PermissionRequiredMixin, AjaxCreateView):
@@ -579,6 +610,7 @@ class ProcessusrisqueEstimationView(PermissionRequiredMixin, AjaxCreateView):
             date_revue=self.date_revue,
             criterisation=self.object,
         )
+        self.object.issue_notification('create', actor=self.request.user, target=self.object)
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
@@ -604,6 +636,7 @@ class SetSeuilActiviterisqueView(PermissionRequiredMixin, AjaxCreateView):
             activiterisque.criterisation.delete()
         activiterisque.criterisation = self.object
         activiterisque.save()
+        activiterisque.issue_notification('set_seuil', actor=self.request.user, target=activiterisque)
 
 
 class ActiviterisqueEstimationView(PermissionRequiredMixin, AjaxCreateView):
@@ -631,6 +664,7 @@ class ActiviterisqueEstimationView(PermissionRequiredMixin, AjaxCreateView):
             criterisation=self.object,
             date_revue=self.date_revue
         )
+        self.object.issue_notification('create', actor=self.request.user, target=self.object)
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
@@ -647,6 +681,9 @@ class AssignerActiviterisqueView(PermissionRequiredMixin, AjaxUpdateView):
     def pre_save(self):
         self.object.modifie_par = self.request.user
 
+    def post_save(self):
+        self.object.issue_notification('assign', actor=self.request.user, target=self.object)
+
 
 class AssignerProcessusrisqueView(PermissionRequiredMixin, AjaxUpdateView):
     permission_required = 'risk_register.assign_process_risk'
@@ -656,6 +693,9 @@ class AssignerProcessusrisqueView(PermissionRequiredMixin, AjaxUpdateView):
 
     def pre_save(self):
         self.object.modifie_par = self.request.user
+
+    def post_save(self):
+        self.object.issue_notification('assign', actor=self.request.user, target=self.object)
 
 
 class SetProcessusrisqueReviewDate(PermissionRequiredMixin, AjaxUpdateView):
@@ -755,10 +795,12 @@ def change_control_status(request, pk):
             elif controle.status == 'in_progress':
                 controle.status = 'completed'
                 controle.save()
+                controle.issue_notification('complete', actor=request.user, target=controle)
                 data['result'] = 'success'
             elif controle.status == 'completed':
                 controle.status = 'in_progress'
                 controle.save()
+                controle.issue_notification('complete', actor=request.user, target=controle)
                 data['result'] = 'success'
             else:
                 data['error_message'] = _('statut inconnu')
@@ -784,7 +826,7 @@ def change_risk_status(request, pk):
             try:
                 risque = ActiviteRisque.objects.get(pk=pk)
             except ActiviteRisque.DoesNotExist:
-                logger.exception('Activity not found')
+                logger.exception('Risk not found')
                 risque = None
                 data['error_message'] = _('Aucun risque trouvé')
                 data['result'] = 'failure'
@@ -795,6 +837,7 @@ def change_risk_status(request, pk):
             elif request.POST.get('verifie') == 'pending':
                 risque.verifie = 'verified'
                 risque.save()
+                risque.issue_notification('verify', actor=request.user, target=risque)
                 data['result'] = 'success'
             elif request.POST.get('verifie') == 'verified':
                 risque.verifie = 'pending'
@@ -833,6 +876,8 @@ def approve_controle(request, pk):
                 else:
                     controle.est_approuve = True
                 controle.save()
+                controle.issue_notification('approve', actor=request.user, target=controle)
+
                 data['result'] = 'success'
             else:
                 data['result'] = 'failure'
@@ -857,6 +902,7 @@ def validate_controle(request, pk):
                 else:
                     controle.est_valide = True
                 controle.save()
+                controle.issue_notification('validate', actor=request.user, target=controle)
                 data['result'] = 'success'
             else:
                 data['result'] = 'failure'

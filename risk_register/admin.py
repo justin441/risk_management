@@ -6,7 +6,7 @@ from django.contrib.contenttypes.admin import GenericStackedInline
 from django.utils.translation import gettext_lazy as _
 from django.db import models
 from risk_management.users.admin import risk_management_admin_site
-from risk_management.users.utils import get_changes_between_2_objects
+from risk_management.users.utils import get_changes_between_2_objects, get_latests
 
 from .models import (Processus, ProcessData, Activite, Risque, ClasseDeRisques, ActiviteRisque, Estimation,
                      Controle, ProcessusRisque, CritereDuRisque)
@@ -39,21 +39,21 @@ class ProcessAdmin(admin.ModelAdmin):
     list_filter = ('type_processus', 'business_unit', 'business_unit__projet')
 
     def save_model(self, request, obj, form, change):
-        old = None
+        old = False
         if change:
-            old = obj.__class__.objects.get(pk=obj.pk)
+            old = True
         super().save_model(request, obj, form, change)
 
         if old:
-            exclude = [f.name for f in obj._meta.fields if not f.name == 'proc_manager']
-            if get_changes_between_2_objects(old, obj, exclude):
+            current = obj.__class__.objects.get(pk=obj.pk)
+            if 'proc_manager' in get_changes_between_2_objects(current, obj):
                 logging.getLogger('django').info("Le manager du processus '{}' a été changé.".format(obj.nom))
-                obj.issue_notification('change_proc_manager')
+                obj.issue_notification('change_proc_manager', actor=request.user, target=obj)
                 logging.getLogger('django').info('Notification sent')
 
         else:
             logging.getLogger('django').info('New process added to {}'.format(obj.business_unit))
-            obj.issue_notification('create')
+            obj.issue_notification('create', actor=request.user, target=obj)
             logging.getLogger('django').info('Notification sent.')
 
 
@@ -80,6 +80,25 @@ class ActiviteAdmin(admin.ModelAdmin):
 
     mark_completed.short_description = _('marquer comme achevé')
 
+    def save_model(self, request, obj, form, change):
+        old = False
+        if change:
+            old = True
+        super().save_model(request, obj, form, change)
+        if old:
+            current = Activite.objects.get(pk=obj.pk)
+            if 'status' in get_changes_between_2_objects(current, obj):
+                if obj.status == 'completed':
+                    obj.issue_notification('complete', actor=request.user, target=obj)
+                else:
+                    obj.issue_notification('create', actor=request.user, target=obj)
+        else:
+            obj.issue_notification('create', actor=request.user, target=obj)
+
+    def delete_model(self, request, obj):
+        super().delete_model(request, obj)
+        obj.issue_notification('delete', actor=request.user, target=obj)
+
 
 @admin.register(ClasseDeRisques, site=risk_management_admin_site)
 class ClasseAdmin(admin.ModelAdmin):
@@ -97,6 +116,7 @@ class RisqueAdmin(admin.ModelAdmin):
         if not change:
             obj.cree_par = request.user
         super().save_model(request, obj, form, change)
+        obj.issue_notification('create', actor=request.user, target=obj)
 
 
 class EstimationInline(GenericStackedInline):
@@ -111,12 +131,20 @@ class EstimationInline(GenericStackedInline):
     verbose_name = 'estimation du risque'
     verbose_name_plural = 'estimations du risque'
 
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        return get_latests(qs, 2)
+
 
 class ControleInline(GenericStackedInline):
     model = Controle
     extra = 1
     classes = ['collapse']
     exclude = ['acheve_le', 'cree_par', 'modifie_par']
+
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        return qs.exclude(status='completed')
 
 
 class IdentificationRisque(admin.ModelAdmin):
@@ -126,13 +154,9 @@ class IdentificationRisque(admin.ModelAdmin):
         ControleInline,
     ]
     date_hierarchy = 'created'
-    list_editable = ['date_revue']
     actions = ['mark_verified']
     list_display_links = ['risque']
     radio_fields = {'verifie': admin.HORIZONTAL}
-    formfield_overrides = {
-        models.DateTimeField: {'widget': AdminDateWidget},
-    }
 
     def mark_verified(self, request, queryset):
         queryset = queryset.filter(verifie='pending')
@@ -158,10 +182,33 @@ class IdentificationRisque(admin.ModelAdmin):
                     curr = Controle.objects.get(pk=obj.pk)
                 except Controle.DoesNotExist:
                     obj.cree_par = request.user
+                    obj.save()
+                    obj.issue_notification('create', actor=request.user, target=obj)
                 else:
                     if get_changes_between_2_objects(obj, curr, exclude=ControleInline.exclude):
                         obj.modifie_par = request.user
-        formset.save()
+                        obj.save()
+                        if obj.assigne_a and 'assigne_a' in get_changes_between_2_objects(curr, obj):
+                            obj.issue_notification('assign', target=obj, actor=request.user)
+                        if 'est_approuve' in get_changes_between_2_objects(curr, obj):
+                            obj.issue_notification('approve', target=obj, actor=request.user)
+                        if obj.est_valide and 'est_valide' in get_changes_between_2_objects(curr, obj):
+                            obj.issue_notification('validate', target=obj, actor=request.user)
+                        if 'status' in get_changes_between_2_objects(curr, obj):
+                            if obj.status == 'completed':
+                                obj.issue_notification('complete', target=obj, actor=request.user)
+                            else:
+                                if obj.assigne_a:
+                                    obj.issue_notification('assign', target=obj, actor=request.user)
+
+            if isinstance(obj, Estimation):
+                try:
+                    curr = Estimation.objects.get(pk=obj.pk)
+                except Estimation.DoesNotExist:
+                    obj.save()
+                    obj.issue_notification('create', actor=request.user, target=obj)
+                else:
+                    obj.save()
 
     def save_model(self, request, obj, form, change):
         if change:
@@ -176,7 +223,7 @@ class IdentificationRisque(admin.ModelAdmin):
                         obj.verifie_par = None
         else:
             obj.soumis_par = request.user
-        super().save_model(request, obj, form, changes)
+        super().save_model(request, obj, form, change)
 
 
 @admin.register(CritereDuRisque, site=risk_management_admin_site)
@@ -192,21 +239,53 @@ class CriterdurisqueAdmin(admin.ModelAdmin):
 
 @admin.register(ActiviteRisque, site=risk_management_admin_site)
 class ActiviteRisqueAdmin(IdentificationRisque):
-    fields = ['activite', 'type_de_risque', 'risque', 'criterisation', 'verifie']
+    fields = ['activite', 'type_de_risque', 'risque', 'criterisation', 'verifie', 'proprietaire', 'date_revue']
     autocomplete_fields = ['activite', 'risque']
 
     list_filter = ('activite__processus__business_unit', 'type_de_risque')
     list_display = ['created', 'date_revue', 'activite', 'risque', 'type_de_risque', 'verifie',
                     'verifie_par', 'status', 'seuil_de_risque', 'facteur_risque', 'proprietaire']
 
+    def save_model(self, request, obj, form, change):
+        old = False
+        if change:
+            old = True
+        super().save_model(request, obj, form, change)
+        if old:
+            current = ActiviteRisque.objects.get(pk=obj.pk)
+            if 'type_de_risque' in get_changes_between_2_objects(current, obj):
+                obj.issue_notification('set_risk_type', actor=request.user, target=obj)
+            if 'criterisation' in get_changes_between_2_objects(current, obj):
+                obj.issue_notification('set_seuil', actor=request.user, target=obj)
+            if obj.verifie == 'verified' and 'verifie' in get_changes_between_2_objects(current, obj):
+                obj.issue_notification('verify', actor=request.user, target=obj)
+            if obj.proprietaire and 'proprietaire' in get_changes_between_2_objects(current, obj):
+                obj.issue_notification('assign', actor=request.user, target=obj)
+
 
 @admin.register(ProcessusRisque, site=risk_management_admin_site)
 class ProcessusRisqueAdmin(IdentificationRisque):
-    fields = ['processus', 'type_de_risque', 'risque', 'criterisation', 'verifie']
+    fields = ['processus', 'type_de_risque', 'risque', 'criterisation', 'verifie', 'proprietaire', 'date_revue']
     autocomplete_fields = ['processus', 'risque']
     list_filter = ('processus__business_unit', 'type_de_risque')
     list_display = ['created', 'date_revue', 'processus', 'risque', 'type_de_risque', 'verifie',
                     'verifie_par', 'status', 'seuil_de_risque', 'facteur_risque', 'proprietaire']
+
+    def save_model(self, request, obj, form, change):
+        old = False
+        if change:
+            old = True
+        super().save_model(request, obj, form, change)
+        if old:
+            current = ProcessusRisque.objects.get(pk=obj.pk)
+            if 'type_de_risque' in get_changes_between_2_objects(current, obj):
+                obj.issue_notification('set_risk_type', actor=request.user, target=obj)
+            if 'criterisation' in get_changes_between_2_objects(current, obj):
+                obj.issue_notification('set_seuil', actor=request.user, target=obj)
+            if obj.verifie == 'verified' and 'verifie' in get_changes_between_2_objects(current, obj):
+                obj.issue_notification('verify', actor=request.user, target=obj)
+            if obj.proprietaire and 'proprietaire' in get_changes_between_2_objects(current, obj):
+                obj.issue_notification('assign', actor=request.user, target=obj)
 
 
 @admin.register(ProcessData, site=risk_management_admin_site)

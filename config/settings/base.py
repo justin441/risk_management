@@ -73,8 +73,8 @@ THIRD_PARTY_APPS = [
     'rest_framework',
     'rules.apps.AutodiscoverRulesConfig',
     'django_vox',
-    'background_task'
-
+    'background_task',
+    'anymail'
 ]
 LOCAL_APPS = [
     'risk_management.users.apps.UsersConfig',
@@ -217,9 +217,13 @@ FIXTURE_DIRS = (
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#email-backend
 EMAIL_BACKEND = env('DJANGO_EMAIL_BACKEND', default='django.core.mail.backends.smtp.EmailBackend')
-SENDGRID_API_KEY = env('SENDGRID_API_KEY')
+ANYMAIL = {
+    "MAILJET_API_KEY": env('J_MAILJET_KEY'),
+    "MAILJET_SECRET_KEY": env('JMAILJET_PRIVATE_KEY'),
+}
 DEFAULT_FROM_EMAIL = 'asst.project-nh@ctccm.com'
 EMAIL_USE_TLS = True
+IGNORE_UNSUPPORTED_FEATURES = True
 # ADMIN
 # ------------------------------------------------------------------------------
 # Django Admin URL.
