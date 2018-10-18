@@ -168,6 +168,10 @@ class Activite(TimeFramedModel, VoxModel):
     def __str__(self):
         return self.nom
 
+    @property
+    def id(self):
+        return str(self.pk)
+
     def clean(self):
         """s'assurer que la date de debut de l'activité précède la date de fin"""
         if (self.start and self.end) and (self.start > self.end):
@@ -237,6 +241,10 @@ class Risque(TimeStampedModel, VoxModel):
 
     def __str__(self):
         return '%s: %s...' % (self.nom, self.description[:50])
+
+    @property
+    def id(self):
+        return str(self.pk)
 
     def get_risk_managers(self):
         yield self.cree_par.__class__.objects.filter(is_superuser=True)
@@ -485,6 +493,10 @@ class ActiviteRisque(IdentificationRisque, VoxModel):
     def __str__(self):
         return "%s/%s (%s)" % (self.activite.nom, self.risque.nom, self.type_de_risque)
 
+    @property
+    def id(self):
+        return str(self.pk)
+
     # for django-vox channels
     def get_proprietaires(self):
         yield self.proprietaire
@@ -564,6 +576,10 @@ class ProcessusRisque(IdentificationRisque, VoxModel):
 
     def __str__(self):
         return '%s/%s (%s)' % (self.processus.nom, self.risque.nom, self.type_de_risque)
+
+    @property
+    def id(self):
+        return str(self.pk)
 
     # for django-vox channels
     def get_proprietaires(self):
@@ -665,27 +681,26 @@ class Estimation(TimeStampedModel, RiskMixin):
     def est_obsolete(self):
         return now() > self.date_revue
 
-    def save(self, *args, **kwargs):
-        """s'assurer que les données du risque sont à jour et
-        que la date de debut de l'activité précède la date de fin"""
-        if self.content_object.est_obsolete:
-            raise RiskDataError(
-                _('Les donneés du risque ont besoins d\'une mise à jour'))
-        if self.content_object.verifie == 'pending':
-            logger.error("erreur lors de la sauvegarde d'une estimation")
-            raise RiskDataError(
-                _('On ne peut pas estimer un risque sans l\'avoir verifié')
-            )
-        super().save(*args, **kwargs)
-
     def clean(self):
         if self.created > self.date_revue:
             raise ValidationError(
                 {'date_revue': _('La date de revue de l\'estimation ne peut pas précédée sa date de création')
                  })
+        if self.content_object.est_obsolete:
+            raise ValidationError(
+                {None: _("Les donneés du risque ont besoins d\'une mise à jour")}
+            )
+        if self.content_object.verifie == 'pending':
+            raise ValidationError(
+                {None: _('On ne peut pas estimer un risque sans l\'avoir verifié')}
+            )
 
     def __str__(self):
         return 'Estimation pour: %s' % self.content_object
+
+    @property
+    def id(self):
+        return str(self.pk)
 
     class Meta:
         verbose_name = _('Estimation du risque')
@@ -789,6 +804,10 @@ class Controle(TimeFramedModel, TimeStampedModel, RiskMixin):
 
     def __str__(self):
         return self.nom
+
+    @property
+    def id(self):
+        return str(self.pk)
 
     class Meta:
         verbose_name = _('contrôle')

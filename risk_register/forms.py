@@ -646,6 +646,12 @@ class CritereRisqueForm(forms.ModelForm):
                                                            self.activiterisque.verifie == 'pending'):
             msg = _('Ce risque n\'a pas encore été vérifié; impossible de l\'estimer.')
             self.add_error(None, msg)
+        if (self.processusrisque and
+            self.processusrisque.est_obsolete) or (self.activiterisque and
+                                                   self.activiterisque.est_obsolete):
+            msg = _('Les données du risques sont obsolètes.'
+                    'Veuillez les mettre à jour avant d\'effectuer cette action.')
+            self.add_error(None, msg)
         return super().clean()
 
 

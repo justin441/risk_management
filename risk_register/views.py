@@ -583,6 +583,11 @@ class SetSeuilProcessusrisqueView(PermissionRequiredMixin, AjaxCreateView):
         processusrisque.save()
         processusrisque.issue_notification('set_seuil', actor=self.request.user, target=processusrisque)
 
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['processusrisque'] = get_object_or_404(ProcessusRisque, pk=self.kwargs['processusrisque'])
+        return kwargs
+
 
 class ProcessusrisqueEstimationView(PermissionRequiredMixin, AjaxCreateView):
     permission_required = 'risk_register.estimate_process_risk'
@@ -606,11 +611,12 @@ class ProcessusrisqueEstimationView(PermissionRequiredMixin, AjaxCreateView):
 
     def post_save(self):
         processusrisque = get_object_or_404(ProcessusRisque, pk=self.kwargs['processusrisque'])
-        processusrisque.estimations.create(
+        estimation = processusrisque.estimations.create(
             date_revue=self.date_revue,
             criterisation=self.object,
         )
-        self.object.issue_notification('create', actor=self.request.user, target=self.object)
+
+        estimation.issue_notification('create', actor=self.request.user, target=self.object)
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
@@ -638,6 +644,11 @@ class SetSeuilActiviterisqueView(PermissionRequiredMixin, AjaxCreateView):
         activiterisque.save()
         activiterisque.issue_notification('set_seuil', actor=self.request.user, target=activiterisque)
 
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['activiterisque'] = get_object_or_404(ActiviteRisque, pk=self.kwargs['activiterisque'])
+        return kwargs
+
 
 class ActiviterisqueEstimationView(PermissionRequiredMixin, AjaxCreateView):
     permission_required = 'risk_register.estimate_activity_risk'
@@ -660,11 +671,11 @@ class ActiviterisqueEstimationView(PermissionRequiredMixin, AjaxCreateView):
 
     def post_save(self):
         activiterisque = get_object_or_404(ActiviteRisque, pk=self.kwargs['activiterisque'])
-        activiterisque.estimations.create(
+        estimation = activiterisque.estimations.create(
             criterisation=self.object,
             date_revue=self.date_revue
         )
-        self.object.issue_notification('create', actor=self.request.user, target=self.object)
+        estimation.issue_notification('create', actor=self.request.user, target=self.object)
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()

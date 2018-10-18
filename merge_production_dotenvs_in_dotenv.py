@@ -29,7 +29,7 @@ def main():
     merge(DOTENV_FILE_PATH, PRODUCTION_DOTENV_FILE_PATHS)
 
 
-@pytest.mark.parametrize("merged_file_count", range(3))
+@pytest.mark.parametrize("merged_file_count", 3)
 @pytest.mark.parametrize("append_linesep", [True, False])
 def test_merge(tmpdir_factory, merged_file_count: int, append_linesep: bool):
     tmp_dir_path = str(tmpdir_factory.getbasetemp())
