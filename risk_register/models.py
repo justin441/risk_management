@@ -151,8 +151,8 @@ class Activite(TimeFramedModel, VoxModel):
 
     class VoxMeta:
         notifications = VoxNotifications(
-            create=VoxNotification(
-                _('Notification qu\'une activité a été créée'),
+            create_proc_mgr=VoxNotification(
+                _('Notification qu\'une activité a été créée par le manager du processus'),
                 actor_type='users.user', target_type='risk_register.activite'
             ),
             complete=VoxNotification(
@@ -161,6 +161,10 @@ class Activite(TimeFramedModel, VoxModel):
             ),
             delete=VoxNotification(
                 _('Notification qu\'une activité a été supprimée'),
+                actor_type='users.user', target_type='risk_register.activite'
+            ),
+            assign=VoxNotification(
+                _('Notification qu\'une activité a été assignée'),
                 actor_type='users.user', target_type='risk_register.activite'
             )
         )

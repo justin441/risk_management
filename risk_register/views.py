@@ -172,7 +172,8 @@ class CreateActiviteView(PermissionRequiredMixin, AjaxCreateView):
 
     def post_save(self):
         logger.info('Activity %s saved' % self.object.nom)
-        self.object.issue_notification('create', actor=self.request.user, target=self.object)
+        self.object.issue_notification('create_proc_mgr', actor=self.request.user, target=self.object)
+        self.object.issue_notification('assign', actor=self.request.user, target=self.object)
 
     def get_message_template_context(self):
         msg_ctx = super().get_message_template_context()
@@ -196,7 +197,9 @@ class UpdateActiviteView(PermissionRequiredMixin, AjaxUpdateView):
             if self.object.status == 'completed':
                 self.object.issue_notification('complete', actor=self.request.user, target=self.object)
             else:
-                self.object.issue_notification('create', actor=self.request.user, target=self.object)
+                self.object.issue_notification('create_proc_mgr', actor=self.request.user, target=self.object)
+        if self.object.responsable and 'responsable' in get_changes_between_2_objects(self.old, self.object):
+            self.object.issue_notification('assign', actor=self.request.user, target=self.object)
 
 
 class DeleteActiviteView(PermissionRequiredMixin, AjaxDeleteView):
@@ -212,7 +215,8 @@ class DeleteActiviteView(PermissionRequiredMixin, AjaxDeleteView):
 
     def post_delete(self):
         logger.info('Activity successfully deleted')
-        self.object.issue_notification('delete', actor=self.request.user, target=self.object)
+        if self.object.status == 'pending':
+            self.object.issue_notification('delete', actor=self.request.user, target=self.object)
 
 
 class CreateProcessOutputView(PermissionRequiredMixin, AjaxCreateView):

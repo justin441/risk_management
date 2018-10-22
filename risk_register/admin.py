@@ -87,13 +87,17 @@ class ActiviteAdmin(admin.ModelAdmin):
         super().save_model(request, obj, form, change)
         if old:
             current = Activite.objects.get(pk=obj.pk)
+            if obj.responsable and 'responsable' in get_changes_between_2_objects(current, obj):
+                obj.issue_notification('assign', actor=request.user, target=obj)
             if 'status' in get_changes_between_2_objects(current, obj):
                 if obj.status == 'completed':
                     obj.issue_notification('complete', actor=request.user, target=obj)
                 else:
-                    obj.issue_notification('create', actor=request.user, target=obj)
+                    obj.issue_notification('create_proc_mgr', actor=request.user, target=obj)
+                    obj.issue_notification('assign', actor=request.user, target=obj)
         else:
-            obj.issue_notification('create', actor=request.user, target=obj)
+            obj.issue_notification('create_proc_mgr', actor=request.user, target=obj)
+            obj.issue_notification('assign', actor=request.user, target=obj)
 
     def delete_model(self, request, obj):
         super().delete_model(request, obj)
