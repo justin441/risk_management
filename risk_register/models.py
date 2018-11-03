@@ -27,10 +27,6 @@ from risk_management.users.models import BusinessUnit
 logger = logging.getLogger(__name__)
 
 
-class RiskDataError(Exception):
-    pass
-
-
 class ProcessData(models.Model):
     nom = models.CharField(max_length=255)
     origine = models.ForeignKey('Processus', on_delete=models.SET_NULL,
@@ -528,7 +524,7 @@ class ActiviteRisque(IdentificationRisque, VoxModel):
         yield self.soumis_par
 
     class Meta(IdentificationRisque.Meta):
-        verbose_name = _('risque de l\'activité')
+        verbose_name = _('risque d\'activité')
         verbose_name_plural = _('risques des activités')
         unique_together = (('activite', 'risque', 'type_de_risque'),)
 
