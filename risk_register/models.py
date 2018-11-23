@@ -6,7 +6,7 @@ from django.db import models
 from django.contrib.postgres.search import SearchVectorField
 from django.contrib.postgres.indexes import GinIndex
 from django.utils.translation import gettext_lazy as _
-from django.core.exceptions import ValidationError, FieldError
+from django.core.exceptions import ValidationError
 from django.utils.timezone import now
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
@@ -143,7 +143,7 @@ class Activite(TimeFramedModel, VoxModel):
 
     risques = models.ManyToManyField('Risque', through='ActiviteRisque')
     status = StatusField()
-    acheve_le = MonitorField(monitor='status', when=['achevé'])
+    acheve_le = MonitorField(monitor='status', when=['completed'])
 
     class VoxMeta:
         notifications = VoxNotifications(
@@ -326,7 +326,7 @@ class IdentificationRisque(TimeStampedModel):
     criterisation_change = MonitorField(monitor='criterisation')
     date_revue_change = MonitorField(monitor='date_revue')
     verifie = StatusField(verbose_name=_('vérification'))
-    verifie_le = MonitorField(monitor='verifie')
+    verifie_le = MonitorField(monitor='verifie', when=['verified'])
     verifie_par = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True)
 
     def clean(self):
