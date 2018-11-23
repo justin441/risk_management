@@ -142,7 +142,7 @@ class Position(VoxModel):
 
     class Meta:
         ordering = ('poste',)
-        unique_together = (('employe', 'business_unit'),)
+        unique_together = (('employe', 'business_unit', 'poste'),)
 
     def __str__(self):
         return self.poste
