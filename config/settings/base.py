@@ -69,6 +69,7 @@ THIRD_PARTY_APPS = [
     'allauth',
     'fm',
     'allauth.account',
+    'rest_auth',
     'allauth.socialaccount',
     'rest_framework',
     'rules.apps.AutodiscoverRulesConfig',
