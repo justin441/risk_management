@@ -70,8 +70,10 @@ THIRD_PARTY_APPS = [
     'fm',
     'allauth.account',
     'rest_auth',
+    'rest_auth.registration',
     'allauth.socialaccount',
     'rest_framework',
+    'rest_framework.authtoken',
     'rules.apps.AutodiscoverRulesConfig',
     'django_vox',
     'background_task',
@@ -258,5 +260,23 @@ SOCIALACCOUNT_ADAPTER = 'risk_management.users.adapters.SocialAccountAdapter'
 #     'signup': 'risk_management.users.forms.SignupForm'
 # }
 ACCOUNT_SIGNUP_FORM_CLASS = 'risk_management.users.forms.UserForm'
-# Your stuff...
+
+# rest_framework
 # ------------------------------------------------------------------------------
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAdminUser',
+    )
+}
+
+# rest_auth
+# ------------------------------------------------------------------------------
+
+REST_AUTH_SERIALIZERS = {
+    'USER_DETAILS_SERIALIZER': 'api.users.serializers.UserSerializer',
+}
+
+REST_AUTH_REGISTER_SERIALIZERS = {
+    'REGISTER_SERIALIZER': 'api.users.serializers.UserCreationSerializer'
+}
+OLD_PASSWORD_FIELD_ENABLED = True

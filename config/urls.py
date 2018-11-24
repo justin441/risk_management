@@ -26,6 +26,7 @@ urlpatterns = [
     path("accounts/", include("allauth.urls")),
     # Your stuff: custom urls includes go here
     path("risk-register/", include("risk_register.urls", namespace="risk_register")),
+    path("api/v1/", include('api.urls'))
 ] + static(
     settings.MEDIA_URL, document_root=settings.MEDIA_ROOT
 )

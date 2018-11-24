@@ -6,6 +6,7 @@ from django.core.validators import RegexValidator
 from django.conf import settings
 
 import logging
+from uuid import uuid4
 
 from django_vox.models import VoxNotifications, VoxNotification
 from django_vox.extra.background import BackgroundVoxModel as VoxModel
@@ -25,6 +26,7 @@ class BusinessUnit(VoxModel):
 
     denomination = models.CharField(max_length=100, primary_key=True, verbose_name=_('Nom'),
                                     help_text=_("Nom de la société ou du projet; doit être unique."))
+    uuid = models.UUIDField(db_index=True, default=uuid4, editable=False)
     raison_sociale = models.CharField(max_length=50, verbose_name=_('raison sociale'), blank=True, null=True)
     sigle = models.CharField(max_length=10, blank=True, help_text=_('exemple: C.T.C'))
     marche = models.CharField(_("objet"), max_length=200, blank=True, help_text=_('activités de l\'entrepriser'
@@ -96,6 +98,7 @@ class User(AbstractUser):
         (DOCTEUR, _('Docteur')),
         (PROFESSEUR, _('Professeur')),
     )
+    uuid = models.UUIDField(db_index=True, default=uuid4, editable=False)
     civilite = models.CharField(
         max_length=3, choices=CIVILITE_CHOIX, default=MONSIEUR, verbose_name=_("titre"))
     first_name = models.CharField(_('prénom'), max_length=30)
@@ -112,6 +115,9 @@ class User(AbstractUser):
 
     def get_username(self):
         return self.username[:-36]
+
+    def get_full_name(self):
+        return self.civilite + ' ' + super().get_full_name()
 
     def get_contacts_for_notification(self, _notification):
         yield Contact(self.get_full_name(), 'email', self.email)

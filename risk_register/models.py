@@ -216,7 +216,7 @@ class ClasseDeRisques(models.Model):
 
 class Risque(TimeStampedModel, VoxModel):
     code_risque = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    classe = models.ForeignKey(ClasseDeRisques, on_delete=models.CASCADE, null=True)
+    classe = models.ForeignKey(ClasseDeRisques, on_delete=models.CASCADE, null=True, related_name='risques')
     nom = models.CharField(max_length=200, verbose_name=_('nom'))
     description = models.TextField(max_length=500, db_index=True, verbose_name=_("description"))
     definition = models.CharField(max_length=200, blank=True, verbose_name=_('définition'))
@@ -228,7 +228,7 @@ class Risque(TimeStampedModel, VoxModel):
     note = models.TextField(_("Réflexion à considérer à la lecture du risque"), max_length=255, blank=True)
     aide = models.TextField(_('Sommes-nous concernés'), max_length=255, blank=True)
     cree_par = models.ForeignKey(settings.AUTH_USER_MODEL, blank=True, null=True,
-                                 on_delete=models.SET_NULL, verbose_name=_('Crée par'))
+                                 on_delete=models.SET_NULL, verbose_name=_('Crée par'), related_name='risques_crees')
     search_vector = SearchVectorField(null=True, blank=True)
 
     class VoxMeta:
@@ -292,7 +292,7 @@ class CritereDuRisque(models.Model):
                                    verbose_name=_('évalué par'))
 
     def __str__(self):
-        return 'D: %d; S: %d; O: %d' % (self.detectabilite, self.severite, self.occurence)
+        return '(D: %d; S: %d; O: %d)' % (self.detectabilite, self.severite, self.occurence)
 
     def valeur_menace(self):
         """Renvoie le produit des score des critères"""
@@ -696,7 +696,7 @@ class Estimation(TimeStampedModel, RiskMixin):
             )
 
     def __str__(self):
-        return 'Estimation pour: %s' % self.content_object
+        return 'Estimation du %s: %s' % (self.created.date(), self.criterisation)
 
     @property
     def id(self):
