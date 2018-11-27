@@ -6,10 +6,10 @@ from django.views.decorators.vary import vary_on_cookie
 from . import serializers
 
 from risk_management.users import models
-from rest_framework import viewsets, mixins
+from rest_framework import viewsets
 
 
-class UserlistView(viewsets.GenericViewSet, mixins.ListModelMixin):
+class UserlistView(generics.ListAPIView):
     queryset = models.User.objects.all()
     serializer_class = serializers.UserSerializer
     lookup_field = 'uuid'
