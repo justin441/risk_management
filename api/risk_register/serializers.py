@@ -11,7 +11,7 @@ class ProcessDataSerialiser(serializers.ModelSerializer):
     class Meta:
         model = ProcessData
         fields = ('nom', 'origine', 'commentaire', 'clients')
-        # todo: clients -> hyperlink related field
+        depth = 1
 
 
 class UserDetailSerializer(serializers.ModelSerializer):
@@ -24,7 +24,6 @@ class ActivityDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Activite
         fields = ('code_activite', 'nom', 'description', 'status')
-        # todo: add an url field pointing to activity view
 
 
 class RiskDetailSerialiser(serializers.ModelSerializer):
@@ -39,7 +38,7 @@ class RiskCriterionSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CritereDuRisque
-        fields =('detectabilite', 'severite', 'occurence', 'estime_par')
+        fields = ('detectabilite', 'severite', 'occurence', 'estime_par')
 
 
 class ProcessSerialiser(serializers.ModelSerializer):

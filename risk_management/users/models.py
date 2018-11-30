@@ -116,9 +116,6 @@ class User(AbstractUser):
     def get_username(self):
         return self.username[:-36]
 
-    def get_full_name(self):
-        return self.civilite + ' ' + super().get_full_name()
-
     def get_contacts_for_notification(self, _notification):
         yield Contact(self.get_full_name(), 'email', self.email)
 

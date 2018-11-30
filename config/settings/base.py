@@ -266,7 +266,14 @@ ACCOUNT_SIGNUP_FORM_CLASS = 'risk_management.users.forms.UserForm'
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAdminUser',
-    )
+    ),
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.TokenAuthentication',
+    ),
+    'DEFAULT_RENDERER_CLASSES': (
+        'rest_framework.renderers.JSONRenderer',
+        'rest_framework.renderers.BrowsableAPIRenderer',
+    ),
 }
 
 # rest_auth
@@ -280,3 +287,4 @@ REST_AUTH_REGISTER_SERIALIZERS = {
     'REGISTER_SERIALIZER': 'api.users.serializers.UserCreationSerializer'
 }
 OLD_PASSWORD_FIELD_ENABLED = True
+REST_SESSION_LOGIN = False

@@ -19,6 +19,7 @@ class PositionSerializer(serializers.ModelSerializer):
 
 class UserSerializer(serializers.ModelSerializer):
     postes = PositionSerializer(many=True, read_only=True)
+
     class Meta:
         model = User
         fields = ('pk', 'uuid', 'email', 'civilite', 'first_name', 'last_name', 'get_username', 'telephone', 'postes')
@@ -87,7 +88,7 @@ class ProcessusDetailSerializer(serializers.ModelSerializer):
 
 
 class BuSerializer(serializers.ModelSerializer):
-    processus_set = ProcessusDetailSerializer(many=True)
+    processus_set = ProcessusDetailSerializer(many=True, read_only=True)
 
     class Meta:
         model = BusinessUnit
