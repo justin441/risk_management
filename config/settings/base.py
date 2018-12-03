@@ -77,7 +77,8 @@ THIRD_PARTY_APPS = [
     'rules.apps.AutodiscoverRulesConfig',
     'django_vox',
     'background_task',
-    'anymail'
+    'anymail',
+    'corsheaders',
 ]
 LOCAL_APPS = [
     'risk_management.users.apps.UsersConfig',
@@ -141,6 +142,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # https://docs.djangoproject.com/en/dev/ref/settings/#middleware
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -268,7 +270,7 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAdminUser',
     ),
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework.authentication.TokenAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
     ),
     'DEFAULT_RENDERER_CLASSES': (
         'rest_framework.renderers.JSONRenderer',
@@ -288,3 +290,8 @@ REST_AUTH_REGISTER_SERIALIZERS = {
 }
 OLD_PASSWORD_FIELD_ENABLED = True
 REST_SESSION_LOGIN = False
+
+# django_cors_headers
+# -------------------------------------------------------------------------------
+
+CORS_ORIGIN_ALLOW_ALL = True

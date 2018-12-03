@@ -13,3 +13,7 @@ class RiskClassViewset(viewsets.GenericViewSet, mixins.ListModelMixin):
     serializer_class = serializers.RiskClassSerialiser
 
 
+class RiskViewset(viewsets.GenericViewSet, mixins.ListModelMixin):
+    pass
+
+

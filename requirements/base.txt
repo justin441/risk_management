@@ -24,5 +24,6 @@ django-anymail[mailjet]==4.3  # https://github.com/anymail/django-anymail
 djangorestframework==3.8.0  # https://github.com/encode/django-rest-framework
 coreapi==2.3.3  # https://github.com/core-api/python-client
 django-rest-auth==0.9.3 # https://github.com/Tivix/django-rest-auth
+ django-cors-headers==2.4.0 #https://github.com/ottoyiu/django-cors-headers
 
 
