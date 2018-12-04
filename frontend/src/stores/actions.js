@@ -1,43 +1,17 @@
-import Vue from 'vue'
-import Vuex from 'vuex'
-import axios from 'axios'
+import axios from "axios";
 
-Vue.use(Vuex);
-axios.defaults.headers.post['Access-Control-Allow-Origin'] = '*';
-
-export default new Vuex.Store({
-  state: {
-    token: localStorage.getItem("token") || "",
-    status: '',
-    authenticated: false
-  },
-  mutations: {
-    auth_request(state) {
-      state.status = 'loading'
-    },
-    auth_success(state, token) {
-      state.status = 'success'
-      state.token = token
-    },
-    auth_err(state) {
-      state.status = 'error'
-    },
-    aut_logout(state) {
-    }
-
-  },
-  actions: {
-    AUTH_REQUEST: ({commit, dispatch}, user) => {
+export default {
+  AUTH_REQUEST: ({commit, dispatch}, user) => {
       return new Promise((resolve, reject) => {
         commit('auth_request');
         axios({
           method: 'POST',
-          url: '/rest-auth/login',
+          url: '/rest-auth/login/',
           data: user,
           headers: {
-            'Access-Control-Allow-Origin': '*',
             'Content-Type': 'application/json',
-          }
+
+          },
         }).then(resp => {
           const token = resp.data.key;
           localStorage.setItem("token", token);
@@ -72,10 +46,4 @@ export default new Vuex.Store({
         });
       });
     }
-
-  },
-  getters: {
-    isAuthenticated: state => !!state.token,
-    authStatus: state => state.status
-  }
-})
+}
