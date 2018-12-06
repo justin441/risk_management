@@ -12,10 +12,19 @@
       </v-btn>
 
       <v-toolbar-items class="hidden-xs-only">
-        <v-btn flat color="grey" >
-          <span class="primary--text text--darken-3">S'identifier</span>
+        <v-btn v-if="!isAuthenticated" flat color="grey" to="/login">
+          <span class="primary--text text--darken-3" >S'identifier</span>
         </v-btn>
-        <v-btn flat color="grey">
+        <v-btn v-if="isAuthenticated" flat color="grey">
+          <v-icon left class="primary--text text--darken-3">mdi-account-check</v-icon>
+          <span class="primary--text text--darken-3" >
+            {{ user.firstName }}
+          </span>
+        </v-btn>
+        <v-btn v-if="isAuthenticated" flat color="grey" @click="authLogout">
+          <span class="primary--text text--darken-3">Déconnexion</span>
+        </v-btn>
+        <v-btn v-if="!isAuthenticated" flat color="grey">
           <span class="primary--text text--darken-3">Créer un compte</span>
         </v-btn>
       </v-toolbar-items>
@@ -29,13 +38,40 @@
 </template>
 
 <script>
+
   export default {
     name: "Navbar",
     data() {
       return {
         drawer: false,
+        user: {
+          firstName: '',
+          lastName: ''
+        }
       }
 
+    },
+    methods: {
+      authLogout() {
+        this.$store.dispatch('AUTH_LOGOUT').then((resp) => {
+          this.$router.replace('/login')
+        }).catch(err => {
+          console.log(err)
+        })
+      }
+    },
+    computed: {
+      isAuthenticated() {
+        return this.$store.getters.isAuthenticated
+      }
+    },
+    mounted() {
+      if(this.isAuthenticated){
+        this.$store.dispatch('GET_USER_ID').then(data =>{
+          this.user.firstName = data.firstName;
+          this.user.lastName = data.lastName
+        })
+      }
     }
   }
 </script>

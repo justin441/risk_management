@@ -17,6 +17,7 @@ urlpatterns = [
     path('rest-auth/logout/', users_api_view.RmLogoutView.as_view(), name='rest_logout'),
     path('rest-auth/', include('rest_auth.urls')),
     path('rest-auth/registration', include('rest_auth.registration.urls')),
+    path('user-id/', users_api_view.get_user_id, name='get_user_id'),
     path('schema/', schema_view),
     path('', include(router.urls))
 ]

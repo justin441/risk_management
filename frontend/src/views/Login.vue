@@ -7,18 +7,21 @@
             <v-toolbar-title class="text-xs-center">Identification</v-toolbar-title>
           </v-toolbar>
           <v-card-text>
-            <v-form lazy-validation>
+            <v-alert icon="mdi-alert" type="error" :value="loginError400" outline dismissible>Email ou mot de passe Invalide</v-alert>
+            <v-alert icon="mdi-alert" type="error" :value="loginErrorOther" outline dismissible>Erreur de connexion</v-alert>
+
+            <v-form>
+
               <v-text-field autofocus
-                            validate-on-blur
                             browser-autocomplete="off"
                             prepend-icon="mdi-account"
-                            name="login"
+                            name="email"
                             label="E-mail"
                             type="email"
                             v-validate="{required: true, email: true}"
                             v-model="loginForm.email"
                             :error-messages="errors.first('email')"
-                            data-vv-name="email"
+                            data-vv-validate-on="change"
                             required>
 
               </v-text-field>
@@ -27,15 +30,19 @@
                             name="password"
                             label="Mot de Passe"
                             type="password"
-                            v-validate="{min: 8, required: true}"
+                            v-validate.disable="{required: true}"
+                            data-vv-validate-on="change"
                             v-model="loginForm.password"
                             :error-messages="errors.first('password')"
-                            data-vv-name="password"></v-text-field>
+                            @keypress.enter.prevent="login"
+                            >
+
+              </v-text-field>
             </v-form>
           </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn @click="login">Connexion</v-btn>
+            <v-btn @click="login" :disabled="!(fields.email && fields.email.valid)">Connexion</v-btn>
             <v-btn @click="clear">Reinitialiser</v-btn>
           </v-card-actions>
         </v-card>
@@ -53,20 +60,23 @@
         loginForm: {
           email: '',
           password: ''
-        },
+        }
       }
-    },
-    mounted() {;
-      this.$validator.localize('fr')
     },
     methods: {
       login() {
-        this.$store.dispatch('AUTH_REQUEST', this.loginForm).then(resp => {
-          console.log(resp)
-        }).catch(err => {
-          this.clear();
-          console.log('erreur:', err);
+        this.$validator.validate().then(result => {
+          if (result) {
+            this.$store.dispatch('AUTH_REQUEST', this.loginForm).then(resp => {
+              this.clear()
+            }).catch(err => {
+              this.clear();
+            })
+          } else {
+            return false
+          }
         })
+
       },
       clear() {
         this.loginForm.email = '';
@@ -74,7 +84,14 @@
         this.$validator.reset();
 
       }
-    }
-
+    },
+    computed: {
+      loginError400() {
+        return this.$store.getters.authError === '400';
+      },
+      loginErrorOther() {
+        return this.$store.getters.authError !== '' && this.$store.getters.authError !== '400';
+      },
+    },
   }
 </script>

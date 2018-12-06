@@ -6,10 +6,9 @@ export default {
       state.status = 'success';
       state.token = token
     },
-    auth_err(state) {
-      state.status = 'error'
-    },
-    auth_logout(state) {
+    auth_err(state, err) {
+      state.status= 'error'
+      state.errors = err.request.status.toString()
     }
 
 }
