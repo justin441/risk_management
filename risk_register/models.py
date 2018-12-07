@@ -114,6 +114,7 @@ class Processus(VoxModel):
         verbose_name = _('processus')
         verbose_name_plural = _('processus')
         unique_together = (('business_unit', 'nom'),)
+        ordering = ('nom',)
 
     class VoxMeta:
         notifications = VoxNotifications(
