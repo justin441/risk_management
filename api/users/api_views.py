@@ -2,7 +2,7 @@ from rest_framework import mixins
 from rest_framework import viewsets
 from rest_framework import authentication
 from rest_framework import permissions
-from rest_framework.decorators import api_view, permission_classes
+from rest_framework.decorators import api_view, permission_classes, action
 from rest_framework.response import Response
 
 from rest_auth.views import LogoutView
@@ -11,8 +11,10 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
 from django.views.decorators.vary import vary_on_cookie
 from . import serializers
+from api.risk_register.serializers import ActivityDetailSerializer
 
 from risk_management.users import models
+from risk_register.models import Processus, Activite
 
 
 @api_view()
@@ -45,11 +47,35 @@ class UserCreateview(viewsets.GenericViewSet, mixins.CreateModelMixin):
 
 class BusinessUnitviewSet(viewsets.ModelViewSet):
     """
-    Lister, creer, modifier, detailler et supprimer les business unit
+        Lister, creer, modifier, detailler et supprimer les business unit
     """
     queryset = models.BusinessUnit.objects.all()
     serializer_class = serializers.BuSerializer
     lookup_field = 'uuid'
+
+    @action(detail=True)
+    def processes(self, request, uuid=None):
+        bu = self.get_object()
+        processes = Processus.objects.filter(business_unit=bu.pk)
+        page = self.paginate_queryset(processes)
+        if page is not None:
+            process_serializer = serializers.ProcessusDetailSerializer(page, many=True)
+            return self.get_paginated_response(process_serializer.data)
+
+        process_serializer = serializers.ProcessusDetailSerializer(processes, many=True)
+        return Response(process_serializer.data)
+
+    @action(detail=True)
+    def activities(self, request, uuid):
+        bu = self.get_object()
+        activities = Activite.objects.filter(processus__business_unit=bu.pk)
+        page = self.paginate_queryset(activities)
+        if page is not None:
+            activity_serializer = ActivityDetailSerializer(page, many=True)
+            return self.get_paginated_response(activity_serializer.data)
+
+        activity_serializer = ActivityDetailSerializer(activities, many=True)
+        return Response(activity_serializer.data)
 
 
 class PositionViewSet(viewsets.ModelViewSet):
