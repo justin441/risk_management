@@ -84,13 +84,11 @@ class UserCreationSerializer(serializers.ModelSerializer):
 class ProcessusDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Processus
-        fields = ('code_processus', 'nom', 'description')
+        fields = ('code_processus', 'type_processus', 'nom', 'description')
 
 
 class BuSerializer(serializers.ModelSerializer):
-    processus_set = ProcessusDetailSerializer(many=True, read_only=True)
-
     class Meta:
         model = BusinessUnit
         fields = ('uuid', 'denomination', 'raison_sociale', 'sigle', 'marche', 'ville_siege', 'adresse_physique',
-                  'projet', 'adresse_postale', 'telephone', 'site_web', 'bu_manager', 'employes', 'processus_set')
+                  'projet', 'adresse_postale', 'telephone', 'site_web', 'bu_manager',)

@@ -61,15 +61,13 @@ class RiskClassSerialiser(serializers.ModelSerializer):
 
     class Meta:
         model = ClasseDeRisques
-        fields = ('nom', 'risques')
+        fields = ('nom',)
 
 
 class RiskSerialiser(serializers.ModelSerializer):
-    classe = serializers.StringRelatedField()
-
     class Meta:
         model = Risque
-        fields = ('code_risque', 'created', 'modified', 'classe', 'nom', 'description', 'definition',
+        fields = ('code_risque', 'created', 'classe', 'modified', 'classe', 'nom', 'description', 'definition',
                   'cause', 'consequence', 'couverture', 'pilotage', 'note', 'aide', 'cree_par')
         read_only_fields = ('created', 'modified')
         extra_kwargs = {
