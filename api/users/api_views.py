@@ -1,3 +1,5 @@
+from operator import itemgetter
+
 from rest_framework import mixins
 from rest_framework import viewsets
 from rest_framework import authentication
@@ -11,10 +13,10 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
 from django.views.decorators.vary import vary_on_cookie
 from . import serializers
-from api.risk_register.serializers import ActivityDetailSerializer
+from api.risk_register.serializers import ActivityDetailSerializer, ActivityRiskSerialiser, ProcessRiskSerialiser
 
 from risk_management.users import models
-from risk_register.models import Processus, Activite
+from risk_register.models import Processus, Activite, ProcessusRisque, ActiviteRisque
 
 
 @api_view()
@@ -66,7 +68,7 @@ class BusinessUnitviewSet(viewsets.ModelViewSet):
         return Response(process_serializer.data)
 
     @action(detail=True)
-    def activities(self, request, uuid):
+    def activities(self, request, uuid=None):
         bu = self.get_object()
         activities = Activite.objects.filter(processus__business_unit=bu.pk)
         page = self.paginate_queryset(activities)
@@ -76,6 +78,20 @@ class BusinessUnitviewSet(viewsets.ModelViewSet):
 
         activity_serializer = ActivityDetailSerializer(activities, many=True)
         return Response(activity_serializer.data)
+
+    @action(detail=True)
+    def risks(self, request, uuid=None):
+        bu = self.get_object()
+        pr = ProcessusRisque.objects.filter(processus__business_unit=bu)
+        ar = ActiviteRisque.objects.filter(activite__processus__business_unit=bu)
+        p_s = ProcessRiskSerialiser(pr, many=True)
+        a_s = ActivityRiskSerialiser(ar, many=True)
+        data = sorted(p_s.data+a_s.data, key=itemgetter('created'), reverse=True)
+        page = self.paginate_queryset(data)
+        if page is not None:
+            return self.get_paginated_response(page)
+
+        return Response(data)
 
 
 class PositionViewSet(viewsets.ModelViewSet):

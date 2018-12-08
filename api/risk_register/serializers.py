@@ -104,7 +104,7 @@ class ProcessRiskSerialiser(RiskIdSerialiser):
     class Meta:
         model = ProcessusRisque
         fields = RiskIdSerialiser.Meta.fields + ('processus', 'soumis_par', 'modifie_par', 'suivi_par', 'proprietaire',
-                                                 'proprietaire_change', 'estimations', 'controles', )
+                                                 'proprietaire_change', )
 
 
 class ActivityRiskSerialiser(RiskIdSerialiser):
@@ -116,7 +116,7 @@ class ActivityRiskSerialiser(RiskIdSerialiser):
     class Meta:
         model = ActiviteRisque
         fields = RiskIdSerialiser.Meta.fields + ('activite', 'soumis_par', 'modifie_par', 'suivi_par', 'proprietaire',
-                                                 'proprietaire_change', 'estimations', 'controles')
+                                                 'proprietaire_change')
 
 
 class RiskRelatedField(serializers.RelatedField):
