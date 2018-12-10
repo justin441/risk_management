@@ -35,7 +35,7 @@ class UserlistView(viewsets.GenericViewSet, mixins.RetrieveModelMixin, mixins.Li
     Lister les utilisateurs.
     """
     queryset = models.User.objects.all()
-    serializer_class = serializers.UserSerializer
+    serializer_class = serializers.UserDetailSerializer
     lookup_field = 'uuid'
 
 
@@ -94,12 +94,19 @@ class BusinessUnitviewSet(viewsets.ModelViewSet):
         return Response(data)
 
 
-class PositionViewSet(viewsets.ModelViewSet):
+class PositionCreationViewSet(viewsets.GenericViewSet, mixins.CreateModelMixin, mixins.UpdateModelMixin):
     """
-    Lister, creer, modifier, detailler et supprimer les postes
+    creer et modifier les postes
     """
     queryset = models.Position.objects.all()
-    serializer_class = serializers.PositionSerializer
+    serializer_class = serializers.PositionCreationSerialiser
+
+
+class PositionViewSet(viewsets.GenericViewSet, mixins.ListModelMixin, mixins.DestroyModelMixin):
+    """lister et supprimer les poste"""
+
+    queryset = models.Position.objects.all()
+    serializer_class = serializers.PositionDetailSerializer
 
 
 class RmLogoutView(LogoutView):

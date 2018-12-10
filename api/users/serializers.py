@@ -11,14 +11,20 @@ from allauth.account.utils import setup_user_email
 from django.utils.translation import ugettext as _
 
 
-class PositionSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Position
-        fields = ('business_unit', 'employe', 'poste')
+class DynamicModelSerializer(serializers.ModelSerializer):
+    def __init__(self, *args, **kwargs):
+        fields = kwargs.pop('fields', None)
+
+        super(DynamicModelSerializer, self).__init__(*args, *kwargs)
+
+        if fields is not None:
+            allowed = set(fields)
+            existing = set(self.fields)
+            for field_name in existing - allowed:
+                self.fields.pop(field_name)
 
 
-class UserSerializer(serializers.ModelSerializer):
-    postes = PositionSerializer(many=True, read_only=True)
+class UserDetailSerializer(DynamicModelSerializer):
 
     class Meta:
         model = User
@@ -81,14 +87,22 @@ class UserCreationSerializer(serializers.ModelSerializer):
         return user
 
 
-class ProcessusDetailSerializer(serializers.ModelSerializer):
+class PositionDetailSerializer(serializers.ModelSerializer):
+    employe = UserDetailSerializer('uuid', 'first_name', 'last_name')
+
     class Meta:
-        model = Processus
-        fields = ('code_processus', 'type_processus', 'nom', 'description')
+        model = Position
+        fields = ('business_unit', 'employe', 'poste')
+
+
+class PositionCreationSerialiser(serializers.ModelSerializer):
+    class Meta:
+        model = Position
+        fields = ('business_unit', 'employe', 'poste')
 
 
 class BuSerializer(serializers.ModelSerializer):
     class Meta:
         model = BusinessUnit
         fields = ('uuid', 'denomination', 'raison_sociale', 'sigle', 'marche', 'ville_siege', 'adresse_physique',
-                  'projet', 'adresse_postale', 'telephone', 'site_web', 'bu_manager',)
+                  'projet', 'adresse_postale', 'telephone', 'site_web', 'bu_manager')
