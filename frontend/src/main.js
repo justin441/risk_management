@@ -9,9 +9,9 @@ import 'roboto-fontface/css/roboto/roboto-fontface.css'
 import '@mdi/font/css/materialdesignicons.css'
 import axios from 'axios'
 
-const token = localStorage.getItem('bonbon');
+const token = localStorage.getItem('bonbon')
 
-if (token){
+if (token) {
   axios.defaults.headers.common['Authorization'] = token
 }
 

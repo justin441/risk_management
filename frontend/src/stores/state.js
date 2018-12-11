@@ -1,7 +1,14 @@
 
 export default {
-    token: localStorage.getItem("bonbon") || "",
-    status: '',
-    errors: '',
-    user: undefined
+  token: localStorage.getItem('bonbon') || '',
+  status: '',
+  errors: '',
+  currentUser: {
+    id: '',
+    firstName: '',
+    lastName: ''
+  },
+  businessUnits: [],
+  projects: [],
+  riskClasses: []
 }

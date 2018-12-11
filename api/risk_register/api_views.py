@@ -7,13 +7,23 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 
 
-class RiskClassViewset(viewsets.ModelViewSet):
+class RiskClassViewset(viewsets.GenericViewSet,
+                       mixins.ListModelMixin,
+                       mixins.RetrieveModelMixin,
+                       mixins.UpdateModelMixin):
 
     queryset = models.ClasseDeRisques.objects.all()
     serializer_class = serializers.RiskClassSerialiser
 
+    @property
+    def paginator(self):
+        if self.action == 'list':
+            return None
+        return super().paginator
+
     @action(detail=True)
     def risks(self, request, pk=None):
+        """List the risks of a risk class"""
         classe = self.get_object()
         risks = models.Risque.objects.filter(classe=classe.pk)
         page = self.paginate_queryset(risks)

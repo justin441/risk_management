@@ -5,7 +5,7 @@ import state from './state'
 import mutations from './mutations'
 import actions from './actions'
 
-Vue.use(Vuex);
+Vue.use(Vuex)
 axios.defaults.baseURL = 'http://127.0.0.1:8081/api/v1'
 
 export default new Vuex.Store({
@@ -13,8 +13,12 @@ export default new Vuex.Store({
   mutations: mutations,
   actions: actions,
   getters: {
-    isAuthenticated: state => !!state.token,
-    authStatus: state => state.status,
-    authError: state => state.errors,
+    isAuthenticated: state1 => !!state1.token,
+    authStatus: state1 => state1.status,
+    authError: state1 => state1.errors,
+    currentUser: state1 => state1.currentUser,
+    businnessUnitsList: state1 => state1.businessUnits,
+    projectList: state1 => state1.projects,
+    riskClassesList: state1 => state1.riskClasses
   }
 })

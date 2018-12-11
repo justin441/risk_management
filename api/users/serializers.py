@@ -15,7 +15,7 @@ class DynamicModelSerializer(serializers.ModelSerializer):
     def __init__(self, *args, **kwargs):
         fields = kwargs.pop('fields', None)
 
-        super(DynamicModelSerializer, self).__init__(*args, *kwargs)
+        super().__init__(*args, *kwargs)
 
         if fields is not None:
             allowed = set(fields)
@@ -88,7 +88,7 @@ class UserCreationSerializer(serializers.ModelSerializer):
 
 
 class PositionDetailSerializer(serializers.ModelSerializer):
-    employe = UserDetailSerializer('uuid', 'first_name', 'last_name')
+    employe = UserDetailSerializer(fields=('uuid', 'first_name', 'last_name'))
 
     class Meta:
         model = Position
@@ -101,7 +101,7 @@ class PositionCreationSerialiser(serializers.ModelSerializer):
         fields = ('business_unit', 'employe', 'poste')
 
 
-class BuSerializer(serializers.ModelSerializer):
+class BuSerializer(DynamicModelSerializer):
     class Meta:
         model = BusinessUnit
         fields = ('uuid', 'denomination', 'raison_sociale', 'sigle', 'marche', 'ville_siege', 'adresse_physique',

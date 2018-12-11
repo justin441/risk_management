@@ -32,7 +32,7 @@ def get_user_id(request):
 
 class UserlistView(viewsets.GenericViewSet, mixins.RetrieveModelMixin, mixins.ListModelMixin):
     """
-    Lister les utilisateurs.
+    list users
     """
     queryset = models.User.objects.all()
     serializer_class = serializers.UserDetailSerializer
@@ -41,7 +41,7 @@ class UserlistView(viewsets.GenericViewSet, mixins.RetrieveModelMixin, mixins.Li
 
 class UserCreateview(viewsets.GenericViewSet, mixins.CreateModelMixin):
     """
-    Creer un utilisateur
+        User registration
     """
     queryset = models.User.objects.all()
     serializer_class = serializers.UserCreationSerializer
@@ -49,14 +49,33 @@ class UserCreateview(viewsets.GenericViewSet, mixins.CreateModelMixin):
 
 class BusinessUnitviewSet(viewsets.ModelViewSet):
     """
-        Lister, creer, modifier, detailler et supprimer les business unit
+        list, create, udpdate, retrieve and delete Business units
     """
     queryset = models.BusinessUnit.objects.all()
     serializer_class = serializers.BuSerializer
     lookup_field = 'uuid'
 
+    @property
+    def paginator(self):
+        if self.action == "list":
+            return None
+        return super().paginator
+
+    def get_serializer(self, *args, **kwargs):
+        serializer_class = self.get_serializer_class()
+        if self.action == 'list':
+            kwargs['fields'] = ('uuid', 'denomination', 'projet')
+            return serializer_class(*args, **kwargs)
+        return serializer_class(*args, **kwargs)
+
     @action(detail=True)
     def processes(self, request, uuid=None):
+        """
+        list the processes of a business unit
+        :param request:
+        :param uuid:
+        :return:
+        """
         bu = self.get_object()
         processes = Processus.objects.filter(business_unit=bu.pk)
         page = self.paginate_queryset(processes)
@@ -69,6 +88,12 @@ class BusinessUnitviewSet(viewsets.ModelViewSet):
 
     @action(detail=True)
     def activities(self, request, uuid=None):
+        """
+        lists all the activities in all the processes of a business unit
+        :param request:
+        :param uuid:
+        :return:
+        """
         bu = self.get_object()
         activities = Activite.objects.filter(processus__business_unit=bu.pk)
         page = self.paginate_queryset(activities)
@@ -81,6 +106,12 @@ class BusinessUnitviewSet(viewsets.ModelViewSet):
 
     @action(detail=True)
     def risks(self, request, uuid=None):
+        """
+        list all the risks identified in a business unit
+        :param request:
+        :param uuid:
+        :return:
+        """
         bu = self.get_object()
         pr = ProcessusRisque.objects.filter(processus__business_unit=bu)
         ar = ActiviteRisque.objects.filter(activite__processus__business_unit=bu)
@@ -94,23 +125,21 @@ class BusinessUnitviewSet(viewsets.ModelViewSet):
         return Response(data)
 
 
-class PositionCreationViewSet(viewsets.GenericViewSet, mixins.CreateModelMixin, mixins.UpdateModelMixin):
+class PositionViewSet(viewsets.ModelViewSet):
     """
-    creer et modifier les postes
+    create, retrieve, update, list and delete positions
     """
     queryset = models.Position.objects.all()
-    serializer_class = serializers.PositionCreationSerialiser
 
-
-class PositionViewSet(viewsets.GenericViewSet, mixins.ListModelMixin, mixins.DestroyModelMixin):
-    """lister et supprimer les poste"""
-
-    queryset = models.Position.objects.all()
-    serializer_class = serializers.PositionDetailSerializer
+    def get_serializer_class(self):
+        if self.action in ('list', 'retrieve'):
+            return serializers.PositionDetailSerializer
+        else:
+            return serializers.PositionCreationSerialiser
 
 
 class RmLogoutView(LogoutView):
+    """Log out user"""
     authentication_classes = (authentication.TokenAuthentication,)
-
 
 

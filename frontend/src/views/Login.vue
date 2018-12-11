@@ -53,45 +53,43 @@
 
 <script>
 
-  export default {
-    name: 'login',
-    data() {
-      return {
-        loginForm: {
-          email: '',
-          password: ''
+export default {
+  name: 'login',
+  data () {
+    return {
+      loginForm: {
+        email: '',
+        password: ''
+      }
+    }
+  },
+  methods: {
+    login () {
+      this.$validator.validate().then(result => {
+        if (result) {
+          this.$store.dispatch('AUTH_REQUEST', this.loginForm).then(resp => {
+            this.clear()
+          }).catch(err => {
+            this.clear()
+          })
+        } else {
+          return false
         }
-      }
+      })
     },
-    methods: {
-      login() {
-        this.$validator.validate().then(result => {
-          if (result) {
-            this.$store.dispatch('AUTH_REQUEST', this.loginForm).then(resp => {
-              this.clear()
-            }).catch(err => {
-              this.clear();
-            })
-          } else {
-            return false
-          }
-        })
-
-      },
-      clear() {
-        this.loginForm.email = '';
-        this.loginForm.password = '';
-        this.$validator.reset();
-
-      }
+    clear () {
+      this.loginForm.email = ''
+      this.loginForm.password = ''
+      this.$validator.reset()
+    }
+  },
+  computed: {
+    loginError400 () {
+      return this.$store.getters.authError === '400'
     },
-    computed: {
-      loginError400() {
-        return this.$store.getters.authError === '400';
-      },
-      loginErrorOther() {
-        return this.$store.getters.authError !== '' && this.$store.getters.authError !== '400';
-      },
-    },
+    loginErrorOther () {
+      return this.$store.getters.authError !== '' && this.$store.getters.authError !== '400'
+    }
   }
+}
 </script>

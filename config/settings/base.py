@@ -284,7 +284,7 @@ REST_FRAMEWORK = {
 # ------------------------------------------------------------------------------
 
 REST_AUTH_SERIALIZERS = {
-    'USER_DETAILS_SERIALIZER': 'api.users.serializers.UserSerializer',
+    'USER_DETAILS_SERIALIZER': 'api.users.serializers.UserDetailSerializer',
 }
 
 REST_AUTH_REGISTER_SERIALIZERS = {
