@@ -67,8 +67,8 @@ export default {
         url: '/businessunits/'
       }).then(resp => {
         commit('request_success');
-        commit('set_project_list', resp.data.results.filter(bu => bu.projet));
-        commit('set_bu_list', resp.data.results.filter(bu => !bu.projet));
+        commit('set_project_list', resp.data.filter(bu => bu.projet));
+        commit('set_bu_list', resp.data.filter(bu => !bu.projet));
 
         resolve(resp.data)
       }).catch(err => {
@@ -85,11 +85,29 @@ export default {
         method: 'GET',
         url: '/risk_classes/'
       }).then(response => {
+        console.log(response.data)
         commit('request_success');
-        commit('set_risk_classes_list', response.data.results);
+        commit('set_risk_classes_list', response.data);
         resolve(response.data)
       }).catch(error => {
         commit('request_error');
+        reject(error)
+      })
+    })
+  },
+  // liste des risques
+  GET_RISKS: ({commit}, riskClass) => {
+    return new Promise((resolve, reject) => {
+      commit('request_loading');
+      axios({
+        method: 'GET',
+        url: '/risk_classes/' + riskClass
+      }).then(response => {
+        commit('request_success');
+        commit('set_risks_list', response.data);
+        resolve(response.data)
+      }).catch(error => {
+        console.log(error);
         reject(error)
       })
     })

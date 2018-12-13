@@ -26,5 +26,8 @@ export default {
   },
   set_risk_classes_list (state, data) {
     state.riskClasses = data
+  },
+  set_risks_list (state, data){
+    state.risksList = data;
   }
 }

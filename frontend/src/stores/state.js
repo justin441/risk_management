@@ -10,5 +10,6 @@ export default {
   },
   businessUnits: [],
   projects: [],
-  riskClasses: []
+  riskClasses: [],
+  risksList: {}
 }

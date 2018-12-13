@@ -71,7 +71,7 @@
         <v-list-tile
           v-for="classe in riskClasses"
           :key="classe.nom"
-          @click=""
+          :to="{name: 'riskClasses', params: {name: classe.nom}}"
         >
           <v-list-tile-content>
             <v-list-tile-title>{{ classe.nom }}</v-list-tile-title>

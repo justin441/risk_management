@@ -19,6 +19,7 @@ export default new Vuex.Store({
     currentUser: state1 => state1.currentUser,
     businnessUnitsList: state1 => state1.businessUnits,
     projectList: state1 => state1.projects,
-    riskClassesList: state1 => state1.riskClasses
+    riskClassesList: state1 => state1.riskClasses,
+    risksList: state1 => state1.risksList
   }
 })

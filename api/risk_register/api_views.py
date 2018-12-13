@@ -21,14 +21,14 @@ class RiskClassViewset(viewsets.GenericViewSet,
             return None
         return super().paginator
 
-    @action(detail=True)
-    def risks(self, request, pk=None):
+    def retrieve(self, request, *args, **kwargs):
         """List the risks of a risk class"""
         classe = self.get_object()
         risks = models.Risque.objects.filter(classe=classe.pk)
         page = self.paginate_queryset(risks)
         if page is not None:
-            risk_serializer = serializers.RiskSerialiser(page, many=True)
+            risk_serializer = serializers.RiskSerialiser(page, many=True, fields=('nom', 'description', 'cause',
+                                                                                  'consequence'))
             return self.get_paginated_response(risk_serializer.data)
 
         risk_serializer = serializers.RiskSerialiser(risks, many=True)

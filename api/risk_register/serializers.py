@@ -2,6 +2,7 @@
 from risk_management.users.models import User
 
 from rest_framework import serializers
+from api.users.serializers import DynamicModelSerializer
 
 from risk_register.models import (ProcessData, Processus, ClasseDeRisques, Risque, Activite, IdentificationRisque,
                                   ProcessusRisque, ActiviteRisque, Estimation, Controle, CritereDuRisque)
@@ -64,10 +65,10 @@ class RiskClassSerialiser(serializers.ModelSerializer):
         fields = ('nom',)
 
 
-class RiskSerialiser(serializers.ModelSerializer):
+class RiskSerialiser(DynamicModelSerializer):
     class Meta:
         model = Risque
-        fields = ('code_risque', 'created', 'classe', 'modified', 'classe', 'nom', 'description', 'definition',
+        fields = ('code_risque', 'created', 'classe', 'modified', 'nom', 'description', 'definition',
                   'cause', 'consequence', 'couverture', 'pilotage', 'note', 'aide', 'cree_par')
         read_only_fields = ('created', 'modified')
         extra_kwargs = {
