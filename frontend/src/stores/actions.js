@@ -34,7 +34,7 @@ export default {
         commit('set_user', resp.data);
         resolve(resp.data)
       }).catch(err => {
-        commit('request_error');
+        commit('request_error', err);
         reject(err)
       })
     })
@@ -72,6 +72,7 @@ export default {
 
         resolve(resp.data)
       }).catch(err => {
+        commit('request_error', err);
         console.log(err);
         reject(err)
       })
@@ -85,31 +86,64 @@ export default {
         method: 'GET',
         url: '/risk_classes/'
       }).then(response => {
-        console.log(response.data)
         commit('request_success');
         commit('set_risk_classes_list', response.data);
         resolve(response.data)
       }).catch(error => {
-        commit('request_error');
+        commit('request_error', error);
         reject(error)
       })
     })
   },
   // liste des risques
-  GET_RISKS: ({commit}, riskClass) => {
+  GET_RISKS: ({commit}, payload) => {
     return new Promise((resolve, reject) => {
       commit('request_loading');
       axios({
         method: 'GET',
-        url: '/risk_classes/' + riskClass
+        url: payload.page == 1 ? '/risk_classes/' + payload.riskClass : '/risk_classes/' + payload.riskClass + '/?page=' + payload.page
       }).then(response => {
         commit('request_success');
         commit('set_risks_list', response.data);
         resolve(response.data)
       }).catch(error => {
-        console.log(error);
+        commit('request_error', error);
         reject(error)
       })
     })
-  }
+  },
+  // liste des occurences d'un risque
+  GET_RISK_OCCURENCES: ({commit, dispatch}, uuid) => {
+   return new Promise((resolve, reject) => {
+      commit('request_loading');
+    axios({
+      url: '/risks/' + uuid + '/occurences',
+      method: 'GET'
+    }).then(response => {
+      commit('request_success');
+      commit('set_risk_occurences_list', response.data);
+      resolve(response.data)
+    }).catch(error => {
+      commit('request_error', error);
+      console.log(error);
+    })
+   })
+  },
+  // mise à jour du risque
+  UPDATE_RISK: ({commit, dispatch}, payload) => {
+   return new Promise((resolve, reject) => {
+      commit('request_loading');
+    axios({
+      url: '/risks/' +  payload.uuid + '/',
+      method: 'PATCH',
+      data:  payload.data
+    }).then(response => {
+      commit('request_success');
+      resolve(response.data);
+    }).catch(error => {
+      commit('request_error', error);
+      reject(error);
+    })
+   })
+}
 }

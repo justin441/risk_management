@@ -2,7 +2,7 @@
 export default {
   token: localStorage.getItem('bonbon') || '',
   status: '',
-  errors: '',
+  errorCode: '',
   currentUser: {
     id: '',
     firstName: '',
@@ -11,5 +11,6 @@ export default {
   businessUnits: [],
   projects: [],
   riskClasses: [],
-  risksList: {}
+  risksList: {},
+  riskOccurences: {}
 }

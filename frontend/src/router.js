@@ -30,6 +30,7 @@ export default new Router({
     },
     {
       path: '/risk-classes/:name',
+      query: 'page',
       name: 'riskClasses',
       component: RiskClasses
     }

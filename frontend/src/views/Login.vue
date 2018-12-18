@@ -85,10 +85,10 @@ export default {
   },
   computed: {
     loginError400 () {
-      return this.$store.getters.authError === '400'
+      return this.$store.getters.errorCode === '400'
     },
     loginErrorOther () {
-      return this.$store.getters.authError !== '' && this.$store.getters.authError !== '400'
+      return this.$store.getters.errorCode !== '' && this.$store.getters.errorCode !== '400'
     }
   }
 }

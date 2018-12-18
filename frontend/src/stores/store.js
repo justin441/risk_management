@@ -15,11 +15,12 @@ export default new Vuex.Store({
   getters: {
     isAuthenticated: state1 => !!state1.token,
     authStatus: state1 => state1.status,
-    authError: state1 => state1.errors,
+    errorCode: state1 => state1.errors,
     currentUser: state1 => state1.currentUser,
     businnessUnitsList: state1 => state1.businessUnits,
     projectList: state1 => state1.projects,
     riskClassesList: state1 => state1.riskClasses,
-    risksList: state1 => state1.risksList
+    risksList: state1 => state1.risksList,
+    occurences: state1 => state1.riskOccurences
   }
 })

@@ -12,6 +12,7 @@ router.register(r'users', users_api_view.UserlistView)
 router.register(r'businessunits', users_api_view.BusinessUnitviewSet)
 router.register(r'positions', users_api_view.PositionViewSet)
 router.register(r'risk_classes', risk_register_api_view.RiskClassViewset)
+router.register(r'risks', risk_register_api_view.RiskViewSet)
 
 urlpatterns = [
     path('rest-auth/logout/', users_api_view.RmLogoutView.as_view(), name='rest_logout'),

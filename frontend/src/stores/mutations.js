@@ -3,8 +3,8 @@ export default {
     state.status = 'loading'
   },
   request_error (state, err) {
-    state.status = 'error'
-    state.errors = err.request.status.toString()
+    state.status = 'error';
+    state.errorCode = err.response.status.toString()
   },
   request_success (state) {
     state.status = 'success'
@@ -29,5 +29,8 @@ export default {
   },
   set_risks_list (state, data){
     state.risksList = data;
+  },
+  set_risk_occurences_list (state, data) {
+    state.riskOccurences = data
   }
 }
