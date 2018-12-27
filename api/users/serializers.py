@@ -26,10 +26,11 @@ class UserDetailSerializer(DynamicModelSerializer):
 
     class Meta:
         model = User
-        fields = ('pk', 'uuid', 'email', 'civilite', 'first_name', 'last_name', 'get_username', 'telephone', 'postes')
+        fields = ('pk', 'uuid', 'email', 'civilite', 'first_name', 'last_name', 'get_username', 'telephone', 'postes',
+                  '__str__')
         depth = 1
         extra_kwargs = {
-            'email': {'write_only': True},
+            'email': {'read_only': True},
         }
 
 
@@ -93,7 +94,7 @@ class PositionDetailSerializer(serializers.ModelSerializer):
         fields = ('business_unit', 'employe', 'poste')
 
 
-class PositionCreationSerialiser(serializers.ModelSerializer):
+class PositionCreationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Position
         fields = ('business_unit', 'employe', 'poste')

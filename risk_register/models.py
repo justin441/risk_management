@@ -313,13 +313,13 @@ class CritereDuRisque(models.Model):
 
 class IdentificationRisque(TimeStampedModel):
     STATUS = Choices(('pending', _('en attente')), ('verified', _('confirmé')))
-    TYPE_DE_RISQUE = (
+    TYPE_DE_RISQUE_CHOICES = (
         ('O', _('opportunité')),
         ('M', _('menace')),
     )
     code_identification = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     risque = models.ForeignKey(Risque, on_delete=models.CASCADE, verbose_name=_('risque'))
-    type_de_risque = models.CharField(max_length=1, choices=TYPE_DE_RISQUE, default='M',
+    type_de_risque = models.CharField(max_length=1, choices=TYPE_DE_RISQUE_CHOICES, default='M',
                                       verbose_name=_('type de risque'))
     date_revue = models.DateTimeField('revue', null=True, blank=True)
     criterisation = models.OneToOneField('CritereDuRisque', on_delete=models.SET_NULL, blank=True, null=True,
@@ -327,7 +327,7 @@ class IdentificationRisque(TimeStampedModel):
     criterisation_change = MonitorField(monitor='criterisation')
     date_revue_change = MonitorField(monitor='date_revue')
     verifie = StatusField(verbose_name=_('vérification'))
-    verifie_le = MonitorField(monitor='verifie', when=['verified'])
+    verifie_le = MonitorField(monitor='verifie', when=['verified'], default=None)
     verifie_par = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True)
 
     def clean(self):

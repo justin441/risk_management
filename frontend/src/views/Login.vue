@@ -78,17 +78,17 @@ export default {
       })
     },
     clear () {
-      this.loginForm.email = ''
-      this.loginForm.password = ''
+      this.loginForm.email = '';
+      this.loginForm.password = '';
       this.$validator.reset()
     }
   },
   computed: {
     loginError400 () {
-      return this.$store.getters.errorCode === '400'
+      return this.$store.getters.errorCode === 400
     },
     loginErrorOther () {
-      return this.$store.getters.errorCode !== '' && this.$store.getters.errorCode !== '400'
+      return this.$store.getters.errorCode && this.$store.getters.errorCode !== 400
     }
   }
 }

@@ -13,7 +13,8 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
 from django.views.decorators.vary import vary_on_cookie
 from . import serializers
-from api.risk_register.serializers import ActivityDetailSerializer, ActivityRiskSerialiser, ProcessRiskSerialiser
+from api.risk_register.serializers import ActivitySerializer, ProcessSerializer, ActivityRiskSerializer,\
+    ProcessRiskSerializer
 
 from risk_management.users import models
 from risk_register.models import Processus, Activite, ProcessusRisque, ActiviteRisque
@@ -80,10 +81,12 @@ class BusinessUnitviewSet(viewsets.ModelViewSet):
         processes = Processus.objects.filter(business_unit=bu.pk)
         page = self.paginate_queryset(processes)
         if page is not None:
-            process_serializer = serializers.ProcessusDetailSerializer(page, many=True)
+            process_serializer = ProcessSerializer(page, many=True, fields=('code_processus', 'type_processus', 'nom',
+                                                                            'description'))
             return self.get_paginated_response(process_serializer.data)
 
-        process_serializer = serializers.ProcessusDetailSerializer(processes, many=True)
+        process_serializer = ProcessSerializer(processes, many=True, fields=('code_processus','type_processus', 'nom',
+                                                                             'description'))
         return Response(process_serializer.data)
 
     @action(detail=True)
@@ -98,10 +101,12 @@ class BusinessUnitviewSet(viewsets.ModelViewSet):
         activities = Activite.objects.filter(processus__business_unit=bu.pk)
         page = self.paginate_queryset(activities)
         if page is not None:
-            activity_serializer = ActivityDetailSerializer(page, many=True)
+            activity_serializer = ActivitySerializer(page, many=True, fields=('code_activite', 'nom', 'description',
+                                                                              'status'))
             return self.get_paginated_response(activity_serializer.data)
 
-        activity_serializer = ActivityDetailSerializer(activities, many=True)
+        activity_serializer = ActivitySerializer(activities, many=True, fields=('code_activite', 'nom', 'description',
+                                                                                'status'))
         return Response(activity_serializer.data)
 
     @action(detail=True)
@@ -115,8 +120,8 @@ class BusinessUnitviewSet(viewsets.ModelViewSet):
         bu = self.get_object()
         pr = ProcessusRisque.objects.filter(processus__business_unit=bu)
         ar = ActiviteRisque.objects.filter(activite__processus__business_unit=bu)
-        p_s = ProcessRiskSerialiser(pr, many=True)
-        a_s = ActivityRiskSerialiser(ar, many=True)
+        p_s = ProcessRiskSerializer(pr, many=True)
+        a_s = ActivityRiskSerializer(ar, many=True)
         data = sorted(p_s.data+a_s.data, key=itemgetter('created'), reverse=True)
         page = self.paginate_queryset(data)
         if page is not None:
@@ -135,7 +140,7 @@ class PositionViewSet(viewsets.ModelViewSet):
         if self.action in ('list', 'retrieve'):
             return serializers.PositionDetailSerializer
         else:
-            return serializers.PositionCreationSerialiser
+            return serializers.PositionCreationSerializer
 
 
 class RmLogoutView(LogoutView):

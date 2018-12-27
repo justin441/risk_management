@@ -121,7 +121,7 @@ export default {
     if (this.isAuthenticated) {
       this.$store.dispatch('GET_USER')
     }
-    this.$store.dispatch('GET_BU_LIST')
+    this.$store.dispatch('GET_BU_LIST');
 
     this.$store.dispatch('GET_RISK_CLASSES')
   }

@@ -14,7 +14,7 @@ class RiskClassViewset(viewsets.GenericViewSet,
                        mixins.RetrieveModelMixin,
                        mixins.UpdateModelMixin):
     queryset = models.ClasseDeRisques.objects.all()
-    serializer_class = serializers.RiskClassSerialiser
+    serializer_class = serializers.RiskClassSerializer
 
     @property
     def paginator(self):
@@ -48,8 +48,8 @@ class RiskViewSet(viewsets.GenericViewSet,
     def occurences(self, request, pk):
         pr = models.ProcessusRisque.objects.filter(risque__code_risque=pk)
         ar = models.ActiviteRisque.objects.filter(risque__code_risque=pk)
-        p_s = serializers.ProcessRiskSerialiser(pr, many=True)
-        a_s = serializers.ActivityRiskSerialiser(ar, many=True)
+        p_s = serializers.ProcessRiskSerializer(pr, many=True)
+        a_s = serializers.ActivityRiskSerializer(ar, many=True)
         data = sorted(p_s.data + a_s.data, key=itemgetter('created'), reverse=True)
         page = self.paginate_queryset(data)
         if page is not None:

@@ -4,7 +4,7 @@ export default {
   },
   request_error (state, err) {
     state.status = 'error';
-    state.errorCode = err.response.status.toString()
+    state.errorCode = err.response.status
   },
   request_success (state) {
     state.status = 'success'
