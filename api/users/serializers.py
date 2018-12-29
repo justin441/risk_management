@@ -23,11 +23,12 @@ class DynamicModelSerializer(serializers.ModelSerializer):
 
 
 class UserDetailSerializer(DynamicModelSerializer):
+    full_name = serializers.CharField(source='__str__', read_only=True)
 
     class Meta:
         model = User
         fields = ('pk', 'uuid', 'email', 'civilite', 'first_name', 'last_name', 'get_username', 'telephone', 'postes',
-                  '__str__')
+                  'full_name')
         depth = 1
         extra_kwargs = {
             'email': {'read_only': True},

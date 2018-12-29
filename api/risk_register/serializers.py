@@ -23,7 +23,7 @@ class RiskDetailSerializer(serializers.ModelSerializer):
 
 
 class RiskCriterionSerializer(serializers.ModelSerializer):
-    estime_par = UserDetailSerializer(fields=('uuid', '__str__'), write_only=True)
+    estime_par = UserDetailSerializer(fields=('uuid', 'full_name'), write_only=True)
 
     class Meta:
         model = CritereDuRisque
@@ -31,7 +31,7 @@ class RiskCriterionSerializer(serializers.ModelSerializer):
 
 
 class ActivitySerializer(DynamicModelSerializer):
-    responsable = UserDetailSerializer(fields=('uuid', '__str__'))
+    responsable = UserDetailSerializer(fields=('uuid', 'full_name'))
     activiterisque_set = RiskDetailSerializer(many=True)
 
     class Meta:
@@ -43,7 +43,7 @@ class ActivitySerializer(DynamicModelSerializer):
 class ProcessSerializer(DynamicModelSerializer):
     input_data = ProcessDataSerializer(many=True, read_only=True)
     activites = ActivitySerializer(fields=('code_activite', 'nom', 'description', 'status'), many=True)
-    proc_manager = UserDetailSerializer(fields=('uuid', '__str__'))
+    proc_manager = UserDetailSerializer(fields=('uuid', 'full_name'))
     processusrisque_set = RiskDetailSerializer(many=True)
 
     class Meta:
@@ -76,7 +76,7 @@ class RiskSerialiser(DynamicModelSerializer):
 
 
 class RiskIdSerializer(DynamicModelSerializer):
-    verifie_par = UserDetailSerializer(fields=('uuid', '__str__'))
+    verifie_par = UserDetailSerializer(fields=('uuid', 'full_name'))
     risque = RiskSerialiser(fields=('code_risque', 'classe', 'nom', 'description', 'cause', 'consequence'))
 
     class Meta:
@@ -87,10 +87,10 @@ class RiskIdSerializer(DynamicModelSerializer):
 
 
 class ProcessRiskSerializer(RiskIdSerializer):
-    soumis_par = UserDetailSerializer(fields=('uuid', '__str__'))
-    modifie_par = UserDetailSerializer(fields=('uuid', '__str__'))
-    suivi_par = UserDetailSerializer(fields=('uuid', '__str__'), many=True)
-    proprietaire = UserDetailSerializer(fields=('uuid', '__str__'))
+    soumis_par = UserDetailSerializer(fields=('uuid', 'full_name'))
+    modifie_par = UserDetailSerializer(fields=('uuid', 'full_name'))
+    suivi_par = UserDetailSerializer(fields=('uuid', 'full_name'), many=True)
+    proprietaire = UserDetailSerializer(fields=('uuid', 'full_name'))
     processus = ProcessSerializer(fields=('code_processus', 'nom'))
 
     class Meta:
@@ -100,10 +100,10 @@ class ProcessRiskSerializer(RiskIdSerializer):
 
 
 class ActivityRiskSerializer(RiskIdSerializer):
-    soumis_par = UserDetailSerializer(fields=('uuid', '__str__'))
-    modifie_par = UserDetailSerializer(fields=('uuid', '__str__'))
-    suivi_par = UserDetailSerializer(fields=('uuid', '__str__'), many=True)
-    proprietaire = UserDetailSerializer(fields=('uuid', '__str__'))
+    soumis_par = UserDetailSerializer(fields=('uuid', 'full_name'))
+    modifie_par = UserDetailSerializer(fields=('uuid', 'full_name'))
+    suivi_par = UserDetailSerializer(fields=('uuid', 'full_name'), many=True)
+    proprietaire = UserDetailSerializer(fields=('uuid', 'full_name'))
     activite = ActivitySerializer(fields=('code_activite', 'nom', 'status'))
 
     class Meta:
@@ -132,9 +132,9 @@ class EstimationSerializer(serializers.ModelSerializer):
 
 class ControleSerializer(serializers.ModelSerializer):
     content_object = RiskRelatedField(read_only=True)
-    cree_par = UserDetailSerializer(fields=('uuid', '__str__'))
-    assigne_a = UserDetailSerializer(fields=('uuid', '__str__'))
-    modifie_par = UserDetailSerializer(fields=('uuid', '__str__'))
+    cree_par = UserDetailSerializer(fields=('uuid', 'full_name'))
+    assigne_a = UserDetailSerializer(fields=('uuid', 'full_name'))
+    modifie_par = UserDetailSerializer(fields=('uuid', 'full_name'))
 
     class Meta:
         model = Controle

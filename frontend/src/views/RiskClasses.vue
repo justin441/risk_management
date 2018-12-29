@@ -3,13 +3,13 @@
     <v-layout row class="mt-4">
       <v-flex xs12 lg8 offset-lg2>
         <h2 class="headline font-weight-medium">{{ this.$route.params.name }}</h2>
-        <v-dialog v-model="dialog" max-width="800"  persistent scrollable @keydown.esc="close()">
+        <v-dialog v-model="dialog" max-width="800" persistent scrollable @keydown.esc="close()">
 
           <v-tabs>
             <v-tab>
               Détails
             </v-tab>
-            <v-tab-item >
+            <v-tab-item>
               <v-card tile max-width="800">
                 <v-card-title>
                   <span class="headline grey lighten-2">{{ shownItem.nom }}</span>
@@ -147,18 +147,19 @@
             </v-tab>
             <v-tab-item>
               <v-card max-width="800">
-                <v-card-text>
-                  <v-container fluid>
+                <v-container grid-list-md fluid>
+                  <v-layout row wrap>
+                    <v-flex xs12 v-for="(occurence, index) in occurences.results">
                       <risk
-                        v-for="(occurence, index) in occurences.results"
                         :key="index"
                         :risk="occurence"
                         :deletable="true"
                         @show-detail="close"
                       >
                       </risk>
-                  </v-container>
-                </v-card-text>
+                    </v-flex>
+                  </v-layout>
+                </v-container>
               </v-card>
             </v-tab-item>
           </v-tabs>
@@ -203,6 +204,7 @@
 
 <script>
   import Risk from '../components/Risk'
+
   export default {
     components: {
       Risk
@@ -257,7 +259,9 @@
       this.$store.dispatch('GET_RISKS', {
         riskClass: this.$route.params.name,
         page: this.$route.query.page || 1
-      }).then(() => {this.page = parseInt(this.$route.query.page) || 1} )
+      }).then(() => {
+        this.page = parseInt(this.$route.query.page) || 1
+      })
     },
     watch: {
       '$route'(to, from) {

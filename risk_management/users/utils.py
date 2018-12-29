@@ -1,5 +1,6 @@
 from itertools import chain
 from operator import attrgetter
+
 from risk_register.models import ProcessusRisque, ActiviteRisque
 
 
@@ -90,5 +91,3 @@ def get_latests(qs, n):
         ids.append(qs_copy.latest().pk)
         qs_copy = qs_copy.exclude(pk=ids[i])
     return qs.filter(pk__in=ids)
-
-

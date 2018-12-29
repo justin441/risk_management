@@ -27,6 +27,14 @@ from risk_management.users.models import BusinessUnit
 logger = logging.getLogger(__name__)
 
 
+def risk_default_review_date():
+    return now() + timedelta(weeks=26)
+
+
+def estimation_default_review_date():
+    return now() + timedelta(days=60)
+
+
 class ProcessData(models.Model):
     nom = models.CharField(max_length=255)
     origine = models.ForeignKey('Processus', on_delete=models.SET_NULL,
@@ -312,6 +320,7 @@ class CritereDuRisque(models.Model):
 
 
 class IdentificationRisque(TimeStampedModel):
+
     STATUS = Choices(('pending', _('en attente')), ('verified', _('confirmé')))
     TYPE_DE_RISQUE_CHOICES = (
         ('O', _('opportunité')),
@@ -321,7 +330,7 @@ class IdentificationRisque(TimeStampedModel):
     risque = models.ForeignKey(Risque, on_delete=models.CASCADE, verbose_name=_('risque'))
     type_de_risque = models.CharField(max_length=1, choices=TYPE_DE_RISQUE_CHOICES, default='M',
                                       verbose_name=_('type de risque'))
-    date_revue = models.DateTimeField('revue', null=True, blank=True)
+    date_revue = models.DateTimeField('revue', null=True, blank=True, default=risk_default_review_date)
     criterisation = models.OneToOneField('CritereDuRisque', on_delete=models.SET_NULL, blank=True, null=True,
                                          verbose_name=_('Seuil de risque'))
     criterisation_change = MonitorField(monitor='criterisation')
@@ -341,8 +350,8 @@ class IdentificationRisque(TimeStampedModel):
     def save(self, *args, **kwargs):
         if self.verifie == 'verified' and not self.date_revue:
             # si le risque est verifié et la date de revue non fixé,
-            # fixer la date de revue par défaut à un an dans le futur
-            self.date_revue = now() + timedelta(days=365)
+            # fixer la date de revue par défaut à 6 mois dans le futur
+            self.date_revue = now() + timedelta(weeks=26)
         super().save(*args, **kwargs)
 
     def seuil_de_risque(self):
@@ -647,7 +656,7 @@ class RiskMixin(VoxModel):
 
 class Estimation(TimeStampedModel, RiskMixin):
     code_estimation = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    date_revue = models.DateTimeField(_('Date de revue'), default=now)
+    date_revue = models.DateTimeField(_('Date de revue'), default=estimation_default_review_date)
     criterisation = models.OneToOneField(CritereDuRisque, on_delete=models.SET_NULL, blank=True, null=True,
                                          verbose_name=_('Scoring'))
     date_revue_change = MonitorField(monitor='date_revue')
