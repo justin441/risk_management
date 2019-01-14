@@ -28,14 +28,17 @@ logger = logging.getLogger(__name__)
 
 
 def risk_default_review_date():
+    # date de revue par défaut du risque
     return now() + timedelta(weeks=26)
 
 
 def estimation_default_review_date():
+    # date de revue par défaut de l'estimation du risque
     return now() + timedelta(days=60)
 
 
 class ProcessData(models.Model):
+    """Représente une donnée d'entrée ou de sortie d'un processus"""
     nom = models.CharField(max_length=255)
     origine = models.ForeignKey('Processus', on_delete=models.SET_NULL,
                                 null=True, blank=True, verbose_name=_('fournisseur interne'),
@@ -62,6 +65,7 @@ class ProcessData(models.Model):
 
 
 class Processus(VoxModel):
+    """Représente un processus dans un BU"""
     PROCESSUS_MANAGEMENT = 'PM'
     PROCESSUS_OPERATIONNEL = 'PO'
     PROCESSUS_SOUTIEN = 'PS'
@@ -138,6 +142,7 @@ class Processus(VoxModel):
 
 
 class Activite(TimeFramedModel, VoxModel):
+    """Représente une  activité dans un processus"""
     STATUS = Choices(('pending', _('en cours')), ('completed', _('achevé')))
     code_activite = models.UUIDField(
         primary_key=True, default=uuid.uuid4, editable=False)
@@ -209,6 +214,7 @@ class Activite(TimeFramedModel, VoxModel):
 
 
 class ClasseDeRisques(models.Model):
+    """Représente une classe de risque"""
     nom = models.CharField(_("Classe de risques"),
                            max_length=50, primary_key=True)
 
@@ -224,6 +230,7 @@ class ClasseDeRisques(models.Model):
 
 
 class Risque(TimeStampedModel, VoxModel):
+    """Représente un risque"""
     code_risque = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     classe = models.ForeignKey(ClasseDeRisques, on_delete=models.CASCADE, null=True, related_name='risques')
     nom = models.CharField(max_length=200, verbose_name=_('nom'))
@@ -267,6 +274,7 @@ class Risque(TimeStampedModel, VoxModel):
 
 
 class CritereDuRisque(models.Model):
+    """Représente la critérisation du  risque"""
     DETECTABILITE_CHOIX = (
         (1, 'Détection permanente'),
         (2, 'Détection élevée'),
@@ -320,6 +328,7 @@ class CritereDuRisque(models.Model):
 
 
 class IdentificationRisque(TimeStampedModel):
+    """Représente un risque identifié et lié soit à un processus soit à une activité"""
 
     STATUS = Choices(('pending', _('en attente')), ('verified', _('confirmé')))
     TYPE_DE_RISQUE_CHOICES = (
@@ -456,6 +465,7 @@ class IdentificationRisque(TimeStampedModel):
 
 
 class ActiviteRisque(IdentificationRisque, VoxModel):
+    """Représente un risque lié à une activité"""
     activite = models.ForeignKey(Activite, on_delete=models.CASCADE, verbose_name=_('activité'))
     soumis_par = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL,
                                    related_name='activiterisques_soumis', null=True,
@@ -540,6 +550,7 @@ class ActiviteRisque(IdentificationRisque, VoxModel):
 
 
 class ProcessusRisque(IdentificationRisque, VoxModel):
+    """Représente un risque lié à un processus"""
     processus = models.ForeignKey(Processus, on_delete=models.CASCADE, verbose_name=_('processus'))
     soumis_par = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL,
                                    related_name='processusrisques_soumis', null=True,
@@ -655,6 +666,7 @@ class RiskMixin(VoxModel):
 
 
 class Estimation(TimeStampedModel, RiskMixin):
+    """Représente une estimation d'un risque identifié"""
     code_estimation = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     date_revue = models.DateTimeField(_('Date de revue'), default=estimation_default_review_date)
     criterisation = models.OneToOneField(CritereDuRisque, on_delete=models.SET_NULL, blank=True, null=True,
@@ -720,6 +732,7 @@ class Estimation(TimeStampedModel, RiskMixin):
 
 
 class Controle(TimeFramedModel, TimeStampedModel, RiskMixin):
+    """Représent une activité de contrôle du risque idéntifié"""
     STATUS = Choices(('in_progress', _('en cours')), ('completed', _('achevé')))
     code_traitement = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     critere_cible = models.CharField(max_length=1,
@@ -736,7 +749,7 @@ class Controle(TimeFramedModel, TimeStampedModel, RiskMixin):
     modifie_par = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL,
                                     related_name='traitements_modifies',
                                     null=True, blank=True, verbose_name=_('modifié par'))
-    # ajouté a la liste des contrôles à mettre en eouvre
+    # est ajouté a la liste des contrôles à mettre en eouvre
     est_approuve = models.BooleanField(verbose_name=_('approuvé'), default=False)
     # validé l'exécution du contrôle
     est_valide = models.BooleanField(verbose_name=_('validé'), default=False)

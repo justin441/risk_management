@@ -149,9 +149,9 @@
               <v-card max-width="800">
                 <v-container grid-list-md fluid>
                   <v-layout row wrap>
-                    <v-flex xs12 v-for="(occurence, index) in occurences.results">
+                    <v-flex xs12 v-for="occurence in occurences.results">
                       <risk
-                        :key="index"
+                        :key="occurence.code_identification"
                         :risk="occurence"
                         :deletable="true"
                         @show-detail="close"
@@ -164,7 +164,7 @@
             </v-tab-item>
           </v-tabs>
         </v-dialog>
-        <v-list two-line class="mt-5">
+        <v-list two-line class="mt-5" v-if="risks.results.length">
           <template v-for="(risk, index) in risks.results">
             <v-list-tile :key="risk.code_risque">
               <v-list-tile-content>
@@ -185,8 +185,8 @@
               :key="index"
             ></v-divider>
           </template>
-
         </v-list>
+        <p v-else>Vide</p>
       </v-flex>
     </v-layout>
     <div class="text-xs-center pt-2">

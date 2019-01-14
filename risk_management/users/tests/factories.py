@@ -9,7 +9,7 @@ faker = Faker('fr_FR')
 
 
 def generate_phone_number():
-    return "(+237) 6%02d%03d%03d" % (random.randint(70, 99), random.randint(0, 999), random.randint(0, 999))
+    return "(+237) 6%02d%03d%03d" % (random.randint(50, 99), random.randint(0, 999), random.randint(0, 999))
 
 
 class UserFactory(factory.django.DjangoModelFactory):
@@ -17,7 +17,7 @@ class UserFactory(factory.django.DjangoModelFactory):
     first_name = factory.Faker('first_name')
     last_name = factory.Faker('last_name')
     telephone = factory.LazyFunction(generate_phone_number)
-    email = factory.LazyAttribute(lambda o: f"{o.first_name.lower()}.{o.last_name.lower()}@example.com")
+    email = factory.LazyAttribute(lambda o: f"{o.first_name.lower()}.{o.last_name.lower()}@noubruholding.com")
     password = factory.PostGenerationMethodCall("set_password", "password")
 
     class Meta:

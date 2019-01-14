@@ -87,6 +87,7 @@ class BusinessUnit(VoxModel):
 
 
 class User(AbstractUser):
+    """Représente un utilisateur du système"""
     MADAME = 'Mme'
     MONSIEUR = 'M.'
     DOCTEUR = 'Dr'
@@ -127,6 +128,7 @@ class User(AbstractUser):
 
 
 class Position(VoxModel):
+    """Représente un poste de travail au sein d'un business unit"""
     poste = models.CharField(max_length=30, verbose_name=_('poste'))
     employe = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name=_('Employé(e)'),
                                 related_name=_('postes'))

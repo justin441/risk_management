@@ -3,7 +3,7 @@
     <v-toolbar card dense>
       <v-toolbar-items>
         <div class="mt-3 mr-1">
-          <v-icon :color="riskColor" class="mr-1">{{riskIcon}}</v-icon><span class="mt-3">{{ riskType }}</span>
+          <v-icon :color="riskColor" class="mr-1">{{ riskIcon }}</v-icon><span class="mt-3">{{ riskType }}</span>
         </div>
         <div v-if="verified" class="mt-3 mr-1">
           <v-icon right color="green darken-1" class="mr-1">mdi-bookmark-check</v-icon>
@@ -95,8 +95,6 @@
           return this.risk.activite.nom
         }
       }
-    },
-    mounted() {
     }
   }
 </script>

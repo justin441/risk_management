@@ -16,9 +16,12 @@ if (token) {
 }
 
 Vue.config.productionTip = false;
+Vue.config.performance = true;
 
-new Vue({
+const vm = new Vue({
   router,
   store,
   render: h => h(App)
-}).$mount('#app');
+});
+
+vm.$mount('#app');

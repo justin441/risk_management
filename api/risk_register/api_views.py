@@ -48,8 +48,14 @@ class RiskViewSet(viewsets.GenericViewSet,
     def occurences(self, request, pk):
         pr = models.ProcessusRisque.objects.filter(risque__code_risque=pk)
         ar = models.ActiviteRisque.objects.filter(risque__code_risque=pk)
-        p_s = serializers.ProcessRiskSerializer(pr, many=True)
-        a_s = serializers.ActivityRiskSerializer(ar, many=True)
+        p_s = serializers.ProcessRiskSerializer(pr, many=True,
+                                                fields=('code_identification', 'created', 'modified', 'type_de_risque',
+                                                        'criterisation', 'verifie', 'processus', 'seuil de risque',
+                                                        'soumis_par', 'est_obsolete', 'est_assigne', 'proprietaire'))
+        a_s = serializers.ActivityRiskSerializer(ar, many=True,
+                                                 fields=('code_identification', 'created', 'type_de_risque',
+                                                         'criterisation', 'verifie', 'activite', 'seuil de risque',
+                                                         'soumis_par', 'est_obsolete', 'est_assigne', 'proprietaire'))
         data = sorted(p_s.data + a_s.data, key=itemgetter('created'), reverse=True)
         page = self.paginate_queryset(data)
         if page is not None:
