@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Login from './views/Login.vue'
-import Register from './views/Register'
+import Register from './views/UserRegistration'
 import RiskClasses from './views/RiskClasses'
 
 Vue.use(Router)
@@ -25,7 +25,7 @@ export default new Router({
     },
     {
       path: '/register',
-      name: 'register',
+      name: 'user_registration',
       component: Register
     },
     {
