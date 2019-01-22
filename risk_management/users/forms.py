@@ -56,12 +56,20 @@ class UserUpdateForm(UserForm):
 class BusinessUnitAdminForm(forms.ModelForm):
     class Meta:
         model = BusinessUnit
-        fields = '__all__'
+        fields = ('denomination', 'raison_sociale', 'sigle', 'marche', 'ville_siege', 'bu_manager', 'projet',
+                  'adresse_physique', 'adresse_postale', 'telephone', 'site_web')
 
     def __init__(self, *args, **kwargs):
         super(BusinessUnitAdminForm, self).__init__(*args, **kwargs)
-        try:
+        if self.instance.pk:
+            self.fields.pop('denomination')
             self.fields['bu_manager'].queryset = self.instance.employes.all()
-        except (AttributeError, BusinessUnit.DoesNotExist):
-            self.fields['bu_manager'].queryset = User.objects.none()
+        else:
+            self.fields.pop('bu_manager')
+
+        # try:
+        #     self.fields['bu_manager'].queryset = self.instance.employes.all()
+        # except (AttributeError, BusinessUnit.DoesNotExist):
+        #     self.fields['bu_manager'].queryset = User.objects.none()
+        
 

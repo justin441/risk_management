@@ -1,7 +1,7 @@
 import factory
 import random
 from faker import Faker
-from ..models import BusinessUnit, User
+from ..models import BusinessUnit, User, Position
 
 
 CIVILITE_CHOICES = ('M.', 'Mme', 'Dr', 'Pr')
@@ -18,7 +18,7 @@ class UserFactory(factory.django.DjangoModelFactory):
     last_name = factory.Faker('last_name')
     telephone = factory.LazyFunction(generate_phone_number)
     email = factory.LazyAttribute(lambda o: f"{o.first_name.lower()}.{o.last_name.lower()}@noubruholding.com")
-    password = factory.PostGenerationMethodCall("set_password", "password")
+    password = factory.PostGenerationMethodCall("set_password", "MyS3cr37P4ssW0rd")
 
     class Meta:
         model = User
@@ -27,9 +27,9 @@ class UserFactory(factory.django.DjangoModelFactory):
 
 class BusinessFactory(factory.django.DjangoModelFactory):
     denomination = factory.Sequence(lambda n: f"business unit {n}")
-    marche = factory.Faker('text', locale='fr_FR', max_nb_chars=20)
+    marche = factory.Faker('sentence', locale='fr_FR', nb_words=5)
     ville_siege = factory.Faker('city', locale='fr_FR')
-    adresse_physique = factory.LazyAttribute(lambda _: faker.street_address())
+    adresse_physique = factory.Faker('street_address', locale='fr_FR')
     telephone = factory.LazyFunction(generate_phone_number)
     bu_manager = factory.SubFactory(UserFactory)
     projet = factory.Faker('pybool')
@@ -37,4 +37,13 @@ class BusinessFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = BusinessUnit
         django_get_or_create = ('denomination',)
+
+
+class PositionFactory(factory.django.DjangoModelFactory):
+    poste = factory.Faker('job')
+    employe = factory.SubFactory(UserFactory)
+    business_unit = factory.SubFactory(BusinessFactory)
+
+    class Meta:
+        model = Position
 

@@ -316,7 +316,7 @@ class CritereDuRisque(models.Model):
         return self.detectabilite * self.severite * self.occurence
 
     def valeur_opportunite(self):
-        """si le risque est une opportunité, inverser la valeur de la détectabilité avant de calculer
+        """si le risque est une opportunité, inverser les valeur sur l'echelle de la détectabilité avant de calculer
          le produit des scores"""
         detectabilite_opp_choice = dict((x, y) for x, y in zip(range(1, 7), range(6, 0, -1)))
         detectabilite_opp = detectabilite_opp_choice.get(self.detectabilite)

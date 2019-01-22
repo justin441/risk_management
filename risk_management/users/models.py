@@ -31,7 +31,7 @@ class BusinessUnit(VoxModel):
     sigle = models.CharField(max_length=10, blank=True, help_text=_('exemple: C.T.C'))
     marche = models.CharField(_("objet"), max_length=200, blank=True, help_text=_('activités de l\'entrepriser'
                                                                                   ' / but du projet'))
-    ville_siege = models.CharField(_("ville"), max_length=25)
+    ville_siege = models.CharField(_("ville"), max_length=100)
     adresse_physique = models.CharField(max_length=200, help_text=_("Rue, quartier, lieu-dit"))
     adresse_postale = models.CharField(max_length=32, blank=True, verbose_name=_("Adresse postale"))
     telephone = models.CharField(max_length=18, default='(+237) 000000000', validators=[phone_regex],
@@ -67,13 +67,16 @@ class BusinessUnit(VoxModel):
         return reverse('risk_register:detail_business_unit', kwargs={'pk': self.pk})
 
     def get_managers(self):
-        if self.bu_manager:
-            yield self.bu_manager
-        else:
+        def iter_funct():
+            if self.bu_manager:
+                yield self.bu_manager
+
+        if not self.bu_manager:
             return User.objects.filter(is_superuser=True)
+        return iter_funct()
 
     def get_risk_managers(self):
-        return User.objects.filter(is_superuser=True)
+        return self.employes.filter(is_superuser=True)
 
     class Meta:
         verbose_name_plural = "Business Units"
@@ -129,7 +132,7 @@ class User(AbstractUser):
 
 class Position(VoxModel):
     """Représente un poste de travail au sein d'un business unit"""
-    poste = models.CharField(max_length=30, verbose_name=_('poste'))
+    poste = models.CharField(max_length=50, verbose_name=_('poste'))
     employe = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name=_('Employé(e)'),
                                 related_name=_('postes'))
     business_unit = models.ForeignKey(BusinessUnit, on_delete=models.CASCADE)

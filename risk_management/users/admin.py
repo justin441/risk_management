@@ -27,21 +27,21 @@ class MyUserChangeForm(UserChangeForm):
 
 class MyUserCreationForm(UserCreationForm):
     error_message = UserCreationForm.error_messages.update(
-        {"duplicate_username": _('Ce nom d\'utilisateur est déjà pris')}
+        {"duplicate_email": _('Cet email existe déjà')}
     )
 
     class Meta(UserCreationForm.Meta):
         model = User
         fields = ('email', 'civilite', 'first_name', 'last_name', 'telephone')
 
-    def clean_username(self):
-        username = self.cleaned_data["username"]
+    def clean_email(self):
+        email = self.cleaned_data["email"]
         try:
-            User.objects.get(username=username)
+            User.objects.get(email=email)
         except User.DoesNotExist:
-            return username
+            return email
 
-        raise forms.ValidationError(self.error_messages["duplicate_username"])
+        raise forms.ValidationError(self.error_messages["duplicate_email"])
 
 
 class PositionInline(admin.TabularInline):
