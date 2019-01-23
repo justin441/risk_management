@@ -1,4 +1,6 @@
 import logging
+import copy
+
 from django import forms
 from django.contrib import admin
 from django.contrib.admin import AdminSite
@@ -98,3 +100,12 @@ class BuAdmin(admin.ModelAdmin):
         logger.info('Business unit {} was sucesffuly deleted.'.format(obj.denomination))
         obj.issue_notification('delete', actor=request.user, target=obj)
         logger.info('Notification sent.')
+
+    def get_readonly_fields(self, request, obj=None):
+        readonly_fields = self.readonly_fields
+        if obj is not None and self.get_object(request, obj.pk) is not None:
+            # s'il s'agit de modifier un objet le champ clé primaire est en lecture seule
+            readonly_fields += ('denomination',)
+            return readonly_fields
+        else:
+            return readonly_fields
