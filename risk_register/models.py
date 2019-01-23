@@ -80,7 +80,7 @@ class Processus(VoxModel):
                                       verbose_name=_('Type de Processus'))
     business_unit = models.ForeignKey(BusinessUnit, on_delete=models.CASCADE, verbose_name=_('Propriétaire'))
     nom = models.CharField(max_length=50, db_index=True, verbose_name=_('Nom'))
-    description = models.CharField(max_length=300)
+    description = models.TextField(max_length=512)
     proc_manager = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True,
                                      verbose_name=_('manager du processus'),
                                      related_name='processus_manages')
