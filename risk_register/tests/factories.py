@@ -1,7 +1,9 @@
 import random
 import factory
-from datetime import timedelta, tzinfo
+from datetime import timedelta, tzinfo, datetime
 from risk_management.users.tests.factories import UserFactory, BusinessFactory
+
+from django.utils.timezone import now
 
 from ..models import (Processus, ProcessData, Activite, ClasseDeRisques, Risque,
                       CritereDuRisque, ActiviteRisque, ProcessusRisque,
@@ -35,16 +37,16 @@ class Processfactory(factory.django.DjangoModelFactory):
         django_get_or_create = ('nom',)
 
     type_processus = random.choice(['PM', 'PO', 'PS'])
-    business_unit = factory.SubFactory(BusinessFactory, denomination='Cameroon Tobacco Campany')
-    nom = factory.Sequence(lambda n: f'Processus-{n}')
-    description = factory.Faker('sentences', ext_word_list=None, nb=3)
+    business_unit = factory.SubFactory(BusinessFactory, denomination='Cameroon Tobacco Company')
+    nom = factory.Sequence(lambda n: f'Process-{n}')
+    description = factory.Faker('sentence', ext_word_list=None, nb_words=15, variable_nb_words=True)
     proc_manager = factory.SubFactory(UserFactory, civilite='Mme', first_name='Berthe', last_name='Kamga')
 
 
 class ProcessDataFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = ProcessData
-        django_get_or_create = ('nom', )
+        django_get_or_create = ('nom',)
 
     nom = factory.Faker('sentence', nb_words=3)
     origine = factory.SubFactory(Processfactory)
@@ -62,18 +64,21 @@ class ActiviteFactory(factory.django.DjangoModelFactory):
     description = factory.Faker('sentence', nb_words=25)
     processus = factory.SubFactory(Processfactory, nom='Vente')
     responsable = factory.SubFactory(UserFactory)
-    start = factory.Faker('date_time_this_year', tzinfo=utc)
+    start = factory.LazyAttribute(lambda o: now() if not o.bu_type == 'operation' else datetime(year=now().year,
+                                                                                                month=1,
+                                                                                                day=1))
     end = factory.LazyAttribute(
-        lambda o: o.start + timedelta(days=365 if o.bu_type == 'operation' else 14)
+        lambda o: o.start + timedelta(days=365 if o.bu_type == 'operation' else random.choice([90, 180, 730, 270]))
     )
 
 
 class ClasseDeRisqueFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = ClasseDeRisques
-        django_get_or_create = ('nom', )
+        django_get_or_create = ('nom',)
 
-    nom = factory.Faker('sentence', nb_words=2)
+    nom = random.choice(['Risques Stratégiques', 'Risques Géopolitiques', 'Risques Economiques, Risques Financiers',
+                         'Risques Opérationnels'])
 
 
 class RisqueFactory(factory.django.DjangoModelFactory):
@@ -81,7 +86,7 @@ class RisqueFactory(factory.django.DjangoModelFactory):
         model = Risque
         django_get_or_create = ('nom',)
 
-    classe = factory.SubFactory(ClasseDeRisqueFactory, nom='Risques Stratégiques')
+    classe = factory.SubFactory(ClasseDeRisqueFactory)
     nom = factory.LazyAttributeSequence(lambda o, n: f'{o.classe}-Risque-{n}')
     description = factory.Faker('text', max_nb_chars=500)
     cause = factory.Faker('text', max_nb_chars=500)
@@ -103,16 +108,19 @@ class IdentificationRisqueFactory(factory.django.DjangoModelFactory):
 
     class Params:
         verified = factory.Trait(
-            verifie=1,
-            verifie_par=factory.SubFactory(UserFactory, first_name='Justin', last_name='Fotue')
+            verifie='verified',
+            verifie_par=factory.SubFactory(UserFactory, first_name='Justin', last_name='Fotue',
+                                           email='fotuejustin441@.gmail.com'),
+            verifie_le=now()
         )
 
     risque = factory.SubFactory(RisqueFactory)
     type_de_risque = random.choice(['O', 'M'])
     date_revue = factory.Faker('date_time_this_year', before_now=False, after_now=True, tzinfo=utc)
     criterisation = factory.SubFactory(CritereDuRisqueFactory, detectabilite=3, severite=3, occurence=3)
-    verifie = 0
+    verifie = 'pending'
     verifie_par = None
+    verifie_le = None
 
 
 class ActiviteRisquefactory(IdentificationRisqueFactory):
@@ -154,7 +162,3 @@ class Controlefactory(factory.django.DjangoModelFactory):
     end = factory.LazyAttribute(
         lambda o: o.start + timedelta(days=60)
     )
-
-
-
-

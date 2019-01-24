@@ -1,16 +1,17 @@
 import logging
 
 from django.contrib import admin
-from django.contrib.admin.widgets import AdminDateWidget
+from django.db.models import Q
+
 from django.contrib.contenttypes.admin import GenericStackedInline
 from django.utils.translation import gettext_lazy as _
-from django.db import models
 from risk_management.users.admin import risk_management_admin_site
 from risk_management.users.utils import get_changes_between_2_objects, get_latests
 
 from .models import (Processus, ProcessData, Activite, Risque, ClasseDeRisques, ActiviteRisque, Estimation,
                      Controle, ProcessusRisque, CritereDuRisque)
 from .forms import ProcessAdminForm
+from risk_management.users.models import User
 
 
 # todo: inclure rules
@@ -33,10 +34,33 @@ class ProcessAdmin(admin.ModelAdmin):
     inlines = [
         DonneesSortieProcessusInline
     ]
-    autocomplete_fields = ['proc_manager', 'business_unit']
+    autocomplete_fields = ['business_unit']
     filter_horizontal = ['input_data']
     list_display = ['__str__', 'type_processus', 'business_unit', 'description', 'proc_manager']
     list_filter = ('type_processus', 'business_unit', 'business_unit__projet')
+
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        if db_field.name == 'proc_manager':
+            if 'change' in request.get_full_path():
+                qs = Processus.objects.get(pk=request.get_full_path().split('/')[4]).business_unit.employes.all()
+                kwargs['queryset'] = qs
+            else:
+                kwargs['queryset'] = User.objects.none()
+
+        return super().formfield_for_foreignkey(db_field, request, **kwargs)
+
+    def formfield_for_manytomany(self, db_field, request, **kwargs):
+        if db_field.name == 'input_data':
+            if 'change' in request.get_full_path():
+                proc = Processus.objects.get(pk=request.get_full_path().split('/')[4])
+                qs = ProcessData.objects.filter(
+                    Q(origine__business_unit=proc.business_unit) | Q(origine__business_unit=None)).exclude(
+                    origine=proc
+                )
+                kwargs['queryset'] = qs
+            else:
+                kwargs['queryset'] = ProcessData.objects.none()
+        return super().formfield_for_manytomany(db_field, request, **kwargs)
 
     def save_model(self, request, obj, form, change):
         old = False

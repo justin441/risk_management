@@ -13,7 +13,10 @@ def change_input_data(sender, **kwargs):
     if isinstance(instance, Processus) and kwargs['model'] == ProcessData:
         if action == 'pre_add':
             for data in kwargs['pk_set'].copy():
-                if (ProcessData.objects.get(pk=data).origine == instance) or \
-                   (not ProcessData.objects.get(pk=data).origine.business_unit == instance.business_unit):
-                    kwargs['pk_set'].remove(data)
+                try:
+                    if (ProcessData.objects.get(pk=data).origine == instance) or \
+                       (not ProcessData.objects.get(pk=data).origine.business_unit == instance.business_unit):
+                        kwargs['pk_set'].remove(data)
+                except AttributeError:
+                    pass
 

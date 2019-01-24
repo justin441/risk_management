@@ -64,15 +64,6 @@ class CreateProcessForm(forms.ModelForm):
 
 
 class ProcessAdminForm(forms.ModelForm):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        try:
-            # les données de l'instance proviennent des processus du business unit de l'instance,
-            # mais sans les données provennant de l'intance elle-même
-            self.fields['input_data'].queryset = ProcessData.objects.filter(
-                origine__business_unit=self.instance.business_unit).exclude(origine=self.instance)
-        except AttributeError:
-            self.fields['input_data'].queryset = ProcessData.objects.all()
 
     class Meta:
         model = Processus
