@@ -27,7 +27,7 @@ class UserFactory(factory.django.DjangoModelFactory):
 
 class BusinessFactory(factory.django.DjangoModelFactory):
     denomination = factory.Sequence(lambda n: f"business unit {n}")
-    marche = factory.Faker('sentence', locale='fr_FR', nb_words=5)
+    marche = factory.Faker('sentence', nb_words=6, variable_nb_words=True)
     ville_siege = factory.Faker('city', locale='fr_FR')
     adresse_physique = factory.Faker('street_address', locale='fr_FR')
     telephone = factory.LazyFunction(generate_phone_number)

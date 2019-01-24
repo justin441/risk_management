@@ -7,7 +7,7 @@
 
 {% block content %}
   {% block header %}
-    <div class="container"><h2 class="mb-5">{% trans 'Resultat de la recherche de' %} "{{ query_text }}"</h2></div>
+    <div class="container"><h2 class="mb-5">{% trans 'Resultats de la recherche de risques comportant le terme' %} "{{ query_text }}"</h2></div>
   {% endblock %}
 
   {% block data %}
@@ -22,7 +22,7 @@
         <dd>
           <p>{{ risk.description|truncatewords:30 }}</p></dd>
       {% empty %}
-        <p class="lead">{% trans 'Aucun résultats...' %}</p>
+        <p class="lead">{% trans 'Aucun risque trouvé...' %}</p>
       {% endfor %}
     </div>
   {% endblock %}

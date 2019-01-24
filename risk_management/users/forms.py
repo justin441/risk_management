@@ -61,15 +61,9 @@ class BusinessUnitAdminForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(BusinessUnitAdminForm, self).__init__(*args, **kwargs)
-        if self.instance.pk:
-            self.fields.pop('denomination')
+        try:
             self.fields['bu_manager'].queryset = self.instance.employes.all()
-        else:
-            self.fields.pop('bu_manager')
-
-        # try:
-        #     self.fields['bu_manager'].queryset = self.instance.employes.all()
-        # except (AttributeError, BusinessUnit.DoesNotExist):
-        #     self.fields['bu_manager'].queryset = User.objects.none()
+        except (AttributeError, BusinessUnit.DoesNotExist):
+            self.fields['bu_manager'].queryset = User.objects.none()
         
 

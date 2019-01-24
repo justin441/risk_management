@@ -1,7 +1,0 @@
-# PostgreSQL
-# ------------------------------------------------------------------------------
-POSTGRES_HOST=postgres
-POSTGRES_PORT=5432
-POSTGRES_DB=risk_management
-POSTGRES_USER=justinfotue
-POSTGRES_PASSWORD=DjangoRules2018

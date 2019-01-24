@@ -75,32 +75,29 @@ class TestBusinessUnitAdminForm(TestCase):
                 'ville_siege': 'Yaoundé',
                 'adresse_physique': 'Nkolfoulou',
                 'telephone': '674589636',
+                'bu_manager': None,
                 'site_web': '',
-
 
             }
         )
 
         valid = bu_form1.is_valid()
         self.assertTrue(valid)
-        self.assertFalse('bu_manager' in bu_form1.fields)
 
     def test_bu_change(self):
         bu_form2 = BusinessUnitAdminForm(
-            {
-                'raison_sociale': '3N Pharma',
-                'sigle': '3NP',
-                'marche': 'Distribution de médicaments',
-                'ville_siege': 'Yaoundé',
-                'adresse_physique': 'Nkolfoulou',
-                'telephone': '674589636',
-                'site_web': 'www.3npharma.com',
+            {'denomination': '3N Pharma',
+             'raison_sociale': '3N Pharma',
+             'sigle': '3NP',
+             'marche': 'Distribution de médicaments',
+             'ville_siege': 'Yaoundé',
+             'adresse_physique': 'Nkolfoulou',
+             'telephone': '674589636',
+             'site_web': 'www.3npharma.com',
 
-            },
+             },
             instance=self.bu)
         valid = bu_form2.is_valid()
         # le champs "denomination" n'apparait pas dans le formulaire de modification
-        self.assertFalse('denomination' in bu_form2.fields)
         self.assertTrue(valid)
         self.assertSequenceEqual(list(bu_form2.fields['bu_manager'].queryset), list(self.bu.employes.all()))
-
