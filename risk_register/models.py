@@ -345,7 +345,7 @@ class IdentificationRisque(TimeStampedModel):
     criterisation_change = MonitorField(monitor='criterisation')
     date_revue_change = MonitorField(monitor='date_revue')
     verifie = StatusField(verbose_name=_('vérification'))
-    verifie_le = MonitorField(monitor='verifie', when=['verified'], default=None)
+    verifie_le = MonitorField(monitor='verifie', when=['verified'], default=None, null=True, blank=True)
     verifie_par = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True)
 
     def clean(self):

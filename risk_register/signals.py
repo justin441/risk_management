@@ -1,4 +1,4 @@
-from django.db.models.signals import m2m_changed, pre_save
+from django.db.models.signals import m2m_changed
 from django.dispatch import receiver
 from .models import Processus, ProcessData
 

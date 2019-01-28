@@ -1,0 +1,2999 @@
+[
+{
+    "model": "contenttypes.contenttype",
+    "pk": 1,
+    "fields": {
+        "app_label": "auth",
+        "model": "permission"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 2,
+    "fields": {
+        "app_label": "auth",
+        "model": "group"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 3,
+    "fields": {
+        "app_label": "contenttypes",
+        "model": "contenttype"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 4,
+    "fields": {
+        "app_label": "sessions",
+        "model": "session"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 5,
+    "fields": {
+        "app_label": "sites",
+        "model": "site"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 6,
+    "fields": {
+        "app_label": "admin",
+        "model": "logentry"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 7,
+    "fields": {
+        "app_label": "account",
+        "model": "emailaddress"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 8,
+    "fields": {
+        "app_label": "account",
+        "model": "emailconfirmation"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 9,
+    "fields": {
+        "app_label": "socialaccount",
+        "model": "socialaccount"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 10,
+    "fields": {
+        "app_label": "socialaccount",
+        "model": "socialapp"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 11,
+    "fields": {
+        "app_label": "socialaccount",
+        "model": "socialtoken"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 12,
+    "fields": {
+        "app_label": "users",
+        "model": "user"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 13,
+    "fields": {
+        "app_label": "users",
+        "model": "businessunit"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 14,
+    "fields": {
+        "app_label": "risk_register",
+        "model": "activite"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 15,
+    "fields": {
+        "app_label": "risk_register",
+        "model": "activiterisque"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 16,
+    "fields": {
+        "app_label": "risk_register",
+        "model": "classederisques"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 17,
+    "fields": {
+        "app_label": "risk_register",
+        "model": "controle"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 18,
+    "fields": {
+        "app_label": "risk_register",
+        "model": "criteredurisque"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 19,
+    "fields": {
+        "app_label": "risk_register",
+        "model": "estimation"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 20,
+    "fields": {
+        "app_label": "risk_register",
+        "model": "processdata"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 21,
+    "fields": {
+        "app_label": "risk_register",
+        "model": "processus"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 22,
+    "fields": {
+        "app_label": "risk_register",
+        "model": "processusrisque"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 23,
+    "fields": {
+        "app_label": "risk_register",
+        "model": "risque"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 24,
+    "fields": {
+        "app_label": "guardian",
+        "model": "groupobjectpermission"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 25,
+    "fields": {
+        "app_label": "guardian",
+        "model": "userobjectpermission"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 26,
+    "fields": {
+        "app_label": "authtoken",
+        "model": "token"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 27,
+    "fields": {
+        "app_label": "django_vox",
+        "model": "failedmessage"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 28,
+    "fields": {
+        "app_label": "django_vox",
+        "model": "notification"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 29,
+    "fields": {
+        "app_label": "django_vox",
+        "model": "sitecontact"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 30,
+    "fields": {
+        "app_label": "django_vox",
+        "model": "sitecontactsetting"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 31,
+    "fields": {
+        "app_label": "django_vox",
+        "model": "template"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 32,
+    "fields": {
+        "app_label": "django_vox",
+        "model": "templateattachment"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 33,
+    "fields": {
+        "app_label": "django_vox",
+        "model": "inboxitem"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 34,
+    "fields": {
+        "app_label": "background_task",
+        "model": "completedtask"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 35,
+    "fields": {
+        "app_label": "background_task",
+        "model": "task"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 36,
+    "fields": {
+        "app_label": "users",
+        "model": "position"
+    }
+},
+{
+    "model": "sessions.session",
+    "pk": "nereozjr0rhkbzvslidv3hw7wi64en6t",
+    "fields": {
+        "session_data": "Mjg3YmM5YWE2ZDZhYmEyMTc2ZmI0ZmQwNjQ0YWQxZTNjMDlkYzY5MDp7Il9hdXRoX3VzZXJfaWQiOiIxIiwiX2F1dGhfdXNlcl9iYWNrZW5kIjoiZGphbmdvLmNvbnRyaWIuYXV0aC5iYWNrZW5kcy5Nb2RlbEJhY2tlbmQiLCJfYXV0aF91c2VyX2hhc2giOiJjYjY5OGM5OTA0YzAyYmJlMWQ3OGNhZjM4YTllOTY2ZWFkYWM1N2FiIn0=",
+        "expire_date": "2019-02-06T09:15:09.807Z"
+    }
+},
+{
+    "model": "sessions.session",
+    "pk": "sysq3nx7bj53h4qik04xyen6hjmepp3k",
+    "fields": {
+        "session_data": "Mjg3YmM5YWE2ZDZhYmEyMTc2ZmI0ZmQwNjQ0YWQxZTNjMDlkYzY5MDp7Il9hdXRoX3VzZXJfaWQiOiIxIiwiX2F1dGhfdXNlcl9iYWNrZW5kIjoiZGphbmdvLmNvbnRyaWIuYXV0aC5iYWNrZW5kcy5Nb2RlbEJhY2tlbmQiLCJfYXV0aF91c2VyX2hhc2giOiJjYjY5OGM5OTA0YzAyYmJlMWQ3OGNhZjM4YTllOTY2ZWFkYWM1N2FiIn0=",
+        "expire_date": "2018-07-03T11:39:13.299Z"
+    }
+},
+{
+    "model": "sites.site",
+    "pk": 1,
+    "fields": {
+        "domain": "nh-riskmanagement.com",
+        "name": "Risk Management Framework Project"
+    }
+},
+{
+    "model": "background_task.task",
+    "pk": 1,
+    "fields": {
+        "task_name": "django_vox.extra.background.issue_notification",
+        "task_params": "[[\"create\", \"risk_register.processus\", \"2a7f8297-91a2-4b63-948a-6cdef953b6cc\"], {\"actor_cls_str\": \"users.user\", \"actor_id\": 1, \"target_cls_str\": \"risk_register.processus\", \"target_id\": \"2a7f8297-91a2-4b63-948a-6cdef953b6cc\"}]",
+        "task_hash": "4c5aec55781b46b51c2e12a0014dbcbc15e21203",
+        "verbose_name": null,
+        "priority": 0,
+        "run_at": "2019-01-23T09:31:29.577Z",
+        "repeat": 0,
+        "repeat_until": null,
+        "queue": "django-vox",
+        "attempts": 0,
+        "failed_at": null,
+        "last_error": "",
+        "locked_by": null,
+        "locked_at": null,
+        "creator_content_type": null,
+        "creator_object_id": null
+    }
+},
+{
+    "model": "background_task.task",
+    "pk": 2,
+    "fields": {
+        "task_name": "django_vox.extra.background.issue_notification",
+        "task_params": "[[\"create\", \"risk_register.processus\", \"c97dd956-f3d0-4959-860d-17874cb6d2b2\"], {\"actor_cls_str\": \"users.user\", \"actor_id\": 1, \"target_cls_str\": \"risk_register.processus\", \"target_id\": \"c97dd956-f3d0-4959-860d-17874cb6d2b2\"}]",
+        "task_hash": "777264b0aaa20b542c50b19b5fffaae6c81814fe",
+        "verbose_name": null,
+        "priority": 0,
+        "run_at": "2019-01-24T10:27:59.230Z",
+        "repeat": 0,
+        "repeat_until": null,
+        "queue": "django-vox",
+        "attempts": 0,
+        "failed_at": null,
+        "last_error": "",
+        "locked_by": null,
+        "locked_at": null,
+        "creator_content_type": null,
+        "creator_object_id": null
+    }
+},
+{
+    "model": "background_task.task",
+    "pk": 3,
+    "fields": {
+        "task_name": "django_vox.extra.background.issue_notification",
+        "task_params": "[[\"create_proc_mgr\", \"risk_register.activite\", \"29e34e42-5ff1-471b-9a7a-5f19417f86bd\"], {\"actor_cls_str\": \"users.user\", \"actor_id\": 1, \"target_cls_str\": \"risk_register.activite\", \"target_id\": \"29e34e42-5ff1-471b-9a7a-5f19417f86bd\"}]",
+        "task_hash": "fd4f2c17c99b383adbe6a09c132b4c2400e7df8d",
+        "verbose_name": null,
+        "priority": 0,
+        "run_at": "2019-01-24T10:36:48.729Z",
+        "repeat": 0,
+        "repeat_until": null,
+        "queue": "django-vox",
+        "attempts": 0,
+        "failed_at": null,
+        "last_error": "",
+        "locked_by": null,
+        "locked_at": null,
+        "creator_content_type": null,
+        "creator_object_id": null
+    }
+},
+{
+    "model": "background_task.task",
+    "pk": 4,
+    "fields": {
+        "task_name": "django_vox.extra.background.issue_notification",
+        "task_params": "[[\"assign\", \"risk_register.activite\", \"29e34e42-5ff1-471b-9a7a-5f19417f86bd\"], {\"actor_cls_str\": \"users.user\", \"actor_id\": 1, \"target_cls_str\": \"risk_register.activite\", \"target_id\": \"29e34e42-5ff1-471b-9a7a-5f19417f86bd\"}]",
+        "task_hash": "775496b0bf911bf8f4d8f0dad51f0d8a06712ccf",
+        "verbose_name": null,
+        "priority": 0,
+        "run_at": "2019-01-24T10:36:48.813Z",
+        "repeat": 0,
+        "repeat_until": null,
+        "queue": "django-vox",
+        "attempts": 0,
+        "failed_at": null,
+        "last_error": "",
+        "locked_by": null,
+        "locked_at": null,
+        "creator_content_type": null,
+        "creator_object_id": null
+    }
+},
+{
+    "model": "background_task.task",
+    "pk": 5,
+    "fields": {
+        "task_name": "django_vox.extra.background.issue_notification",
+        "task_params": "[[\"create_proc_mgr\", \"risk_register.activite\", \"0e97f371-a8e6-4cce-a47c-86ef116e022f\"], {\"actor_cls_str\": \"users.user\", \"actor_id\": 1, \"target_cls_str\": \"risk_register.activite\", \"target_id\": \"0e97f371-a8e6-4cce-a47c-86ef116e022f\"}]",
+        "task_hash": "0e097a4e2dc3684422a4e21202618a25907a4d86",
+        "verbose_name": null,
+        "priority": 0,
+        "run_at": "2019-01-24T10:39:45.431Z",
+        "repeat": 0,
+        "repeat_until": null,
+        "queue": "django-vox",
+        "attempts": 0,
+        "failed_at": null,
+        "last_error": "",
+        "locked_by": null,
+        "locked_at": null,
+        "creator_content_type": null,
+        "creator_object_id": null
+    }
+},
+{
+    "model": "background_task.task",
+    "pk": 6,
+    "fields": {
+        "task_name": "django_vox.extra.background.issue_notification",
+        "task_params": "[[\"assign\", \"risk_register.activite\", \"0e97f371-a8e6-4cce-a47c-86ef116e022f\"], {\"actor_cls_str\": \"users.user\", \"actor_id\": 1, \"target_cls_str\": \"risk_register.activite\", \"target_id\": \"0e97f371-a8e6-4cce-a47c-86ef116e022f\"}]",
+        "task_hash": "6d3222ccc47a8c54c014f276a41297d135e63d81",
+        "verbose_name": null,
+        "priority": 0,
+        "run_at": "2019-01-24T10:39:45.440Z",
+        "repeat": 0,
+        "repeat_until": null,
+        "queue": "django-vox",
+        "attempts": 0,
+        "failed_at": null,
+        "last_error": "",
+        "locked_by": null,
+        "locked_at": null,
+        "creator_content_type": null,
+        "creator_object_id": null
+    }
+},
+{
+    "model": "background_task.task",
+    "pk": 7,
+    "fields": {
+        "task_name": "django_vox.extra.background.issue_notification",
+        "task_params": "[[\"create_proc_mgr\", \"risk_register.activite\", \"b7dea81d-4d52-4009-ab00-bc2203370843\"], {\"actor_cls_str\": \"users.user\", \"actor_id\": 1, \"target_cls_str\": \"risk_register.activite\", \"target_id\": \"b7dea81d-4d52-4009-ab00-bc2203370843\"}]",
+        "task_hash": "a8cb5682aaea1a90f4c2699fb4967a0c52433e80",
+        "verbose_name": null,
+        "priority": 0,
+        "run_at": "2019-01-24T10:43:05.086Z",
+        "repeat": 0,
+        "repeat_until": null,
+        "queue": "django-vox",
+        "attempts": 0,
+        "failed_at": null,
+        "last_error": "",
+        "locked_by": null,
+        "locked_at": null,
+        "creator_content_type": null,
+        "creator_object_id": null
+    }
+},
+{
+    "model": "background_task.task",
+    "pk": 8,
+    "fields": {
+        "task_name": "django_vox.extra.background.issue_notification",
+        "task_params": "[[\"assign\", \"risk_register.activite\", \"b7dea81d-4d52-4009-ab00-bc2203370843\"], {\"actor_cls_str\": \"users.user\", \"actor_id\": 1, \"target_cls_str\": \"risk_register.activite\", \"target_id\": \"b7dea81d-4d52-4009-ab00-bc2203370843\"}]",
+        "task_hash": "692aa57d5bce6e8be1f95a0328a33447d15cd855",
+        "verbose_name": null,
+        "priority": 0,
+        "run_at": "2019-01-24T10:43:05.194Z",
+        "repeat": 0,
+        "repeat_until": null,
+        "queue": "django-vox",
+        "attempts": 0,
+        "failed_at": null,
+        "last_error": "",
+        "locked_by": null,
+        "locked_at": null,
+        "creator_content_type": null,
+        "creator_object_id": null
+    }
+},
+{
+    "model": "background_task.task",
+    "pk": 9,
+    "fields": {
+        "task_name": "django_vox.extra.background.issue_notification",
+        "task_params": "[[\"create\", \"risk_register.processus\", \"5868bbe1-ed50-460d-813d-de89d1395ec5\"], {\"actor_cls_str\": \"users.user\", \"actor_id\": 1, \"target_cls_str\": \"risk_register.processus\", \"target_id\": \"5868bbe1-ed50-460d-813d-de89d1395ec5\"}]",
+        "task_hash": "8c4d71854fa1f43b1d1839746aed6770ccaed5d3",
+        "verbose_name": null,
+        "priority": 0,
+        "run_at": "2019-01-28T09:35:57.923Z",
+        "repeat": 0,
+        "repeat_until": null,
+        "queue": "django-vox",
+        "attempts": 0,
+        "failed_at": null,
+        "last_error": "",
+        "locked_by": null,
+        "locked_at": null,
+        "creator_content_type": null,
+        "creator_object_id": null
+    }
+},
+{
+    "model": "background_task.task",
+    "pk": 10,
+    "fields": {
+        "task_name": "django_vox.extra.background.issue_notification",
+        "task_params": "[[\"create\", \"risk_register.risque\", \"8b12b61b-e02e-43dd-8e1c-6d7dbf14f412\"], {\"actor_cls_str\": \"users.user\", \"actor_id\": 1, \"target_cls_str\": \"risk_register.risque\", \"target_id\": \"8b12b61b-e02e-43dd-8e1c-6d7dbf14f412\"}]",
+        "task_hash": "fccf5a1fa037e53220526311272886890b88bfe4",
+        "verbose_name": null,
+        "priority": 0,
+        "run_at": "2019-01-28T10:01:00.184Z",
+        "repeat": 0,
+        "repeat_until": null,
+        "queue": "django-vox",
+        "attempts": 0,
+        "failed_at": null,
+        "last_error": "",
+        "locked_by": null,
+        "locked_at": null,
+        "creator_content_type": null,
+        "creator_object_id": null
+    }
+},
+{
+    "model": "background_task.task",
+    "pk": 11,
+    "fields": {
+        "task_name": "django_vox.extra.background.issue_notification",
+        "task_params": "[[\"create\", \"risk_register.risque\", \"b25541df-21d9-43c4-8e4f-7c7972d491b0\"], {\"actor_cls_str\": \"users.user\", \"actor_id\": 1, \"target_cls_str\": \"risk_register.risque\", \"target_id\": \"b25541df-21d9-43c4-8e4f-7c7972d491b0\"}]",
+        "task_hash": "5100a9d2532b89ae7dc1dbc7e52132423513a3fe",
+        "verbose_name": null,
+        "priority": 0,
+        "run_at": "2019-01-28T10:15:26.391Z",
+        "repeat": 0,
+        "repeat_until": null,
+        "queue": "django-vox",
+        "attempts": 0,
+        "failed_at": null,
+        "last_error": "",
+        "locked_by": null,
+        "locked_at": null,
+        "creator_content_type": null,
+        "creator_object_id": null
+    }
+},
+{
+    "model": "background_task.task",
+    "pk": 12,
+    "fields": {
+        "task_name": "django_vox.extra.background.issue_notification",
+        "task_params": "[[\"create\", \"risk_register.risque\", \"3511fcf1-070f-4ab6-95dc-efacae2bf085\"], {\"actor_cls_str\": \"users.user\", \"actor_id\": 1, \"target_cls_str\": \"risk_register.risque\", \"target_id\": \"3511fcf1-070f-4ab6-95dc-efacae2bf085\"}]",
+        "task_hash": "7e09dfa10fbdba49c986643e905a8f8b4bdbebfc",
+        "verbose_name": null,
+        "priority": 0,
+        "run_at": "2019-01-28T10:30:04.658Z",
+        "repeat": 0,
+        "repeat_until": null,
+        "queue": "django-vox",
+        "attempts": 0,
+        "failed_at": null,
+        "last_error": "",
+        "locked_by": null,
+        "locked_at": null,
+        "creator_content_type": null,
+        "creator_object_id": null
+    }
+},
+{
+    "model": "background_task.task",
+    "pk": 13,
+    "fields": {
+        "task_name": "django_vox.extra.background.issue_notification",
+        "task_params": "[[\"create\", \"risk_register.risque\", \"eb76feeb-420b-4cca-b8f3-1dd0866eb396\"], {\"actor_cls_str\": \"users.user\", \"actor_id\": 1, \"target_cls_str\": \"risk_register.risque\", \"target_id\": \"eb76feeb-420b-4cca-b8f3-1dd0866eb396\"}]",
+        "task_hash": "b7944e272faa64470d90a00d79627f962a96c346",
+        "verbose_name": null,
+        "priority": 0,
+        "run_at": "2019-01-28T10:43:14.054Z",
+        "repeat": 0,
+        "repeat_until": null,
+        "queue": "django-vox",
+        "attempts": 0,
+        "failed_at": null,
+        "last_error": "",
+        "locked_by": null,
+        "locked_at": null,
+        "creator_content_type": null,
+        "creator_object_id": null
+    }
+},
+{
+    "model": "background_task.task",
+    "pk": 14,
+    "fields": {
+        "task_name": "django_vox.extra.background.issue_notification",
+        "task_params": "[[\"create\", \"risk_register.risque\", \"ee098899-0748-480b-9a08-6d72659f75f0\"], {\"actor_cls_str\": \"users.user\", \"actor_id\": 1, \"target_cls_str\": \"risk_register.risque\", \"target_id\": \"ee098899-0748-480b-9a08-6d72659f75f0\"}]",
+        "task_hash": "1dfc666401c5c959b114b815d745289c1c4d38cd",
+        "verbose_name": null,
+        "priority": 0,
+        "run_at": "2019-01-28T11:28:10.047Z",
+        "repeat": 0,
+        "repeat_until": null,
+        "queue": "django-vox",
+        "attempts": 0,
+        "failed_at": null,
+        "last_error": "",
+        "locked_by": null,
+        "locked_at": null,
+        "creator_content_type": null,
+        "creator_object_id": null
+    }
+},
+{
+    "model": "background_task.task",
+    "pk": 15,
+    "fields": {
+        "task_name": "django_vox.extra.background.issue_notification",
+        "task_params": "[[\"create\", \"risk_register.processusrisque\", \"ae8dc101-d3c3-4602-8e9d-c026a8c02a68\"], {\"actor_cls_str\": \"users.user\", \"actor_id\": 1, \"target_cls_str\": \"risk_register.processusrisque\", \"target_id\": \"ae8dc101-d3c3-4602-8e9d-c026a8c02a68\"}]",
+        "task_hash": "fa6b6fcc08ce394aa3e10a05df27fac2851d9cfd",
+        "verbose_name": null,
+        "priority": 0,
+        "run_at": "2019-01-28T12:21:47.596Z",
+        "repeat": 0,
+        "repeat_until": null,
+        "queue": "django-vox",
+        "attempts": 0,
+        "failed_at": null,
+        "last_error": "",
+        "locked_by": null,
+        "locked_at": null,
+        "creator_content_type": null,
+        "creator_object_id": null
+    }
+},
+{
+    "model": "background_task.task",
+    "pk": 16,
+    "fields": {
+        "task_name": "django_vox.extra.background.issue_notification",
+        "task_params": "[[\"create\", \"risk_register.processusrisque\", \"081926e5-d145-4320-9e2a-b97f2d695c7f\"], {\"actor_cls_str\": \"users.user\", \"actor_id\": 1, \"target_cls_str\": \"risk_register.processusrisque\", \"target_id\": \"081926e5-d145-4320-9e2a-b97f2d695c7f\"}]",
+        "task_hash": "695e9b3b6d8d08ad6157b02bd2c4df98b8ffb215",
+        "verbose_name": null,
+        "priority": 0,
+        "run_at": "2019-01-28T12:32:34.103Z",
+        "repeat": 0,
+        "repeat_until": null,
+        "queue": "django-vox",
+        "attempts": 0,
+        "failed_at": null,
+        "last_error": "",
+        "locked_by": null,
+        "locked_at": null,
+        "creator_content_type": null,
+        "creator_object_id": null
+    }
+},
+{
+    "model": "background_task.task",
+    "pk": 17,
+    "fields": {
+        "task_name": "django_vox.extra.background.issue_notification",
+        "task_params": "[[\"create\", \"risk_register.processusrisque\", \"3597e243-3cea-4b3e-9dcb-bac4cd12e3b3\"], {\"actor_cls_str\": \"users.user\", \"actor_id\": 1, \"target_cls_str\": \"risk_register.processusrisque\", \"target_id\": \"3597e243-3cea-4b3e-9dcb-bac4cd12e3b3\"}]",
+        "task_hash": "b8ac816934cf8274cf8b846ab0935b7538225903",
+        "verbose_name": null,
+        "priority": 0,
+        "run_at": "2019-01-28T12:33:10.822Z",
+        "repeat": 0,
+        "repeat_until": null,
+        "queue": "django-vox",
+        "attempts": 0,
+        "failed_at": null,
+        "last_error": "",
+        "locked_by": null,
+        "locked_at": null,
+        "creator_content_type": null,
+        "creator_object_id": null
+    }
+},
+{
+    "model": "risk_register.processdata",
+    "pk": 1,
+    "fields": {
+        "nom": "Demande de quotation",
+        "origine": null,
+        "commentaire": "Clients"
+    }
+},
+{
+    "model": "risk_register.processdata",
+    "pk": 2,
+    "fields": {
+        "nom": "\u00c9nonc\u00e9 des travaux",
+        "origine": null,
+        "commentaire": "Commanditaire"
+    }
+},
+{
+    "model": "risk_register.processdata",
+    "pk": 3,
+    "fields": {
+        "nom": "Etudes \u00e9conomiques",
+        "origine": null,
+        "commentaire": "Analyste d'affaire"
+    }
+},
+{
+    "model": "risk_register.processdata",
+    "pk": 4,
+    "fields": {
+        "nom": "Protocole d'accord",
+        "origine": null,
+        "commentaire": "entre le commanditaire et nous"
+    }
+},
+{
+    "model": "risk_register.processdata",
+    "pk": 5,
+    "fields": {
+        "nom": "Mod\u00e8le de charte de projet",
+        "origine": null,
+        "commentaire": "Noubru Holding"
+    }
+},
+{
+    "model": "risk_register.processdata",
+    "pk": 6,
+    "fields": {
+        "nom": "Charte du projet",
+        "origine": "2a7f8297-91a2-4b63-948a-6cdef953b6cc",
+        "commentaire": null
+    }
+},
+{
+    "model": "risk_register.processdata",
+    "pk": 7,
+    "fields": {
+        "nom": "directive de recrutement et de licenciement de l'organisation",
+        "origine": null,
+        "commentaire": "Noubru Holding"
+    }
+},
+{
+    "model": "risk_register.processdata",
+    "pk": 8,
+    "fields": {
+        "nom": "Plan de management du projet",
+        "origine": "c97dd956-f3d0-4959-860d-17874cb6d2b2",
+        "commentaire": null
+    }
+},
+{
+    "model": "risk_register.classederisques",
+    "pk": "Autres Risques",
+    "fields": {}
+},
+{
+    "model": "risk_register.classederisques",
+    "pk": "Risques d'Int\u00e9grit\u00e9",
+    "fields": {}
+},
+{
+    "model": "risk_register.classederisques",
+    "pk": "Risques de D\u00e9faillance",
+    "fields": {}
+},
+{
+    "model": "risk_register.classederisques",
+    "pk": "Risques Economiques",
+    "fields": {}
+},
+{
+    "model": "risk_register.classederisques",
+    "pk": "Risques Financiers",
+    "fields": {}
+},
+{
+    "model": "risk_register.classederisques",
+    "pk": "Risques G\u00e9opolitiques",
+    "fields": {}
+},
+{
+    "model": "risk_register.classederisques",
+    "pk": "Risques Gestion de la Connaissance",
+    "fields": {}
+},
+{
+    "model": "risk_register.classederisques",
+    "pk": "Risques Image R\u00e9putation",
+    "fields": {}
+},
+{
+    "model": "risk_register.classederisques",
+    "pk": "Risques Industriels",
+    "fields": {}
+},
+{
+    "model": "risk_register.classederisques",
+    "pk": "Risques Informatiques",
+    "fields": {}
+},
+{
+    "model": "risk_register.classederisques",
+    "pk": "Risques Juridiques",
+    "fields": {}
+},
+{
+    "model": "risk_register.classederisques",
+    "pk": "Risques Op\u00e9rationnels",
+    "fields": {}
+},
+{
+    "model": "risk_register.classederisques",
+    "pk": "Risques Ressources Humaines",
+    "fields": {}
+},
+{
+    "model": "risk_register.classederisques",
+    "pk": "Risques Strat\u00e9giques",
+    "fields": {}
+},
+{
+    "model": "auth.permission",
+    "pk": 1,
+    "fields": {
+        "name": "Can add permission",
+        "content_type": 1,
+        "codename": "add_permission"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 2,
+    "fields": {
+        "name": "Can change permission",
+        "content_type": 1,
+        "codename": "change_permission"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 3,
+    "fields": {
+        "name": "Can delete permission",
+        "content_type": 1,
+        "codename": "delete_permission"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 4,
+    "fields": {
+        "name": "Can add group",
+        "content_type": 2,
+        "codename": "add_group"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 5,
+    "fields": {
+        "name": "Can change group",
+        "content_type": 2,
+        "codename": "change_group"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 6,
+    "fields": {
+        "name": "Can delete group",
+        "content_type": 2,
+        "codename": "delete_group"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 7,
+    "fields": {
+        "name": "Can add content type",
+        "content_type": 3,
+        "codename": "add_contenttype"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 8,
+    "fields": {
+        "name": "Can change content type",
+        "content_type": 3,
+        "codename": "change_contenttype"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 9,
+    "fields": {
+        "name": "Can delete content type",
+        "content_type": 3,
+        "codename": "delete_contenttype"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 10,
+    "fields": {
+        "name": "Can add session",
+        "content_type": 4,
+        "codename": "add_session"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 11,
+    "fields": {
+        "name": "Can change session",
+        "content_type": 4,
+        "codename": "change_session"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 12,
+    "fields": {
+        "name": "Can delete session",
+        "content_type": 4,
+        "codename": "delete_session"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 13,
+    "fields": {
+        "name": "Can add site",
+        "content_type": 5,
+        "codename": "add_site"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 14,
+    "fields": {
+        "name": "Can change site",
+        "content_type": 5,
+        "codename": "change_site"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 15,
+    "fields": {
+        "name": "Can delete site",
+        "content_type": 5,
+        "codename": "delete_site"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 16,
+    "fields": {
+        "name": "Can add log entry",
+        "content_type": 6,
+        "codename": "add_logentry"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 17,
+    "fields": {
+        "name": "Can change log entry",
+        "content_type": 6,
+        "codename": "change_logentry"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 18,
+    "fields": {
+        "name": "Can delete log entry",
+        "content_type": 6,
+        "codename": "delete_logentry"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 19,
+    "fields": {
+        "name": "Can add email address",
+        "content_type": 7,
+        "codename": "add_emailaddress"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 20,
+    "fields": {
+        "name": "Can change email address",
+        "content_type": 7,
+        "codename": "change_emailaddress"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 21,
+    "fields": {
+        "name": "Can delete email address",
+        "content_type": 7,
+        "codename": "delete_emailaddress"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 22,
+    "fields": {
+        "name": "Can add email confirmation",
+        "content_type": 8,
+        "codename": "add_emailconfirmation"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 23,
+    "fields": {
+        "name": "Can change email confirmation",
+        "content_type": 8,
+        "codename": "change_emailconfirmation"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 24,
+    "fields": {
+        "name": "Can delete email confirmation",
+        "content_type": 8,
+        "codename": "delete_emailconfirmation"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 25,
+    "fields": {
+        "name": "Can add social account",
+        "content_type": 9,
+        "codename": "add_socialaccount"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 26,
+    "fields": {
+        "name": "Can change social account",
+        "content_type": 9,
+        "codename": "change_socialaccount"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 27,
+    "fields": {
+        "name": "Can delete social account",
+        "content_type": 9,
+        "codename": "delete_socialaccount"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 28,
+    "fields": {
+        "name": "Can add social application",
+        "content_type": 10,
+        "codename": "add_socialapp"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 29,
+    "fields": {
+        "name": "Can change social application",
+        "content_type": 10,
+        "codename": "change_socialapp"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 30,
+    "fields": {
+        "name": "Can delete social application",
+        "content_type": 10,
+        "codename": "delete_socialapp"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 31,
+    "fields": {
+        "name": "Can add social application token",
+        "content_type": 11,
+        "codename": "add_socialtoken"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 32,
+    "fields": {
+        "name": "Can change social application token",
+        "content_type": 11,
+        "codename": "change_socialtoken"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 33,
+    "fields": {
+        "name": "Can delete social application token",
+        "content_type": 11,
+        "codename": "delete_socialtoken"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 34,
+    "fields": {
+        "name": "Can add user",
+        "content_type": 12,
+        "codename": "add_user"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 35,
+    "fields": {
+        "name": "Can change user",
+        "content_type": 12,
+        "codename": "change_user"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 36,
+    "fields": {
+        "name": "Can delete user",
+        "content_type": 12,
+        "codename": "delete_user"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 37,
+    "fields": {
+        "name": "Can add business unit",
+        "content_type": 13,
+        "codename": "add_businessunit"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 38,
+    "fields": {
+        "name": "Can change business unit",
+        "content_type": 13,
+        "codename": "change_businessunit"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 39,
+    "fields": {
+        "name": "Can delete business unit",
+        "content_type": 13,
+        "codename": "delete_businessunit"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 40,
+    "fields": {
+        "name": "Can add Activit\u00e9",
+        "content_type": 14,
+        "codename": "add_activite"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 41,
+    "fields": {
+        "name": "Can change Activit\u00e9",
+        "content_type": 14,
+        "codename": "change_activite"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 42,
+    "fields": {
+        "name": "Can delete Activit\u00e9",
+        "content_type": 14,
+        "codename": "delete_activite"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 43,
+    "fields": {
+        "name": "Can add risque de l'activit\u00e9",
+        "content_type": 15,
+        "codename": "add_activiterisque"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 44,
+    "fields": {
+        "name": "Can change risque de l'activit\u00e9",
+        "content_type": 15,
+        "codename": "change_activiterisque"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 45,
+    "fields": {
+        "name": "Can delete risque de l'activit\u00e9",
+        "content_type": 15,
+        "codename": "delete_activiterisque"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 46,
+    "fields": {
+        "name": "Can add Classe de risques",
+        "content_type": 16,
+        "codename": "add_classederisques"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 47,
+    "fields": {
+        "name": "Can change Classe de risques",
+        "content_type": 16,
+        "codename": "change_classederisques"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 48,
+    "fields": {
+        "name": "Can delete Classe de risques",
+        "content_type": 16,
+        "codename": "delete_classederisques"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 49,
+    "fields": {
+        "name": "Can add Contr\u00f4le",
+        "content_type": 17,
+        "codename": "add_controle"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 50,
+    "fields": {
+        "name": "Can change Contr\u00f4le",
+        "content_type": 17,
+        "codename": "change_controle"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 51,
+    "fields": {
+        "name": "Can delete Contr\u00f4le",
+        "content_type": 17,
+        "codename": "delete_controle"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 52,
+    "fields": {
+        "name": "Can add Crit\u00e9risation",
+        "content_type": 18,
+        "codename": "add_criteredurisque"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 53,
+    "fields": {
+        "name": "Can change Crit\u00e9risation",
+        "content_type": 18,
+        "codename": "change_criteredurisque"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 54,
+    "fields": {
+        "name": "Can delete Crit\u00e9risation",
+        "content_type": 18,
+        "codename": "delete_criteredurisque"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 55,
+    "fields": {
+        "name": "Can add Estimation du risque",
+        "content_type": 19,
+        "codename": "add_estimation"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 56,
+    "fields": {
+        "name": "Can change Estimation du risque",
+        "content_type": 19,
+        "codename": "change_estimation"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 57,
+    "fields": {
+        "name": "Can delete Estimation du risque",
+        "content_type": 19,
+        "codename": "delete_estimation"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 58,
+    "fields": {
+        "name": "Can add donn\u00e9es du processus",
+        "content_type": 20,
+        "codename": "add_processdata"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 59,
+    "fields": {
+        "name": "Can change donn\u00e9es du processus",
+        "content_type": 20,
+        "codename": "change_processdata"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 60,
+    "fields": {
+        "name": "Can delete donn\u00e9es du processus",
+        "content_type": 20,
+        "codename": "delete_processdata"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 61,
+    "fields": {
+        "name": "Can add processus",
+        "content_type": 21,
+        "codename": "add_processus"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 62,
+    "fields": {
+        "name": "Can change processus",
+        "content_type": 21,
+        "codename": "change_processus"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 63,
+    "fields": {
+        "name": "Can delete processus",
+        "content_type": 21,
+        "codename": "delete_processus"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 64,
+    "fields": {
+        "name": "Can add risque du processus",
+        "content_type": 22,
+        "codename": "add_processusrisque"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 65,
+    "fields": {
+        "name": "Can change risque du processus",
+        "content_type": 22,
+        "codename": "change_processusrisque"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 66,
+    "fields": {
+        "name": "Can delete risque du processus",
+        "content_type": 22,
+        "codename": "delete_processusrisque"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 67,
+    "fields": {
+        "name": "Can add risque",
+        "content_type": 23,
+        "codename": "add_risque"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 68,
+    "fields": {
+        "name": "Can change risque",
+        "content_type": 23,
+        "codename": "change_risque"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 69,
+    "fields": {
+        "name": "Can delete risque",
+        "content_type": 23,
+        "codename": "delete_risque"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 70,
+    "fields": {
+        "name": "Can add group object permission",
+        "content_type": 24,
+        "codename": "add_groupobjectpermission"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 71,
+    "fields": {
+        "name": "Can change group object permission",
+        "content_type": 24,
+        "codename": "change_groupobjectpermission"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 72,
+    "fields": {
+        "name": "Can delete group object permission",
+        "content_type": 24,
+        "codename": "delete_groupobjectpermission"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 73,
+    "fields": {
+        "name": "Can add user object permission",
+        "content_type": 25,
+        "codename": "add_userobjectpermission"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 74,
+    "fields": {
+        "name": "Can change user object permission",
+        "content_type": 25,
+        "codename": "change_userobjectpermission"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 75,
+    "fields": {
+        "name": "Can delete user object permission",
+        "content_type": 25,
+        "codename": "delete_userobjectpermission"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 76,
+    "fields": {
+        "name": "Can add Token",
+        "content_type": 26,
+        "codename": "add_token"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 77,
+    "fields": {
+        "name": "Can change Token",
+        "content_type": 26,
+        "codename": "change_token"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 78,
+    "fields": {
+        "name": "Can delete Token",
+        "content_type": 26,
+        "codename": "delete_token"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 79,
+    "fields": {
+        "name": "Can add failed message",
+        "content_type": 27,
+        "codename": "add_failedmessage"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 80,
+    "fields": {
+        "name": "Can change failed message",
+        "content_type": 27,
+        "codename": "change_failedmessage"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 81,
+    "fields": {
+        "name": "Can delete failed message",
+        "content_type": 27,
+        "codename": "delete_failedmessage"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 82,
+    "fields": {
+        "name": "Can add notification",
+        "content_type": 28,
+        "codename": "add_notification"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 83,
+    "fields": {
+        "name": "Can change notification",
+        "content_type": 28,
+        "codename": "change_notification"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 84,
+    "fields": {
+        "name": "Can delete notification",
+        "content_type": 28,
+        "codename": "delete_notification"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 85,
+    "fields": {
+        "name": "Can add site contact",
+        "content_type": 29,
+        "codename": "add_sitecontact"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 86,
+    "fields": {
+        "name": "Can change site contact",
+        "content_type": 29,
+        "codename": "change_sitecontact"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 87,
+    "fields": {
+        "name": "Can delete site contact",
+        "content_type": 29,
+        "codename": "delete_sitecontact"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 88,
+    "fields": {
+        "name": "Can add site contact setting",
+        "content_type": 30,
+        "codename": "add_sitecontactsetting"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 89,
+    "fields": {
+        "name": "Can change site contact setting",
+        "content_type": 30,
+        "codename": "change_sitecontactsetting"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 90,
+    "fields": {
+        "name": "Can delete site contact setting",
+        "content_type": 30,
+        "codename": "delete_sitecontactsetting"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 91,
+    "fields": {
+        "name": "Can add template",
+        "content_type": 31,
+        "codename": "add_template"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 92,
+    "fields": {
+        "name": "Can change template",
+        "content_type": 31,
+        "codename": "change_template"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 93,
+    "fields": {
+        "name": "Can delete template",
+        "content_type": 31,
+        "codename": "delete_template"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 94,
+    "fields": {
+        "name": "Can add template attachment",
+        "content_type": 32,
+        "codename": "add_templateattachment"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 95,
+    "fields": {
+        "name": "Can change template attachment",
+        "content_type": 32,
+        "codename": "change_templateattachment"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 96,
+    "fields": {
+        "name": "Can delete template attachment",
+        "content_type": 32,
+        "codename": "delete_templateattachment"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 97,
+    "fields": {
+        "name": "Can add inbox item",
+        "content_type": 33,
+        "codename": "add_inboxitem"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 98,
+    "fields": {
+        "name": "Can change inbox item",
+        "content_type": 33,
+        "codename": "change_inboxitem"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 99,
+    "fields": {
+        "name": "Can delete inbox item",
+        "content_type": 33,
+        "codename": "delete_inboxitem"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 100,
+    "fields": {
+        "name": "Can add completed task",
+        "content_type": 34,
+        "codename": "add_completedtask"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 101,
+    "fields": {
+        "name": "Can change completed task",
+        "content_type": 34,
+        "codename": "change_completedtask"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 102,
+    "fields": {
+        "name": "Can delete completed task",
+        "content_type": 34,
+        "codename": "delete_completedtask"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 103,
+    "fields": {
+        "name": "Can add task",
+        "content_type": 35,
+        "codename": "add_task"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 104,
+    "fields": {
+        "name": "Can change task",
+        "content_type": 35,
+        "codename": "change_task"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 105,
+    "fields": {
+        "name": "Can delete task",
+        "content_type": 35,
+        "codename": "delete_task"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 106,
+    "fields": {
+        "name": "Can add position",
+        "content_type": 36,
+        "codename": "add_position"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 107,
+    "fields": {
+        "name": "Can change position",
+        "content_type": 36,
+        "codename": "change_position"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 108,
+    "fields": {
+        "name": "Can delete position",
+        "content_type": 36,
+        "codename": "delete_position"
+    }
+},
+{
+    "model": "users.user",
+    "pk": 1,
+    "fields": {
+        "password": "argon2$argon2i$v=19$m=512,t=2,p=2$Nkl6SldVM2pXbGJB$bsVcRoxgSOT8CVKCoXHV4w",
+        "last_login": "2019-01-23T09:15:09.500Z",
+        "is_superuser": true,
+        "username": "justinfotue70e742a0-1cd7-43c1-af0b-a6a7e51c9b6a",
+        "is_staff": true,
+        "is_active": true,
+        "date_joined": "2018-06-19T11:36:50Z",
+        "uuid": "e515a464-a6b2-48f7-b5e4-08560596ac42",
+        "civilite": "M.",
+        "first_name": "Justin",
+        "last_name": "Fotue Kamga",
+        "email": "fotuejustin441@gmail.com",
+        "telephone": "(+237) 690249393",
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "users.user",
+    "pk": 3,
+    "fields": {
+        "password": "",
+        "last_login": null,
+        "is_superuser": false,
+        "username": "AnonymousUser",
+        "is_staff": false,
+        "is_active": true,
+        "date_joined": "2018-06-22T10:34:01Z",
+        "uuid": "e515a464-a6b2-48f7-b5e4-08560596ac42",
+        "civilite": "M.",
+        "first_name": "Anonymous",
+        "last_name": "User",
+        "email": "anonymous@unknown.com",
+        "telephone": "(+237) 000000000",
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "users.user",
+    "pk": 6,
+    "fields": {
+        "password": "argon2$argon2i$v=19$m=512,t=2,p=2$YnkxQ0xtcm9CbTN0$ZATb6BtM8YKjkwXfNGIT0g",
+        "last_login": null,
+        "is_superuser": false,
+        "username": "dillonbradford445fd4d1-fa82-41cf-a25e-d95139104a27",
+        "is_staff": false,
+        "is_active": true,
+        "date_joined": "2019-01-21T11:23:22.229Z",
+        "uuid": "7802149e-0e08-4d64-b4ee-b134934e60d5",
+        "civilite": "Pr",
+        "first_name": "Dillon",
+        "last_name": "Bradford",
+        "email": "dillon.bradford@noubruholding.com",
+        "telephone": "(+237) 686630854",
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "users.user",
+    "pk": 7,
+    "fields": {
+        "password": "argon2$argon2i$v=19$m=512,t=2,p=2$cFFPUDdyZTNLZTZu$/wck9xJSGMVMTsbGxpDbUw",
+        "last_login": null,
+        "is_superuser": false,
+        "username": "lindseydavis2920fd99-2c21-44f2-94c5-67367e6d8308",
+        "is_staff": false,
+        "is_active": true,
+        "date_joined": "2019-01-21T11:32:28.786Z",
+        "uuid": "0b33a8a8-820b-48b4-87ab-406433dbb250",
+        "civilite": "Pr",
+        "first_name": "Lindsey",
+        "last_name": "Davis",
+        "email": "lindsey.davis@noubruholding.com",
+        "telephone": "(+237) 660888812",
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "users.user",
+    "pk": 8,
+    "fields": {
+        "password": "argon2$argon2i$v=19$m=512,t=2,p=2$RVZBdEROd3RWMVhp$S/oA1Vqvds+EhUjCUVof2w",
+        "last_login": null,
+        "is_superuser": false,
+        "username": "kevinthomasfb702eb1-a376-4d3a-ba00-24568a24b440",
+        "is_staff": false,
+        "is_active": true,
+        "date_joined": "2019-01-21T11:46:46.780Z",
+        "uuid": "9b28c615-22f7-4601-bb4f-79fda8d28041",
+        "civilite": "M.",
+        "first_name": "Kevin",
+        "last_name": "Thomas",
+        "email": "kevin.thomas@noubruholding.com",
+        "telephone": "(+237) 699923265",
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "users.user",
+    "pk": 9,
+    "fields": {
+        "password": "argon2$argon2i$v=19$m=512,t=2,p=2$N3NNSDBoYVNETzF5$r/2Lwakx9TAtolXIfsb8SQ",
+        "last_login": null,
+        "is_superuser": false,
+        "username": "joshuabakerbd527905-0154-434d-9a81-47f615adef5c",
+        "is_staff": false,
+        "is_active": true,
+        "date_joined": "2019-01-21T11:49:30.006Z",
+        "uuid": "d4d0355d-8137-4c66-8fd6-ec4afb8316e7",
+        "civilite": "M.",
+        "first_name": "Joshua",
+        "last_name": "Baker",
+        "email": "joshua.baker@noubruholding.com",
+        "telephone": "(+237) 655896621",
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "users.user",
+    "pk": 10,
+    "fields": {
+        "password": "argon2$argon2i$v=19$m=512,t=2,p=2$MmN3dWRYajV6NDZW$scHZJQ5QDjM1LE6iagQZ6A",
+        "last_login": null,
+        "is_superuser": false,
+        "username": "ambermitchellae7a8a1e-65fb-46ea-a946-2ba301136ad6",
+        "is_staff": false,
+        "is_active": true,
+        "date_joined": "2019-01-21T12:10:22.173Z",
+        "uuid": "dfbf1cf0-50e4-48c7-ab9c-e492e3478cbf",
+        "civilite": "Mme",
+        "first_name": "Amber",
+        "last_name": "Mitchell",
+        "email": "amber.mitchell@noubruholding.com",
+        "telephone": "(+237) 693480953",
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "users.user",
+    "pk": 11,
+    "fields": {
+        "password": "argon2$argon2i$v=19$m=512,t=2,p=2$RVZSQ29MRUVqVk5n$bVECiCNufw6fsHrGkOiTnQ",
+        "last_login": null,
+        "is_superuser": false,
+        "username": "jamesromero7c24d8ea-4e00-4ecc-b363-d87cd6a4c8b4",
+        "is_staff": false,
+        "is_active": true,
+        "date_joined": "2019-01-21T14:34:27.328Z",
+        "uuid": "6d1bd8e1-db37-4349-a3d0-52f8f214f59c",
+        "civilite": "Dr",
+        "first_name": "James",
+        "last_name": "Romero",
+        "email": "james.romero@noubruholding.com",
+        "telephone": "(+237) 670194082",
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "users.position",
+    "pk": 3,
+    "fields": {
+        "poste": "Nature conservation officer",
+        "employe": 11,
+        "business_unit": "business unit 0"
+    }
+},
+{
+    "model": "users.position",
+    "pk": 4,
+    "fields": {
+        "poste": "Directeur G\u00e9n\u00e9ral",
+        "employe": 9,
+        "business_unit": "Cameroon Tobacco Company"
+    }
+},
+{
+    "model": "users.position",
+    "pk": 5,
+    "fields": {
+        "poste": "Comptable en chef",
+        "employe": 10,
+        "business_unit": "Cameroon Tobacco Company"
+    }
+},
+{
+    "model": "risk_register.processus",
+    "pk": "2a7f8297-91a2-4b63-948a-6cdef953b6cc",
+    "fields": {
+        "type_processus": "PM",
+        "business_unit": "business unit 0",
+        "nom": "\u00c9laborer la charte du projet",
+        "description": "D\u00e9velopper un document qui autorise formellement l'existence d'un projet et donne  au chef de projet l'autorit\u00e9 pour affecter des ressources de l'organisation au activit\u00e9s de ce projet.",
+        "proc_manager": null,
+        "input_data": [
+            1,
+            2,
+            3,
+            5,
+            4
+        ]
+    }
+},
+{
+    "model": "risk_register.processus",
+    "pk": "5868bbe1-ed50-460d-813d-de89d1395ec5",
+    "fields": {
+        "type_processus": "PO",
+        "business_unit": "business unit 0",
+        "nom": "Diriger et g\u00e9rer le travail du projet",
+        "description": "Diriger et r\u00e9aliser le travail contenu dans le plan de management du projet et mettre en oeuvre les modifications approuv\u00e9es pour atteindre les objectifs du projet.",
+        "proc_manager": null,
+        "input_data": [
+            7,
+            8,
+            4
+        ]
+    }
+},
+{
+    "model": "risk_register.processus",
+    "pk": "c97dd956-f3d0-4959-860d-17874cb6d2b2",
+    "fields": {
+        "type_processus": "PM",
+        "business_unit": "business unit 0",
+        "nom": "\u00c9laborer le plan de management du projet",
+        "description": "D\u00e9finir, pr\u00e9parer et coordonner tous les plans subsidiaires, et les int\u00e9grer dans un plan complet de management du projet",
+        "proc_manager": null,
+        "input_data": [
+            6,
+            7
+        ]
+    }
+},
+{
+    "model": "risk_register.activite",
+    "pk": "0e97f371-a8e6-4cce-a47c-86ef116e022f",
+    "fields": {
+        "start": "2019-01-25T07:00:00Z",
+        "end": "2019-02-10T10:38:03Z",
+        "nom": "D\u00e9crire le contenu du produit",
+        "description": "Documenter les caract\u00e9ristiques du produit que nous d\u00e9veloppons",
+        "processus": "2a7f8297-91a2-4b63-948a-6cdef953b6cc",
+        "responsable": 9,
+        "status": "pending",
+        "acheve_le": "2019-01-24T10:39:45.379Z"
+    }
+},
+{
+    "model": "risk_register.activite",
+    "pk": "29e34e42-5ff1-471b-9a7a-5f19417f86bd",
+    "fields": {
+        "start": "2019-01-24T10:37:00Z",
+        "end": "2019-03-31T10:37:14Z",
+        "nom": "D\u00e9finir le besoin commercial",
+        "description": "D\u00e9terminer quel est le besoin du march\u00e9 que notre produit doit satisfaire.",
+        "processus": "2a7f8297-91a2-4b63-948a-6cdef953b6cc",
+        "responsable": 9,
+        "status": "pending",
+        "acheve_le": "2019-01-24T10:36:48.419Z"
+    }
+},
+{
+    "model": "risk_register.activite",
+    "pk": "b7dea81d-4d52-4009-ab00-bc2203370843",
+    "fields": {
+        "start": "2019-01-25T07:00:00Z",
+        "end": "2019-02-28T07:00:00Z",
+        "nom": "\u00c9laborer le plan strat\u00e9gique",
+        "description": "Documenter la vision strat\u00e9gique de l'organisation, son but et ses objectifs",
+        "processus": "2a7f8297-91a2-4b63-948a-6cdef953b6cc",
+        "responsable": 11,
+        "status": "pending",
+        "acheve_le": "2019-01-24T10:43:05.037Z"
+    }
+},
+{
+    "model": "risk_register.risque",
+    "pk": "3511fcf1-070f-4ab6-95dc-efacae2bf085",
+    "fields": {
+        "created": "2019-01-28T10:30:04.618Z",
+        "modified": "2019-01-28T10:30:04.649Z",
+        "classe": "Risques Financiers",
+        "nom": "Liquidit\u00e9",
+        "description": "Rupture de la tr\u00e9sorerie courante de l'entreprise",
+        "definition": "Incapacit\u00e9 de l'entreprise \u00e0 faire face \u00e0 l'\u00e9ch\u00e9ance qui se pr\u00e9sente, par d\u00e9ficit de liquidit\u00e9.",
+        "cause": "Mauvaise ma\u00eetrise du BFR; insuffisance structurelle du haut de bilan; absence de pr\u00e9visionnel de tr\u00e9sorerie appropri\u00e9; rupture significative d'une \u00e9ch\u00e9ance client; indisponibilit\u00e9 de solutions de financement court terme adapt\u00e9es.",
+        "consequence": "Impay\u00e9s, tensions de tr\u00e9sorerie, pouvant conduire \u00e0 une situation de cessation des payements engendrant l'ouverture d'une proc\u00e9dure de redressement judiciaire ou de liquidation judiciaire.",
+        "couverture": "\u00c9laboration d'un pr\u00e9visionnel pr\u00e9cis de tr\u00e9sorerie; ma\u00eetrise absolue du besoin en fond de roulement; mise en place des solutions de financement court terme ( d\u00e9couvert, affacturage, escompte); renforcement des fonds propres; mise en place d'un endettement appropri\u00e9 de financement long terme; apports en comptes courants.",
+        "pilotage": "Situation quotidienne de la situation de tr\u00e9sorerie courante; pr\u00e9visionnels de tr\u00e9sorerie; nombre de jours et montants des d\u00e9passements anticip\u00e9s \u00e9ventuels; taux et degr\u00e9s d'usage des dispositifs de financement court terme.",
+        "note": "Il s'agit du risque financier essentiel de chaque entreprise. A ma\u00eetriser au mieux et en permanence!",
+        "aide": "Toutes les entreprises sont concern\u00e9es",
+        "cree_par": 1,
+        "search_vector": "'a':153 'absenc':20 'absolu':74 'adapt':39 'affacturag':91 'agit':145 'anticip':130 'apport':108 'appropri':25,103 'besoin':76 'bfr':13 'bilan':19 'cessat':50 'chaqu':151 'client':31 'compt':110 'concern':164 'conduir':45 'cour':6,111,119 'court':37,88,141 'degr':134 'disposit':138 'd\u00e9couvert':90 'd\u00e9pass':129 'endet':102 'engendr':53 'entrepris':9,152,162 'escompt':92 'essentiel':149 'financ':36,87,105,140 'financi':148 'fond':78,95 'haut':17 'impai':40 'indisponibil':32 'insuffis':14 'jour':125 'judiciair':61,65 'le':161 'liquid':1,64 'long':106 'mauvais':10 'ma\u00eetris':11,73,154 'mieux':156 'mis':81,97 'mont':127 'nombr':123 'ouvertur':55 'pai':52 'permanent':159 'plac':83,99 'pouv':44 'prec':70 'proc\u00e9dur':58 'propr':96 'pr\u00e9visionnel':22,69,120 'quotidien':113 'redress':60 'renforc':93 'risqu':147 'roul':80 'ruptur':2,26 'signif':27 'situat':48,112,116 'solut':34,85 'structurel':15 'taux':132 'tension':41 'term':38,89,107,142 'tout':160 'tr\u00e9sorer':5,24,43,72,118,122 'usag':136 '\u00e9ch\u00e9anc':30 '\u00e9labor':66 '\u00e9ventuel':131"
+    }
+},
+{
+    "model": "risk_register.risque",
+    "pk": "8b12b61b-e02e-43dd-8e1c-6d7dbf14f412",
+    "fields": {
+        "created": "2019-01-28T10:00:59.138Z",
+        "modified": "2019-01-28T10:00:59.170Z",
+        "classe": "Risques G\u00e9opolitiques",
+        "nom": "Risque Pays",
+        "description": "Risque d'ins\u00e9curit\u00e9 des personnes et des biens dans le pays concern\u00e9 (enl\u00e8vement, s\u00e9questration, d\u00e9tournement)",
+        "definition": "Ins\u00e9curit\u00e9 des personnes et des biens de l'entreprise sur zone",
+        "cause": "Instabilit\u00e9 politique, \u00e9conomique, sociale, culturelle, conjoncturelle, environnementale propre \u00e0 la zone concern\u00e9e",
+        "consequence": "Remise en cause de la s\u00e9curit\u00e9 des personnes et des biens. Perte de C.A., de rentabilit\u00e9.\r\nPertes financi\u00e8res. Risque image, risque social.",
+        "couverture": "Connaissance fine du pays consid\u00e9r\u00e9 et de ses risques propres.\r\nMa\u00eetrise des enjeux g\u00e9opolitiques, \u00e9conomiques, sociaux, conjoncturels de la zone g\u00e9ographique d'exposition.\r\nR\u00e9duction de la pr\u00e9sence, repositionnement des processus critiques, sortie de zone.",
+        "pilotage": "Tout indicateurs disponibles, multisources et multicrit\u00e8res (Minist\u00e8res, Banques, Institutions internationales).\r\nSuivi de la situation locale, micro-management du site.",
+        "note": "Surveiller la pr\u00e9sence locale des concurrents et des banques: ce sont de bons indicateurs de la stabilit\u00e9 ou d'identification de risques \u00e9mergents!",
+        "aide": "Oui, \u00e0 partir du moment o\u00f9 l'entreprise est pr\u00e9sente \u00e0 l'international, quel que soit l'enjeu: client, prospect, fournisseur, partenaire, sous-traitant, filiale, repr\u00e9sentation",
+        "cree_par": 1,
+        "search_vector": "'banqu':93,114 'bien':10,40 'bon':118 'c.a':43 'caus':32 'client':147 'concern':14,29 'concurrent':111 'conjoncturel':23,68 'connaiss':52 'consider':56 'critiqu':82 'culturel':22 'disponibl':88 'd\u00e9tourn':17 'enjeu':146 'enjeux':64 'enlev':15 'entrepris':136 'environnemental':24 'exposit':74 'filial':154 'fin':53 'financi':47 'fournisseur':149 'g\u00e9ograph':72 'g\u00e9opolit':65 'identif':125 'imag':49 'indiqu':87,119 'instabl':18 'institu':94 'ins\u00e9cur':5 'international':95,141 'local':100,109 'manag':103 'ma\u00eetris':62 'micro':102 'micro-manag':101 'minister':92 'moment':133 'multicriter':91 'multisourc':89 'oui':129 'o\u00f9':134 'part':131 'partenair':150 'pay':2,13,55 'person':7,37 'pert':41,46 'polit':19 'processus':81 'propr':25,61 'prospect':148 'pr\u00e9senc':78,108 'pr\u00e9sent':138 'quel':142 'remis':30 'rentabl':45 'reposition':79 'repr\u00e9sent':155 'risqu':1,3,48,50,60,127 'r\u00e9duct':75 'sit':105 'situat':99 'social':21,51,67 'sort':83 'sous':152 'sous-trait':151 'stabl':122 'suiv':96 'surveil':106 's\u00e9cur':35 's\u00e9questr':16 'tout':86 'trait':153 'zon':28,71,85 '\u00e9conom':20,66 '\u00e9mergent':128"
+    }
+},
+{
+    "model": "risk_register.risque",
+    "pk": "b25541df-21d9-43c4-8e4f-7c7972d491b0",
+    "fields": {
+        "created": "2019-01-28T10:15:26.347Z",
+        "modified": "2019-01-28T10:15:26.383Z",
+        "classe": "Risques Strat\u00e9giques",
+        "nom": "D\u00e9ploiement",
+        "description": "Mauvaise ma\u00eetrise du processus client",
+        "definition": "D\u00e9faillance d'un ou de plusieurs processus centr\u00e9s clients: \u00e9coute march\u00e9, \u00e9coute client, prospection, commercialisation, contractualisation, fid\u00e9lisation, SAV...",
+        "cause": "Ma\u00eetrise d\u00e9faillante des processus et sous processus de commercialisation de l'offre; d\u00e9faut de r\u00e9flexion, d'\u00e9laboration, d'ex\u00e9cution, de pilotage ou de mise en oeuvre des processus centr\u00e9s clients.",
+        "consequence": "Incapacit\u00e9 de commercialisation de l'offre produite sur les segments clients souhait\u00e9s, perte de chiffre d'affaires, d\u00e9gradation des parts de march\u00e9s; absence d'image.",
+        "couverture": "Approche processus par d\u00e9faut agr\u00e9g\u00e9e autour d'une famille de processus orient\u00e9e et centr\u00e9e client.\r\nIdentification des sous-processus critiques et mise en oeuvre des ressources appropri\u00e9es \u00e0 l'enjeu.\r\nStrat\u00e9gie de r\u00e9duction ou de contournement.",
+        "pilotage": "Indicateur de performance des processus et sous-processus client: qualitatif, quantitatif pour chaque sous-processus.",
+        "note": "D\u00e9couper votre entreprise en processus avec comme point d'appui central le client!",
+        "aide": "Toutes les entreprises sont concern\u00e9es.",
+        "cree_par": 1,
+        "search_vector": "'absenc':59 'affair':53 'agreg':66 'approch':62 'appropri':89 'appui':125 'autour':67 'centr':35,75 'central':126 'chaqu':112 'chiffr':51 'client':6,36,47,76,108,128 'comm':122 'commercialis':15,39 'concern':133 'contourn':98 'critiqu':82 'd\u00e9coup':116 'd\u00e9faill':8 'd\u00e9faut':19,65 'd\u00e9grad':54 'd\u00e9ploi':1 'enjeu':92 'entrepris':118,131 'ex\u00e9cu':25 'famill':70 'identif':77 'imag':61 'incapac':37 'indiqu':99 'le':45,130 'march':58 'mauvais':2 'ma\u00eetris':3,7 'mis':30,84 'oeuvr':32,86 'offre':18,42 'orient':73 'part':56 'perform':101 'pert':49 'pilotag':27 'point':123 'processus':5,10,13,34,63,72,81,103,107,115,120 'produit':43 'qualit':109 'quantit':110 'ressourc':88 'r\u00e9duct':95 'r\u00e9flexion':21 'segment':46 'souhait':48 'sous':12,80,106,114 'sous-processus':79,105,113 'strateg':93 'tout':129 '\u00e9labor':23"
+    }
+},
+{
+    "model": "risk_register.risque",
+    "pk": "eb76feeb-420b-4cca-b8f3-1dd0866eb396",
+    "fields": {
+        "created": "2019-01-28T10:43:13.997Z",
+        "modified": "2019-01-28T10:43:14.028Z",
+        "classe": "Risques Op\u00e9rationnels",
+        "nom": "Infrastructures",
+        "description": "S\u00e9curit\u00e9 des sites - Acc\u00e8s (badges, locaux acc\u00e8s privatif, gestion des badges, etc.)",
+        "definition": "Ins\u00e9curit\u00e9 ou indisponibilit\u00e9 des acc\u00e8s au(x) site(s) de l'entreprise: si\u00e8ge, B.U., site de production, de stockage, de distribution, de B.O., antennes, repr\u00e9sentations, succursales, filiales...",
+        "cause": "Ins\u00e9curit\u00e9 constat\u00e9e ou indisponibilit\u00e9 op\u00e9rationnelle, temporaire ou permanente, partielle ou globale d'un ou de plusieurs sites op\u00e9rationnels de l'entreprise, de processus, de sous-processus natifs. Intrusion de profil non appropri\u00e9 sur le site.",
+        "consequence": "Rupture de continuit\u00e9 de processus ou sous-processus op\u00e9rationnels ou organisationnels associ\u00e9s aux sites rendus indisponibles; intrusions et perturbations des processus; \u00e9v\u00e9nements naturels, conflit social, inaccessibilit\u00e9 des sites",
+        "couverture": "Identification des canaux de remont\u00e9e de l'information, de gestion de crise et de mise en place des dispositifs de d\u00e9cision et de gestions d\u00e9grad\u00e9e et/ou alternative (plan de continuit\u00e9, plan de reprise d'activit\u00e9). Strat\u00e9gie de contournement ou de r\u00e9duction.",
+        "pilotage": "Fr\u00e9quence et dur\u00e9e des indisponibilit\u00e9s ou des intrusions, par type de site.",
+        "note": "D\u00e9finir les enjeux op\u00e9rationnels prioritaires \u00e0 pr\u00e9server en cas de non-acc\u00e8s ou d'intrusion \u00e0 une ressource critique.",
+        "aide": "Toutes les entreprises sont concern\u00e9es",
+        "cree_par": 1,
+        "search_vector": "'acces':5,8,144 'activ':113 'altern':105 'appropri':46 'associ':62 'badg':6,12 'canal':81 'cas':140 'concern':156 'confl':74 'constat':15 'continu':52,108 'contourn':116 'cris':90 'critiqu':151 'disposit':97 'dur':122 'd\u00e9cis':99 'd\u00e9fin':132 'd\u00e9grad':103 'enjeux':134 'entrepris':34,154 'et/ou':104 'etc':13 'fr\u00e9quenc':120 'gestion':10,88,102 'global':24 'identif':79 'inaccessibil':76 'indisponibil':17,124 'indisponibl':66 'inform':86 'infrastructur':1 'ins\u00e9cur':14 'intrus':42,67,127,147 'le':133,153 'local':7 'mis':93 'natif':41 'naturel':73 'non':45,143 'non-acces':142 'op\u00e9rationnel':18,31,59,135 'organisationnel':61 'partiel':22 'permanent':21 'perturb':69 'plac':95 'plan':106,109 'plusieur':29 'prioritair':136 'privat':9 'processus':36,40,54,58,71 'profil':44 'pr\u00e9serv':138 'remont':83 'rendus':65 'repris':111 'ressourc':150 'ruptur':50 'r\u00e9duct':119 'sit':4,30,49,64,78,131 'social':75 'sous':39,57 'sous-processus':38,56 'strateg':114 's\u00e9cur':2 'temporair':19 'tout':152 'typ':129 '\u00e9ven':72"
+    }
+},
+{
+    "model": "risk_register.risque",
+    "pk": "ee098899-0748-480b-9a08-6d72659f75f0",
+    "fields": {
+        "created": "2019-01-28T11:28:10.003Z",
+        "modified": "2019-01-28T11:28:10.038Z",
+        "classe": "Risques Ressources Humaines",
+        "nom": "climat social",
+        "description": "gr\u00e8ves",
+        "definition": "D\u00e9clenchement d'une gr\u00e8ve dans l'entreprise",
+        "cause": "Climat social d\u00e9l\u00e9t\u00e8re, absence de dialogue social, d\u00e9ficit de communication, conflits latents ou d\u00e9clar\u00e9s entre acteurs, enjeux politiques, financiers ou organisationnels sous-jacents.",
+        "consequence": "D\u00e9stabilisation partielle ou globale, temporaire ou longue de l'activit\u00e9 de l'entreprise; d\u00e9gradation des conditions d'ex\u00e9cution d'un processus op\u00e9rationnel critique; risque d'image interne/externe; risques sociaux et psychosociaux.",
+        "couverture": "Mise en place, animation et pilotage des dispositifs adapt\u00e9s de communication et de veille sociale; maintien du dialogue et de la qualit\u00e9 des \u00e9changes avec les salari\u00e9s et les instances de repr\u00e9sentation; \u00e9coute salari\u00e9s, accompagnement externe pr\u00e9ventif ou curatif.\r\nStrat\u00e9gie de r\u00e9duction par d\u00e9faut.",
+        "pilotage": "Nombre, typologie, fr\u00e9quence et nature des gr\u00e8ves subies et/ou \u00e9vit\u00e9es.\r\nVolum\u00e9trie, typologie et r\u00e9solution des alertes sociales rencontr\u00e9es; qualit\u00e9 des indicateurs sociaux disponibles (absent\u00e9ismes, absence maladies, conflits interne...).",
+        "note": "Le dirigeant qui d\u00e9couvre avec surprise un mouvement social dans son entreprise est un mauvais dirigeant!",
+        "aide": "Toutes les entreprises sont concern\u00e9es.",
+        "cree_par": 1,
+        "search_vector": "'absenc':7,127 'absent\u00e9':126 'accompagn':93 'acteur':19 'activ':37 'adapt':67 'alert':118 'anim':62 'climat':1,4 'commun':13,69 'concern':151 'condit':43 'conflit':14,129 'critiqu':50 'curat':97 'dialogu':9,76 'dirig':132,146 'disponibl':125 'disposit':66 'd\u00e9clar':17 'd\u00e9couvr':134 'd\u00e9faut':102 'd\u00e9fic':11 'd\u00e9grad':41 'd\u00e9l\u00e9ter':6 'd\u00e9stabilis':28 'enjeux':20 'entre':18 'entrepris':40,142,149 'et/ou':111 'extern':94 'ex\u00e9cu':45 'financi':22 'fr\u00e9quenc':105 'global':31 'grev':3,109 'imag':53 'indiqu':123 'instanc':88 'intern':130 'interne/externe':54 'jacent':27 'latent':15 'le':84,87,148 'longu':34 'maintien':74 'malad':128 'mauv':145 'mis':59 'mouv':138 'natur':107 'nombr':103 'op\u00e9rationnel':49 'organisationnel':24 'partiel':29 'pilotag':64 'plac':61 'polit':21 'processus':48 'pr\u00e9vent':95 'psychosocial':58 'qualit':80,121 'rencontr':120 'repr\u00e9sent':90 'risqu':51,55 'r\u00e9duct':100 'r\u00e9solu':116 'salari':85,92 'social':2,5,10,56,73,119,124,139 'sous':26 'sous-jacent':25 'strateg':98 'sub':110 'surpris':136 'temporair':32 'tout':147 'typolog':104,114 'veil':72 'volumetr':113 '\u00e9chang':82 '\u00e9cout':91 '\u00e9vit':112"
+    }
+},
+{
+    "model": "risk_register.processusrisque",
+    "pk": "081926e5-d145-4320-9e2a-b97f2d695c7f",
+    "fields": {
+        "created": "2019-01-28T12:32:34.088Z",
+        "modified": "2019-01-28T12:32:34.099Z",
+        "risque": "3511fcf1-070f-4ab6-95dc-efacae2bf085",
+        "type_de_risque": "M",
+        "date_revue": "2019-07-29T12:32:34.088Z",
+        "criterisation": null,
+        "criterisation_change": "2019-01-28T12:32:34.088Z",
+        "date_revue_change": "2019-01-28T12:32:34.088Z",
+        "verifie": "pending",
+        "verifie_le": null,
+        "verifie_par": null,
+        "processus": "5868bbe1-ed50-460d-813d-de89d1395ec5",
+        "soumis_par": 1,
+        "modifie_par": null,
+        "proprietaire": null,
+        "proprietaire_change": "2019-01-28T12:32:34.088Z",
+        "suivi_par": [
+            1
+        ]
+    }
+},
+{
+    "model": "risk_register.processusrisque",
+    "pk": "3597e243-3cea-4b3e-9dcb-bac4cd12e3b3",
+    "fields": {
+        "created": "2019-01-28T12:33:10.810Z",
+        "modified": "2019-01-28T12:33:10.819Z",
+        "risque": "eb76feeb-420b-4cca-b8f3-1dd0866eb396",
+        "type_de_risque": "M",
+        "date_revue": "2019-07-29T12:33:10.810Z",
+        "criterisation": null,
+        "criterisation_change": "2019-01-28T12:33:10.810Z",
+        "date_revue_change": "2019-01-28T12:33:10.810Z",
+        "verifie": "pending",
+        "verifie_le": null,
+        "verifie_par": null,
+        "processus": "2a7f8297-91a2-4b63-948a-6cdef953b6cc",
+        "soumis_par": 1,
+        "modifie_par": null,
+        "proprietaire": null,
+        "proprietaire_change": "2019-01-28T12:33:10.810Z",
+        "suivi_par": [
+            1
+        ]
+    }
+},
+{
+    "model": "risk_register.processusrisque",
+    "pk": "ae8dc101-d3c3-4602-8e9d-c026a8c02a68",
+    "fields": {
+        "created": "2019-01-28T12:21:47.482Z",
+        "modified": "2019-01-28T12:21:47.493Z",
+        "risque": "b25541df-21d9-43c4-8e4f-7c7972d491b0",
+        "type_de_risque": "M",
+        "date_revue": "2019-07-29T12:21:47.482Z",
+        "criterisation": null,
+        "criterisation_change": "2019-01-28T12:21:47.482Z",
+        "date_revue_change": "2019-01-28T12:21:47.482Z",
+        "verifie": "pending",
+        "verifie_le": null,
+        "verifie_par": null,
+        "processus": "5868bbe1-ed50-460d-813d-de89d1395ec5",
+        "soumis_par": 1,
+        "modifie_par": null,
+        "proprietaire": null,
+        "proprietaire_change": "2019-01-28T12:21:47.482Z",
+        "suivi_par": [
+            1
+        ]
+    }
+},
+{
+    "model": "users.businessunit",
+    "pk": "business unit 0",
+    "fields": {
+        "uuid": "be08d6cf-adfe-4622-b2dd-b81addf69c68",
+        "raison_sociale": "Business Unit 0",
+        "sigle": "B.U-0",
+        "marche": "Corporis laudantium possimus illo.",
+        "ville_siege": "Milletnec",
+        "adresse_physique": "59, rue de Pelletier",
+        "adresse_postale": "",
+        "telephone": "(+237) 698511402",
+        "bu_manager": 11,
+        "site_web": null,
+        "projet": true
+    }
+},
+{
+    "model": "users.businessunit",
+    "pk": "Cameroon Tobacco Company",
+    "fields": {
+        "uuid": "25fa88d9-2014-47ef-b8fd-a1370166b763",
+        "raison_sociale": "raison sociale",
+        "sigle": "C.T.C",
+        "marche": "N\u00e9goce",
+        "ville_siege": "Yaound\u00e9",
+        "adresse_physique": "Tongolo",
+        "adresse_postale": "",
+        "telephone": "(+237) 684655536",
+        "bu_manager": 9,
+        "site_web": null,
+        "projet": false
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 1,
+    "fields": {
+        "action_time": "2018-06-19T12:12:02.322Z",
+        "user": 1,
+        "content_type": 20,
+        "object_id": "1",
+        "object_repr": "Demande de quotation",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 2,
+    "fields": {
+        "action_time": "2018-06-22T10:37:05.348Z",
+        "user": 1,
+        "content_type": 13,
+        "object_id": "Unknown",
+        "object_repr": "Unknown",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 3,
+    "fields": {
+        "action_time": "2018-06-22T10:37:09.347Z",
+        "user": 1,
+        "content_type": 12,
+        "object_id": "3",
+        "object_repr": "Anonymous User",
+        "action_flag": 2,
+        "change_message": "[{\"changed\": {\"fields\": [\"business_unit\"]}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 4,
+    "fields": {
+        "action_time": "2018-06-23T11:09:11.415Z",
+        "user": 1,
+        "content_type": 12,
+        "object_id": "1",
+        "object_repr": "Justin Fotue Kamga",
+        "action_flag": 2,
+        "change_message": "[{\"changed\": {\"fields\": [\"fonction\"]}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 5,
+    "fields": {
+        "action_time": "2018-06-23T11:15:32.435Z",
+        "user": 1,
+        "content_type": 13,
+        "object_id": "Cameroon Tobacco Company",
+        "object_repr": "Cameroon Tobacco Company",
+        "action_flag": 2,
+        "change_message": "[{\"changed\": {\"fields\": [\"sigle\", \"marche\", \"ville_siege\", \"adresse_physique\"]}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 6,
+    "fields": {
+        "action_time": "2018-06-23T11:20:06.133Z",
+        "user": 1,
+        "content_type": 12,
+        "object_id": "1",
+        "object_repr": "M. Justin Fotue Kamga",
+        "action_flag": 2,
+        "change_message": "[{\"changed\": {\"fields\": [\"civilite\"]}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 7,
+    "fields": {
+        "action_time": "2019-01-23T09:15:42.628Z",
+        "user": 1,
+        "content_type": 13,
+        "object_id": "Unknown",
+        "object_repr": "Unknown",
+        "action_flag": 3,
+        "change_message": ""
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 8,
+    "fields": {
+        "action_time": "2019-01-23T09:20:06.161Z",
+        "user": 1,
+        "content_type": 13,
+        "object_id": "business unit 0",
+        "object_repr": "business unit 0",
+        "action_flag": 2,
+        "change_message": "[{\"changed\": {\"fields\": [\"raison_sociale\", \"sigle\", \"bu_manager\"]}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 9,
+    "fields": {
+        "action_time": "2019-01-23T09:21:26.447Z",
+        "user": 1,
+        "content_type": 13,
+        "object_id": "Cameroon Tobacco Company",
+        "object_repr": "Cameroon Tobacco Company",
+        "action_flag": 2,
+        "change_message": "[{\"added\": {\"name\": \"position\", \"object\": \"Directeur G\\u00e9n\\u00e9ral\"}}, {\"added\": {\"name\": \"position\", \"object\": \"Comptable en chef\"}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 10,
+    "fields": {
+        "action_time": "2019-01-23T09:21:42.940Z",
+        "user": 1,
+        "content_type": 13,
+        "object_id": "Cameroon Tobacco Company",
+        "object_repr": "Cameroon Tobacco Company",
+        "action_flag": 2,
+        "change_message": "[{\"changed\": {\"fields\": [\"bu_manager\"]}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 11,
+    "fields": {
+        "action_time": "2019-01-23T09:31:30.026Z",
+        "user": 1,
+        "content_type": 21,
+        "object_id": "2a7f8297-91a2-4b63-948a-6cdef953b6cc",
+        "object_repr": "\u00c9laborer la charte du projet",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 12,
+    "fields": {
+        "action_time": "2019-01-23T15:53:59.410Z",
+        "user": 1,
+        "content_type": 20,
+        "object_id": "2",
+        "object_repr": "Origine externe/\u00c9nonc\u00e9 des travaux",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 13,
+    "fields": {
+        "action_time": "2019-01-23T15:55:21.741Z",
+        "user": 1,
+        "content_type": 20,
+        "object_id": "3",
+        "object_repr": "Origine externe/Etudes \u00e9conomiques",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 14,
+    "fields": {
+        "action_time": "2019-01-23T15:56:58.746Z",
+        "user": 1,
+        "content_type": 20,
+        "object_id": "4",
+        "object_repr": "Origine externe/Protocole d'accord",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 15,
+    "fields": {
+        "action_time": "2019-01-23T15:58:15.689Z",
+        "user": 1,
+        "content_type": 20,
+        "object_id": "5",
+        "object_repr": "Origine externe/Mod\u00e8le de charte de projet",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 16,
+    "fields": {
+        "action_time": "2019-01-23T16:10:41.939Z",
+        "user": 1,
+        "content_type": 21,
+        "object_id": "2a7f8297-91a2-4b63-948a-6cdef953b6cc",
+        "object_repr": "\u00c9laborer la charte du projet",
+        "action_flag": 2,
+        "change_message": "[{\"added\": {\"name\": \"donn\\u00e9es du processus\", \"object\": \"business unit 0/\\u00c9laborer la charte du projet/Charte du projet\"}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 17,
+    "fields": {
+        "action_time": "2019-01-23T16:17:34.060Z",
+        "user": 1,
+        "content_type": 21,
+        "object_id": "2a7f8297-91a2-4b63-948a-6cdef953b6cc",
+        "object_repr": "\u00c9laborer la charte du projet",
+        "action_flag": 2,
+        "change_message": "[{\"changed\": {\"fields\": [\"input_data\"]}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 18,
+    "fields": {
+        "action_time": "2019-01-23T16:17:44.201Z",
+        "user": 1,
+        "content_type": 21,
+        "object_id": "2a7f8297-91a2-4b63-948a-6cdef953b6cc",
+        "object_repr": "\u00c9laborer la charte du projet",
+        "action_flag": 2,
+        "change_message": "[]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 19,
+    "fields": {
+        "action_time": "2019-01-24T10:28:00.010Z",
+        "user": 1,
+        "content_type": 21,
+        "object_id": "c97dd956-f3d0-4959-860d-17874cb6d2b2",
+        "object_repr": "\u00c9laborer le plan de management du projet",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 20,
+    "fields": {
+        "action_time": "2019-01-24T10:29:59.268Z",
+        "user": 1,
+        "content_type": 20,
+        "object_id": "7",
+        "object_repr": "Origine externe/directive de recrutement et de licenciement de l'organisation",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 21,
+    "fields": {
+        "action_time": "2019-01-24T10:30:49.083Z",
+        "user": 1,
+        "content_type": 21,
+        "object_id": "c97dd956-f3d0-4959-860d-17874cb6d2b2",
+        "object_repr": "\u00c9laborer le plan de management du projet",
+        "action_flag": 2,
+        "change_message": "[{\"changed\": {\"fields\": [\"input_data\"]}}, {\"added\": {\"name\": \"donn\\u00e9es du processus\", \"object\": \"business unit 0/\\u00c9laborer le plan de management du projet/Plan de management du projet\"}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 22,
+    "fields": {
+        "action_time": "2019-01-24T10:31:12.117Z",
+        "user": 1,
+        "content_type": 21,
+        "object_id": "c97dd956-f3d0-4959-860d-17874cb6d2b2",
+        "object_repr": "\u00c9laborer le plan de management du projet",
+        "action_flag": 2,
+        "change_message": "[]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 23,
+    "fields": {
+        "action_time": "2019-01-24T10:31:35.485Z",
+        "user": 1,
+        "content_type": 21,
+        "object_id": "c97dd956-f3d0-4959-860d-17874cb6d2b2",
+        "object_repr": "\u00c9laborer le plan de management du projet",
+        "action_flag": 2,
+        "change_message": "[]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 24,
+    "fields": {
+        "action_time": "2019-01-24T10:32:56.660Z",
+        "user": 1,
+        "content_type": 21,
+        "object_id": "c97dd956-f3d0-4959-860d-17874cb6d2b2",
+        "object_repr": "\u00c9laborer le plan de management du projet",
+        "action_flag": 2,
+        "change_message": "[{\"changed\": {\"fields\": [\"type_processus\"]}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 25,
+    "fields": {
+        "action_time": "2019-01-24T10:36:48.828Z",
+        "user": 1,
+        "content_type": 14,
+        "object_id": "29e34e42-5ff1-471b-9a7a-5f19417f86bd",
+        "object_repr": "D\u00e9finir le besoin commercial",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 26,
+    "fields": {
+        "action_time": "2019-01-24T10:37:19.652Z",
+        "user": 1,
+        "content_type": 14,
+        "object_id": "29e34e42-5ff1-471b-9a7a-5f19417f86bd",
+        "object_repr": "D\u00e9finir le besoin commercial",
+        "action_flag": 2,
+        "change_message": "[{\"changed\": {\"fields\": [\"start\", \"end\"]}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 27,
+    "fields": {
+        "action_time": "2019-01-24T10:39:45.447Z",
+        "user": 1,
+        "content_type": 14,
+        "object_id": "0e97f371-a8e6-4cce-a47c-86ef116e022f",
+        "object_repr": "D\u00e9crire le contenu du produit",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 28,
+    "fields": {
+        "action_time": "2019-01-24T10:43:05.207Z",
+        "user": 1,
+        "content_type": 14,
+        "object_id": "b7dea81d-4d52-4009-ab00-bc2203370843",
+        "object_repr": "\u00c9laborer le plan strat\u00e9gique",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 29,
+    "fields": {
+        "action_time": "2019-01-28T09:35:58.640Z",
+        "user": 1,
+        "content_type": 21,
+        "object_id": "5868bbe1-ed50-460d-813d-de89d1395ec5",
+        "object_repr": "Diriger et g\u00e9rer le travail du projet",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 30,
+    "fields": {
+        "action_time": "2019-01-28T09:37:28.523Z",
+        "user": 1,
+        "content_type": 21,
+        "object_id": "5868bbe1-ed50-460d-813d-de89d1395ec5",
+        "object_repr": "Diriger et g\u00e9rer le travail du projet",
+        "action_flag": 2,
+        "change_message": "[{\"changed\": {\"fields\": [\"input_data\"]}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 31,
+    "fields": {
+        "action_time": "2019-01-28T09:39:51.694Z",
+        "user": 1,
+        "content_type": 16,
+        "object_id": "Risques G\u00e9opolitiques",
+        "object_repr": "Risques G\u00e9opolitiques",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 32,
+    "fields": {
+        "action_time": "2019-01-28T09:40:13.560Z",
+        "user": 1,
+        "content_type": 16,
+        "object_id": "Risques Economiques",
+        "object_repr": "Risques Economiques",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 33,
+    "fields": {
+        "action_time": "2019-01-28T09:40:20.819Z",
+        "user": 1,
+        "content_type": 16,
+        "object_id": "Risques Economiques",
+        "object_repr": "Risques Economiques",
+        "action_flag": 2,
+        "change_message": "[]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 34,
+    "fields": {
+        "action_time": "2019-01-28T09:40:34.196Z",
+        "user": 1,
+        "content_type": 16,
+        "object_id": "Risques Strat\u00e9giques",
+        "object_repr": "Risques Strat\u00e9giques",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 35,
+    "fields": {
+        "action_time": "2019-01-28T09:40:55.210Z",
+        "user": 1,
+        "content_type": 16,
+        "object_id": "Risques Financiers",
+        "object_repr": "Risques Financiers",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 36,
+    "fields": {
+        "action_time": "2019-01-28T09:41:27.823Z",
+        "user": 1,
+        "content_type": 16,
+        "object_id": "Risques Op\u00e9rationnels",
+        "object_repr": "Risques Op\u00e9rationnels",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 37,
+    "fields": {
+        "action_time": "2019-01-28T09:41:40.707Z",
+        "user": 1,
+        "content_type": 16,
+        "object_id": "Risques Industriels",
+        "object_repr": "Risques Industriels",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 38,
+    "fields": {
+        "action_time": "2019-01-28T09:41:50.635Z",
+        "user": 1,
+        "content_type": 16,
+        "object_id": "Risques Juridiques",
+        "object_repr": "Risques Juridiques",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 39,
+    "fields": {
+        "action_time": "2019-01-28T09:42:03.003Z",
+        "user": 1,
+        "content_type": 16,
+        "object_id": "Risques Informatiques",
+        "object_repr": "Risques Informatiques",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 40,
+    "fields": {
+        "action_time": "2019-01-28T09:42:17.620Z",
+        "user": 1,
+        "content_type": 16,
+        "object_id": "Risques Ressources Humaines",
+        "object_repr": "Risques Ressources Humaines",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 41,
+    "fields": {
+        "action_time": "2019-01-28T09:42:32.024Z",
+        "user": 1,
+        "content_type": 16,
+        "object_id": "Risques Image R\u00e9putation",
+        "object_repr": "Risques Image R\u00e9putation",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 42,
+    "fields": {
+        "action_time": "2019-01-28T09:42:50.112Z",
+        "user": 1,
+        "content_type": 16,
+        "object_id": "Risques Gestion de la connaissance",
+        "object_repr": "Risques Gestion de la connaissance",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 43,
+    "fields": {
+        "action_time": "2019-01-28T09:43:06.216Z",
+        "user": 1,
+        "content_type": 16,
+        "object_id": "Risques d'int\u00e9grit\u00e9",
+        "object_repr": "Risques d'int\u00e9grit\u00e9",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 44,
+    "fields": {
+        "action_time": "2019-01-28T09:43:28.521Z",
+        "user": 1,
+        "content_type": 16,
+        "object_id": "Risques de D\u00e9faillance",
+        "object_repr": "Risques de D\u00e9faillance",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 45,
+    "fields": {
+        "action_time": "2019-01-28T09:43:41.044Z",
+        "user": 1,
+        "content_type": 16,
+        "object_id": "Risques Gestion de la Connaissance",
+        "object_repr": "Risques Gestion de la Connaissance",
+        "action_flag": 2,
+        "change_message": "[{\"changed\": {\"fields\": [\"nom\"]}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 46,
+    "fields": {
+        "action_time": "2019-01-28T09:43:59.662Z",
+        "user": 1,
+        "content_type": 16,
+        "object_id": "Risques Gestion de la connaissance",
+        "object_repr": "Risques Gestion de la connaissance",
+        "action_flag": 3,
+        "change_message": ""
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 47,
+    "fields": {
+        "action_time": "2019-01-28T09:44:12.728Z",
+        "user": 1,
+        "content_type": 16,
+        "object_id": "Risques d'Int\u00e9grit\u00e9",
+        "object_repr": "Risques d'Int\u00e9grit\u00e9",
+        "action_flag": 2,
+        "change_message": "[{\"changed\": {\"fields\": [\"nom\"]}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 48,
+    "fields": {
+        "action_time": "2019-01-28T09:44:26.264Z",
+        "user": 1,
+        "content_type": 16,
+        "object_id": "Risques d'int\u00e9grit\u00e9",
+        "object_repr": "Risques d'int\u00e9grit\u00e9",
+        "action_flag": 3,
+        "change_message": ""
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 49,
+    "fields": {
+        "action_time": "2019-01-28T09:44:40.780Z",
+        "user": 1,
+        "content_type": 16,
+        "object_id": "Autres Risques",
+        "object_repr": "Autres Risques",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 50,
+    "fields": {
+        "action_time": "2019-01-28T10:01:00.194Z",
+        "user": 1,
+        "content_type": 23,
+        "object_id": "8b12b61b-e02e-43dd-8e1c-6d7dbf14f412",
+        "object_repr": "Risque Pays: Risque d'ins\u00e9curit\u00e9 des personnes et des biens dan...",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 51,
+    "fields": {
+        "action_time": "2019-01-28T10:15:26.401Z",
+        "user": 1,
+        "content_type": 23,
+        "object_id": "b25541df-21d9-43c4-8e4f-7c7972d491b0",
+        "object_repr": "D\u00e9ploiement: Mauvaise ma\u00eetrise du processus client...",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 52,
+    "fields": {
+        "action_time": "2019-01-28T10:30:04.665Z",
+        "user": 1,
+        "content_type": 23,
+        "object_id": "3511fcf1-070f-4ab6-95dc-efacae2bf085",
+        "object_repr": "Liquidit\u00e9: Rupture de la tr\u00e9sorerie courante de l'entreprise...",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 53,
+    "fields": {
+        "action_time": "2019-01-28T10:43:14.062Z",
+        "user": 1,
+        "content_type": 23,
+        "object_id": "eb76feeb-420b-4cca-b8f3-1dd0866eb396",
+        "object_repr": "Infrastructures: S\u00e9curit\u00e9 des sites - Acc\u00e8s (badges, locaux acc\u00e8s p...",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 54,
+    "fields": {
+        "action_time": "2019-01-28T11:28:10.068Z",
+        "user": 1,
+        "content_type": 23,
+        "object_id": "ee098899-0748-480b-9a08-6d72659f75f0",
+        "object_repr": "climat social: gr\u00e8ves...",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+}
+]
